@@ -10,6 +10,8 @@ All notable changes to The Sentinel will be documented here. Format follows [Kee
 - Research SSOT: `.research/incident-forensics-moonwell.md`, `.research/oracle-inventory-base.md`, `.research/competitor-architecture.md`
 - ADRs 0001–0005 documenting foundational decisions
 - GitHub issue + PR templates, CODEOWNERS, CI workflow
+- AlertRegistry Foundry project: forge-std submodule, `remappings.txt`, `script/Deploy.s.sol`, `.env.example`, workspace `package.json`
+- ADR 0006: custom access control for AlertRegistry (vs OpenZeppelin)
 
 ---
 

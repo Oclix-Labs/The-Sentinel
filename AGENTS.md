@@ -79,7 +79,7 @@
 - Storage: **CF D1** (SQLite — alerts, subscriptions, price history) + **CF KV** (latest price cache) + **CF Queues** (alert fan-out)
 - Scheduler: **CF Cron Trigger** — 1 minute interval (MVP). Upgradable to Durable Objects alarm for sub-minute later.
 - Package manager: **pnpm workspace**
-- Smart contracts: **Foundry** + Solidity `^0.8.20` + OpenZeppelin AccessControl
+- Smart contracts: **Foundry** + Solidity `^0.8.20` + custom access control or OpenZeppelin AccessControl (see [`docs/DECISIONS/0006-custom-access-control.md`](./docs/DECISIONS/0006-custom-access-control.md))
 - Deployment: **wrangler** (Workers) + `forge script` (contracts)
 - CI: **GitHub Actions**
 - Lint/format: **Biome**
