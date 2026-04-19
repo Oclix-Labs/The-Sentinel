@@ -1,0 +1,13 @@
+{
+  "name": "@oclix/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Foundry project for The Sentinel — AlertRegistry.sol on Base",
+  "scripts": {
+    "build": "forge build",
+    "test": "forge test -vvv",
+    "typecheck": "forge build --sizes",
+    "deploy:staging": "forge script script/Deploy.s.sol --rpc-url base_sepolia --broadcast --verify",
+    "deploy:prod": "forge script script/Deploy.s.sol --rpc-url base_mainnet --broadcast --verify"
+  }
+}
