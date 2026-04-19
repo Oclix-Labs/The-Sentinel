@@ -1,0 +1,9 @@
+{
+  // Root wrangler.jsonc — shared config loaded by per-app wrangler configs via "extends".
+  // Each app (apps/poller, apps/alert-writer, apps/api) has its own wrangler.jsonc
+  // that declares its own name + bindings + triggers.
+  //
+  // This file documents the default compatibility settings used across the workspace.
+  "compatibility_date": "2026-04-01",
+  "compatibility_flags": ["nodejs_compat"]
+}

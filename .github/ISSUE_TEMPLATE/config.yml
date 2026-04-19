@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussion (idea / question / not ready for an issue)
+    url: https://github.com/Oclix-Labs/The-Sentinel/discussions
+    about: Use Discussions for ideas, open questions, or things that aren't yet a concrete task
+  - name: Security disclosure
+    url: mailto:security@oclixlabs.xyz
+    about: Do NOT open a public issue for security problems — email directly

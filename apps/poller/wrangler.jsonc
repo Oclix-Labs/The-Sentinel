@@ -1,0 +1,35 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rwa-sentinel-poller",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "triggers": {
+    "crons": ["* * * * *"] // every minute
+  },
+
+  // D1 + KV + Queues bindings set per-env below.
+  // Replace placeholders with real IDs after `wrangler d1 create`, `wrangler kv namespace create`,
+  // and `wrangler queues create`.
+
+  "env": {
+    "staging": {
+      "name": "rwa-sentinel-poller-staging",
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "BASE_RPC_URL": "https://base-sepolia-rpc.publicnode.com"
+      }
+      // "d1_databases": [{ "binding": "DB", "database_id": "REPLACE_ME" }],
+      // "kv_namespaces": [{ "binding": "PRICES", "id": "REPLACE_ME" }],
+      // "queues": { "producers": [{ "binding": "ALERTS", "queue": "rwa-sentinel-alerts-staging" }] }
+    },
+    "production": {
+      "name": "rwa-sentinel-poller",
+      "vars": {
+        "ENVIRONMENT": "production",
+        "BASE_RPC_URL": "https://mainnet.base.org"
+      }
+    }
+  }
+}

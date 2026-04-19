@@ -1,0 +1,48 @@
+name: Bug report
+description: Something is broken or behaving unexpectedly
+labels: ["type:bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One-line summary
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "dev / staging / prod / local / Base Sepolia / Base Mainnet"
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots / tx hash
+      render: shell

@@ -1,0 +1,32 @@
+# CODEOWNERS — area → reviewer map
+# GitHub auto-requests review from the listed handle when a PR touches matching files.
+# Syntax: <pattern> <@handle1> <@handle2>
+#
+# Replace @placeholder handles with real GitHub usernames before use.
+
+# Default owner for everything
+* @SangHyeonKwon
+
+# Smart contracts — 권상현 owns, 모진영 reviews
+/apps/contracts/                 @SangHyeonKwon @jinyoung-mo
+/apps/contracts/**               @SangHyeonKwon @jinyoung-mo
+
+# Backend workers — 모진영 owns, 권상현 reviews
+/apps/poller/                    @jinyoung-mo @SangHyeonKwon
+/apps/alert-writer/              @jinyoung-mo @SangHyeonKwon
+/apps/api/                       @jinyoung-mo @SangHyeonKwon
+
+# Frontend / landing — 이재근 owns, 모진영 reviews
+/apps/landing/                   @jaegeun-lee @jinyoung-mo
+
+# Docs and research — 김현우 owns, 권상현 reviews
+/docs/                           @hyunwoo-kim @SangHyeonKwon
+/.research/                      @hyunwoo-kim @SangHyeonKwon
+
+# CI / deploy — 모진영 owns, 권상현 reviews
+/.github/workflows/              @jinyoung-mo @SangHyeonKwon
+
+# Project rules — everyone reviews
+/AGENTS.md                       @SangHyeonKwon @jinyoung-mo @jaegeun-lee @hyunwoo-kim
+/CLAUDE.md                       @SangHyeonKwon @jinyoung-mo @jaegeun-lee @hyunwoo-kim
+/docs/DECISIONS/                 @SangHyeonKwon @jinyoung-mo @jaegeun-lee @hyunwoo-kim

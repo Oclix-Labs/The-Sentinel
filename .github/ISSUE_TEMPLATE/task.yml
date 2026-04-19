@@ -1,0 +1,59 @@
+name: Task
+description: Tracked work item — a deliverable with a clear definition of done
+labels: ["type:task"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: One-line description of the task
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: Motivation; which roadmap phase / research / ADR this supports
+    validations:
+      required: true
+
+  - type: textarea
+    id: dod
+    attributes:
+      label: Definition of Done
+      description: Concrete, testable checklist — what must be true for this to be closed
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: deps
+    attributes:
+      label: Dependencies
+      description: Issues or PRs that block this, or that this blocks
+      placeholder: "Depends on #42"
+
+  - type: input
+    id: estimate
+    attributes:
+      label: Rough estimate (hours)
+      placeholder: "4h"
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Sprint day (D1–D8 or post-sprint)
+      options:
+        - D0 (today, 2026-04-19)
+        - D1 (2026-04-20)
+        - D2 (2026-04-21)
+        - D3 (2026-04-22)
+        - D4 (2026-04-23) — mid-sprint gate
+        - D5 (2026-04-24)
+        - D6 (2026-04-25)
+        - D7 (2026-04-26)
+        - D8 (2026-04-27) — submission
+        - Post-sprint (after 2026-04-27)

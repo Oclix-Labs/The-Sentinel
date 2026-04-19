@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.vercel/
+.wrangler/
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+.dev.vars
+.dev.vars.*
+*.pem
+*.key
+private-key*
+mnemonic*
+
+# Foundry
+apps/contracts/out/
+apps/contracts/cache/
+apps/contracts/broadcast/**/run-*.json
+apps/contracts/broadcast/**/*.json
+!apps/contracts/broadcast/**/dry-run/run-latest.json
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+
+# Brainstorming (SuperPowers) session state
+.superpowers/
+
+# Local planning scratch
+.planning/
+TODO.local.md
+
+# OpenAI / Anthropic caches
+.anthropic/
+.openai/
