@@ -71,10 +71,12 @@ contract AlertRegistryTest is Test {
         // This does NOT replay the exact block data — it verifies encoding / range accepted.
         vm.startPrank(admin);
         for (uint256 i; i < 9; ++i) {
+            // forge-lint: disable-next-line(unsafe-typecast)
+            int256 deviation = int256(i) * -1000;
             registry.logAlert(
                 CBETH_USD,
                 CHAINLINK_VS_PYTH,
-                int256(i * -1000),
+                deviation,
                 keccak256(abi.encodePacked("incident-", i)),
                 uint32(0)
             );
