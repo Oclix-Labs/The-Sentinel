@@ -5,7 +5,8 @@ pragma solidity ^0.8.24;
 /// @notice Off-chain poller detects deviation > threshold and calls `logAlert`.
 ///         Anyone can read historical alerts without trusting our backend.
 /// @dev Phase 1 MVP. Access control restricted to authorized publisher addresses
-///      (set by DEFAULT_ADMIN_ROLE). Phase 2 adds multi-operator consensus.
+///      (managed by `admin`, see docs/DECISIONS/0006-custom-access-control.md).
+///      Phase 2 adds multi-operator consensus.
 contract AlertRegistry {
     // ------------------------------------------------------------------
     // Roles
