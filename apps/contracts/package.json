@@ -6,7 +6,7 @@
   "scripts": {
     "build": "forge build",
     "test": "forge test -vvv",
-    "typecheck": "forge build --sizes",
+    "typecheck": "echo '@oclix/contracts: Solidity — forge build runs in test-contracts CI job'",
     "deploy:staging": "forge script script/Deploy.s.sol --rpc-url base_sepolia --broadcast --verify",
     "deploy:prod": "forge script script/Deploy.s.sol --rpc-url base_mainnet --broadcast --verify"
   }
