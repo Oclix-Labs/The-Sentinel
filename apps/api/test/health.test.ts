@@ -17,11 +17,11 @@ describe('GET /', () => {
     expect(body.docs).toMatch(/github\.com\/Oclix-Labs\/The-Sentinel/);
   });
 
-  it('emits permissive CORS headers for browser clients', async () => {
+  it('emits wildcard CORS header for browser clients', async () => {
     const res = await SELF.fetch('http://self/', {
       headers: { Origin: 'https://oclixlabs.xyz' },
     });
-    expect(res.headers.get('access-control-allow-origin')).toBeTruthy();
+    expect(res.headers.get('access-control-allow-origin')).toBe('*');
   });
 });
 

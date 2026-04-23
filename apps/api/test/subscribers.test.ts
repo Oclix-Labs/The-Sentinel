@@ -18,10 +18,11 @@ describe('POST /subscribers', () => {
     )
       .bind(body.id)
       .first<{ webhook_url: string | null; telegram_chat_id: string | null; active: number }>();
-    expect(row).not.toBeNull();
-    expect(row!.webhook_url).toBe('https://example.com/hook');
-    expect(row!.telegram_chat_id).toBeNull();
-    expect(row!.active).toBe(1);
+    expect(row).toEqual({
+      webhook_url: 'https://example.com/hook',
+      telegram_chat_id: null,
+      active: 1,
+    });
   });
 
   it('accepts telegramChatId only', async () => {
@@ -48,7 +49,7 @@ describe('POST /subscribers', () => {
     const row = await env.DB.prepare('SELECT asset_filter FROM subscriptions WHERE id = ?')
       .bind(body.id)
       .first<{ asset_filter: string }>();
-    expect(row!.asset_filter).toBe('BTC/USD,ETH/USD');
+    expect(row).toEqual({ asset_filter: 'BTC/USD,ETH/USD' });
   });
 
   it('rejects payload with neither channel', async () => {

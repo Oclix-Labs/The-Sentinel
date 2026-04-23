@@ -1,4 +1,4 @@
-import { SELF } from 'cloudflare:test';
+import { SELF, env } from 'cloudflare:test';
 import { describe, expect, it } from 'vitest';
 import { seedPrice } from './fixtures';
 
@@ -40,5 +40,44 @@ describe('GET /prices', () => {
     const body = (await res.json()) as { prices: Array<{ asset: string; source: string }> };
     const keys = body.prices.map((p) => `${p.asset}:${p.source}`);
     expect(keys).toEqual(['BTC/USD:chainlink', 'BTC/USD:redstone', 'ETH/USD:pyth']);
+  });
+
+  it('skips keys with extra segments (forward-compat for future key formats)', async () => {
+    await seedPrice('BTC/USD', 'chainlink', 77_000n * 10n ** 18n, 1_700_000_000);
+    // Directly write a key with an extra segment — readLatestPrices must drop it.
+    await env.PRICES.put(
+      'latest:BTC/USD:chainlink:v2',
+      JSON.stringify({ priceE18: '99999', updatedAt: 1 }),
+    );
+
+    const res = await SELF.fetch('http://self/prices');
+    const body = (await res.json()) as { prices: Array<{ source: string; priceE18: string }> };
+    expect(body.prices).toHaveLength(1);
+    expect(body.prices[0]).toMatchObject({
+      source: 'chainlink',
+      priceE18: (77_000n * 10n ** 18n).toString(),
+    });
+  });
+
+  it('skips malformed JSON values without throwing', async () => {
+    await seedPrice('ETH/USD', 'chainlink', 2_300n * 10n ** 18n, 1_700_000_000);
+    await env.PRICES.put('latest:BTC/USD:chainlink', 'not-json');
+
+    const res = await SELF.fetch('http://self/prices');
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { prices: Array<{ asset: string }> };
+    expect(body.prices).toHaveLength(1);
+    expect(body.prices[0]).toMatchObject({ asset: 'ETH/USD' });
+  });
+
+  it('skips values where priceE18 is not a string', async () => {
+    await env.PRICES.put(
+      'latest:BTC/USD:chainlink',
+      JSON.stringify({ priceE18: 12345, updatedAt: 1_700_000_000 }),
+    );
+
+    const res = await SELF.fetch('http://self/prices');
+    const body = (await res.json()) as { prices: unknown[] };
+    expect(body.prices).toEqual([]);
   });
 });

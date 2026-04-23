@@ -13,6 +13,8 @@ interface KvPriceRecord {
 }
 
 export async function readLatestPrices(kv: KVNamespace): Promise<PriceSnapshot[]> {
+  // N+1 kv.get per key is acceptable at Phase-1 cardinality (4 assets × ≤3 sources = ≤12 keys).
+  // If coverage grows, batch via Promise.all or switch to a single D1 query against price_history.
   const listed = await kv.list({ prefix: 'latest:' });
   const snapshots: PriceSnapshot[] = [];
 

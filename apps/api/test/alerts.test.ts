@@ -26,9 +26,11 @@ describe('GET /alerts', () => {
       alerts: Array<{ blockTimestamp: number; evidence: Record<string, unknown> }>;
     };
     expect(body.alerts).toHaveLength(50);
-    expect(body.alerts[0]!.blockTimestamp).toBe(1_700_000_059);
-    expect(body.alerts[49]!.blockTimestamp).toBe(1_700_000_010);
-    expect(body.alerts[0]!.evidence).toMatchObject({ chainlinkValue: '77000' });
+    expect(body.alerts[0]).toMatchObject({
+      blockTimestamp: 1_700_000_059,
+      evidence: { chainlinkValue: '77000' },
+    });
+    expect(body.alerts[49]).toMatchObject({ blockTimestamp: 1_700_000_010 });
   });
 
   it('respects ?asset filter', async () => {
@@ -52,7 +54,7 @@ describe('GET /alerts', () => {
     const res = await SELF.fetch('http://self/alerts?asset=BTC/USD');
     const body = (await res.json()) as { alerts: Array<{ asset: string }> };
     expect(body.alerts).toHaveLength(1);
-    expect(body.alerts[0]!.asset).toBe('BTC/USD');
+    expect(body.alerts[0]).toMatchObject({ asset: 'BTC/USD' });
   });
 
   it('respects ?since filter (unix seconds)', async () => {
@@ -76,7 +78,7 @@ describe('GET /alerts', () => {
     const res = await SELF.fetch('http://self/alerts?since=1700000050');
     const body = (await res.json()) as { alerts: Array<{ blockTimestamp: number }> };
     expect(body.alerts).toHaveLength(1);
-    expect(body.alerts[0]!.blockTimestamp).toBe(1_700_000_100);
+    expect(body.alerts[0]).toMatchObject({ blockTimestamp: 1_700_000_100 });
   });
 
   it('caps limit at 100', async () => {

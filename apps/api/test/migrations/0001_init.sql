@@ -1,5 +1,7 @@
 -- Mirror of apps/poller/migrations/0001_init.sql for api test harness.
 -- Keep in sync when poller migrations change.
+-- TODO(모진영): after both PR #2 and PR #3 merge, extract to packages/migrations
+-- or add a CI diff check to guard against drift. Tracking issue to be filed.
 
 CREATE TABLE IF NOT EXISTS alerts (
   id                INTEGER PRIMARY KEY AUTOINCREMENT,
