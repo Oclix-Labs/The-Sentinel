@@ -11,9 +11,11 @@
  * Owner: 모진영. D1 schema: apps/poller/migrations/0001_init.sql.
  */
 
+import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { readLatestPrices } from './repositories';
+import { createSubscription, listAlerts, readLatestPrices } from './repositories';
+import { alertsQuerySchema, subscriptionCreateSchema } from './schemas';
 
 export interface Env {
   ENVIRONMENT: 'staging' | 'production' | 'test';
@@ -41,7 +43,11 @@ app.get('/prices', async (c) => {
   return c.json({ prices });
 });
 
-app.get('/alerts', async (c) => c.json({ alerts: [], note: 'stub — implemented in Task 5' }));
+app.get('/alerts', zValidator('query', alertsQuerySchema), async (c) => {
+  const { asset, limit, since } = c.req.valid('query');
+  const alerts = await listAlerts(c.env.DB, { asset, limit, since });
+  return c.json({ alerts });
+});
 
 app.post('/subscribers', async (c) =>
   c.json({ error: 'not implemented', note: 'stub — implemented in Task 6' }, 501),

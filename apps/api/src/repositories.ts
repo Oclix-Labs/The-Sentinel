@@ -1,4 +1,5 @@
-import type { OracleSource, PriceSnapshot } from './types';
+import type { SubscriptionCreate } from './schemas';
+import type { AlertRecord, CreatedSubscription, OracleSource, PriceSnapshot } from './types';
 
 const ORACLE_SOURCES: readonly OracleSource[] = ['chainlink', 'pyth', 'redstone'];
 
@@ -45,4 +46,103 @@ export async function readLatestPrices(kv: KVNamespace): Promise<PriceSnapshot[]
     return a.source < b.source ? -1 : 1;
   });
   return snapshots;
+}
+
+interface AlertRow {
+  id: number;
+  asset: string;
+  oracle_pair: string;
+  deviation_bps: number;
+  alert_type: number;
+  block_timestamp: number;
+  evidence: string;
+  tx_hash: string | null;
+  onchain_status: string;
+  delivery_summary: string | null;
+  created_at: number;
+}
+
+function parseJsonObject(value: string | null): Record<string, unknown> | null {
+  if (value === null) return null;
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return typeof parsed === 'object' && parsed !== null
+      ? (parsed as Record<string, unknown>)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function rowToAlert(row: AlertRow): AlertRecord {
+  return {
+    id: row.id,
+    asset: row.asset,
+    oraclePair: row.oracle_pair,
+    deviationBps: row.deviation_bps,
+    alertType: row.alert_type,
+    blockTimestamp: row.block_timestamp,
+    evidence: parseJsonObject(row.evidence) ?? {},
+    txHash: row.tx_hash,
+    onchainStatus: row.onchain_status,
+    deliverySummary: parseJsonObject(row.delivery_summary),
+    createdAt: row.created_at,
+  };
+}
+
+export interface ListAlertsFilters {
+  asset?: string;
+  limit: number;
+  since?: number;
+}
+
+export async function listAlerts(
+  db: D1Database,
+  filters: ListAlertsFilters,
+): Promise<AlertRecord[]> {
+  const clauses: string[] = [];
+  const params: (string | number)[] = [];
+  if (filters.asset !== undefined) {
+    clauses.push('asset = ?');
+    params.push(filters.asset);
+  }
+  if (filters.since !== undefined) {
+    clauses.push('block_timestamp >= ?');
+    params.push(filters.since);
+  }
+  const where = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : '';
+
+  const { results } = await db
+    .prepare(
+      `SELECT id, asset, oracle_pair, deviation_bps, alert_type, block_timestamp,
+              evidence, tx_hash, onchain_status, delivery_summary, created_at
+       FROM alerts
+       ${where}
+       ORDER BY block_timestamp DESC
+       LIMIT ?`,
+    )
+    .bind(...params, filters.limit)
+    .all<AlertRow>();
+
+  return results.map(rowToAlert);
+}
+
+export async function createSubscription(
+  db: D1Database,
+  input: SubscriptionCreate,
+): Promise<CreatedSubscription> {
+  const assetFilter =
+    input.assetFilter && input.assetFilter.length > 0 ? input.assetFilter.join(',') : null;
+
+  const row = await db
+    .prepare(
+      `INSERT INTO subscriptions (webhook_url, telegram_chat_id, asset_filter, secret)
+       VALUES (?, ?, ?, ?)
+       RETURNING id, created_at`,
+    )
+    .bind(input.webhookUrl ?? null, input.telegramChatId ?? null, assetFilter, input.secret ?? null)
+    .first<{ id: number; created_at: number }>();
+
+  if (!row) throw new Error('createSubscription: INSERT RETURNING yielded no row');
+  return { id: row.id, createdAt: row.created_at };
 }
