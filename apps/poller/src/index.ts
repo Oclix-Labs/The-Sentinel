@@ -1,60 +1,178 @@
 /**
- * Poller Worker — D1 target: runs every minute via Cron Trigger, fetches prices from
- * Chainlink (Base), Pyth (Hermes), and RedStone (REST) for the Phase-1 asset set,
- * computes pairwise deviations, and publishes to the `ALERTS` queue when > threshold.
+ * Poller Worker — every minute, cross-checks Phase-1 asset prices across Chainlink
+ * (Base Mainnet), Pyth Hermes, and RedStone REST. Deviations above per-asset thresholds
+ * are emitted as AlertPayload messages on the ALERTS queue; alert-writer handles fan-out.
  *
- * Scope (locked): BTC/USD, ETH/USD, USDC/USD, cbETH/USD (price) + USDO (attestation-only).
+ * Bindings (all optional in dev; required in staging/production):
+ *   - DB       D1       alert + price history persistence
+ *   - PRICES   KV       latest-price cache for public API
+ *   - ALERTS   Queue    fan-out channel to alert-writer
  *
- * Status: STUB. Replace `poll()` body with real implementation in D1–D3.
- * Owner: 모진영. Research: .research/oracle-inventory-base.md.
+ * Owner: 모진영. Research: .research/oracle-inventory-base.md. Regression fixture:
+ * src/compare.test.ts (Moonwell MIP-X43, 2026-02-15).
  */
+
+import { http, createPublicClient } from 'viem';
+import { base } from 'viem/chains';
+import { buildAlerts } from './compare';
+import { type AssetConfig, PHASE_1_ASSETS } from './config';
+import { fetchChainlinkPrice } from './oracles/chainlink';
+import { type PythFeedLookup, fetchPythPrices } from './oracles/pyth';
+import { type RedStoneFeedLookup, fetchRedStonePrices } from './oracles/redstone';
+import type { AlertPayload, OraclePrice } from './types';
 
 export interface Env {
   ENVIRONMENT: 'staging' | 'production';
   BASE_RPC_URL: string;
-  // DB: D1Database;
-  // PRICES: KVNamespace;
-  // ALERTS: Queue<AlertPayload>;
+  DB?: D1Database;
+  PRICES?: KVNamespace;
+  ALERTS?: Queue<AlertPayload>;
 }
 
-// Phase-1 asset coverage (locked — see docs/DECISIONS/0002-phase1-scope-5-assets.md).
-const PHASE_1_ASSETS = [
-  { symbol: 'BTC/USD', thresholdBps: 50 },
-  { symbol: 'ETH/USD', thresholdBps: 50 },
-  { symbol: 'USDC/USD', thresholdBps: 20 },
-  { symbol: 'cbETH/USD', thresholdBps: 50 },
-] as const;
+interface TickError {
+  asset: string;
+  source: string;
+  error: string;
+}
+
+interface TickResult {
+  ok: boolean;
+  env: string;
+  prices: Record<string, Record<string, string>>;
+  alerts: AlertPayload[];
+  errors: TickError[];
+}
 
 export default {
-  async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
-    await poll(env);
+  async scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    await runTick(env, ctx);
   },
 
-  async fetch(_req: Request, env: Env): Promise<Response> {
-    // Manual invocation for local dev / debugging.
-    await poll(env);
-    return new Response(
-      JSON.stringify({ ok: true, env: env.ENVIRONMENT, assets: PHASE_1_ASSETS }),
-      { headers: { 'content-type': 'application/json' } },
-    );
+  async fetch(_req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const result = await runTick(env, ctx);
+    return new Response(JSON.stringify(result, null, 2), {
+      headers: { 'content-type': 'application/json' },
+    });
   },
 };
 
-/**
- * D1-D3 implementation plan (모진영):
- *   1. For each asset in PHASE_1_ASSETS:
- *      a. Fetch Chainlink latest round via viem + BASE_RPC_URL
- *      b. Fetch Pyth price via Hermes REST (hermes.pyth.network/v2/updates/price/latest)
- *      c. Fetch RedStone price via REST (api.redstone.finance/prices)
- *   2. Normalize to 18 decimals, compute pairwise deviation in basis points.
- *   3. If max deviation > thresholdBps → publish AlertPayload to ALERTS queue.
- *   4. Write latest prices snapshot to PRICES KV (key = symbol).
- *   5. Log tick summary to D1 price_history table.
- *
- * Keep this file ≤ 300 lines. Split into src/oracles/{chainlink,pyth,redstone}.ts and
- * src/compare.ts as logic lands.
- */
-async function poll(env: Env): Promise<void> {
-  // TODO(모진영): implement per plan above.
-  console.log(`[poller] tick env=${env.ENVIRONMENT} assets=${PHASE_1_ASSETS.length}`);
+async function runTick(env: Env, ctx: ExecutionContext): Promise<TickResult> {
+  const client = createPublicClient({ chain: base, transport: http(env.BASE_RPC_URL) });
+  const errors: TickError[] = [];
+
+  const [chainlinkPrices, pythPrices, redstonePrices] = await Promise.all([
+    fetchChainlinkBatch(client, PHASE_1_ASSETS, errors),
+    fetchPythBatch(PHASE_1_ASSETS, errors),
+    fetchRedStoneBatch(PHASE_1_ASSETS, errors),
+  ]);
+
+  const allPrices: OraclePrice[] = [...chainlinkPrices, ...pythPrices, ...redstonePrices];
+  const now = Math.floor(Date.now() / 1000);
+
+  const alerts: AlertPayload[] = [];
+  for (const asset of PHASE_1_ASSETS) {
+    const forAsset = allPrices.filter((p) => p.asset === asset.symbol);
+    alerts.push(...buildAlerts(asset, forAsset, now));
+  }
+
+  const sideEffects: Promise<unknown>[] = [];
+  if (env.ALERTS) {
+    for (const alert of alerts) sideEffects.push(env.ALERTS.send(alert));
+  }
+  if (env.PRICES) {
+    for (const p of allPrices) {
+      sideEffects.push(
+        env.PRICES.put(
+          `latest:${p.asset}:${p.source}`,
+          JSON.stringify({ priceE18: p.priceE18.toString(), updatedAt: p.updatedAt }),
+          { expirationTtl: 3600 },
+        ),
+      );
+    }
+  }
+  if (env.DB && allPrices.length > 0) {
+    sideEffects.push(writePriceHistory(env.DB, allPrices));
+  }
+  if (sideEffects.length > 0) ctx.waitUntil(Promise.allSettled(sideEffects));
+
+  const prices: Record<string, Record<string, string>> = {};
+  for (const p of allPrices) {
+    const bucket = prices[p.asset] ?? {};
+    bucket[p.source] = p.priceE18.toString();
+    prices[p.asset] = bucket;
+  }
+
+  console.info(
+    `[poller] tick env=${env.ENVIRONMENT} fetched=${allPrices.length} alerts=${alerts.length} errors=${errors.length}`,
+  );
+  return { ok: true, env: env.ENVIRONMENT, prices, alerts, errors };
+}
+
+async function fetchChainlinkBatch(
+  client: Parameters<typeof fetchChainlinkPrice>[0],
+  assets: readonly AssetConfig[],
+  errors: TickError[],
+): Promise<OraclePrice[]> {
+  const targets = assets
+    .filter((a) => a.oracles.includes('chainlink') && a.chainlinkFeed)
+    .map((a) => ({ symbol: a.symbol, feed: a.chainlinkFeed as `0x${string}` }));
+
+  const settled = await Promise.allSettled(
+    targets.map((t) => fetchChainlinkPrice(client, t.symbol, t.feed)),
+  );
+
+  const out: OraclePrice[] = [];
+  for (let i = 0; i < settled.length; i++) {
+    const s = settled[i];
+    const t = targets[i];
+    if (!s || !t) continue;
+    if (s.status === 'fulfilled') out.push(s.value);
+    else errors.push({ asset: t.symbol, source: 'chainlink', error: String(s.reason) });
+  }
+  return out;
+}
+
+async function fetchPythBatch(
+  assets: readonly AssetConfig[],
+  errors: TickError[],
+): Promise<OraclePrice[]> {
+  const lookups: PythFeedLookup[] = [];
+  for (const a of assets) {
+    if (a.oracles.includes('pyth') && a.pythFeedId) {
+      lookups.push({ asset: a.symbol, feedId: a.pythFeedId });
+    }
+  }
+  try {
+    return await fetchPythPrices(lookups);
+  } catch (err) {
+    errors.push({ asset: 'all', source: 'pyth', error: String(err) });
+    return [];
+  }
+}
+
+async function fetchRedStoneBatch(
+  assets: readonly AssetConfig[],
+  errors: TickError[],
+): Promise<OraclePrice[]> {
+  const lookups: RedStoneFeedLookup[] = [];
+  for (const a of assets) {
+    if (a.oracles.includes('redstone') && a.redstoneSymbol) {
+      lookups.push({ asset: a.symbol, symbol: a.redstoneSymbol });
+    }
+  }
+  try {
+    return await fetchRedStonePrices(lookups);
+  } catch (err) {
+    errors.push({ asset: 'all', source: 'redstone', error: String(err) });
+    return [];
+  }
+}
+
+async function writePriceHistory(db: D1Database, prices: readonly OraclePrice[]): Promise<void> {
+  const stmt = db.prepare(
+    'INSERT INTO price_history (asset, source, price_e18, updated_at) VALUES (?, ?, ?, ?)',
+  );
+  await db.batch(
+    prices.map((p) => stmt.bind(p.asset, p.source, p.priceE18.toString(), p.updatedAt)),
+  );
 }
