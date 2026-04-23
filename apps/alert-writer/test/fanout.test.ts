@@ -36,10 +36,11 @@ describe('processAlert', () => {
     expect(row?.onchain_status).toBe('pending');
     expect(row?.tx_hash).toBe(`0x${'0'.repeat(64)}`);
     const summary =
-      row && JSON.parse(row.delivery_summary) as {
+      row &&
+      (JSON.parse(row.delivery_summary) as {
         attempts: number;
         outcomes: Array<{ channel: string; status: string }>;
-      };
+      });
     expect(summary).toBeTruthy();
     if (!summary) throw new Error('unreachable');
     expect(summary.attempts).toBe(1);
@@ -62,7 +63,8 @@ describe('processAlert', () => {
     const row = await env.DB.prepare('SELECT delivery_summary FROM alerts WHERE id = ?')
       .bind(result.alertId)
       .first<{ delivery_summary: string }>();
-    const summary = row && (JSON.parse(row.delivery_summary) as { outcomes: Array<{ status: string }> });
+    const summary =
+      row && (JSON.parse(row.delivery_summary) as { outcomes: Array<{ status: string }> });
     expect(summary?.outcomes[0]?.status).toBe('error');
   });
 
@@ -79,7 +81,8 @@ describe('processAlert', () => {
     const row = await env.DB.prepare('SELECT delivery_summary FROM alerts WHERE id = ?')
       .bind(result.alertId)
       .first<{ delivery_summary: string }>();
-    const summary = row && (JSON.parse(row.delivery_summary) as { attempts: number; outcomes: unknown[] });
+    const summary =
+      row && (JSON.parse(row.delivery_summary) as { attempts: number; outcomes: unknown[] });
     expect(summary?.attempts).toBe(1);
     expect(summary?.outcomes).toEqual([]);
   });
@@ -128,9 +131,7 @@ describe('processAlert', () => {
     // Redeliver — processAlert must NOT overwrite confirmed status back to pending.
     await processAlert(makeAlertPayload(), env);
 
-    const row = await env.DB.prepare(
-      'SELECT onchain_status, tx_hash FROM alerts WHERE id = ?',
-    )
+    const row = await env.DB.prepare('SELECT onchain_status, tx_hash FROM alerts WHERE id = ?')
       .bind(first.alertId)
       .first<{ onchain_status: string; tx_hash: string }>();
     expect(row?.onchain_status).toBe('confirmed');

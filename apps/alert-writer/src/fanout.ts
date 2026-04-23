@@ -2,6 +2,7 @@ import { logAlertOnChain } from './deliveries/onchain';
 import { deliverTelegram } from './deliveries/telegram';
 import { deliverWebhook } from './deliveries/webhook';
 import {
+  type SubscriberRow,
   findAlertByNaturalKey,
   insertAlert,
   listActiveSubscribersForAsset,
@@ -14,7 +15,6 @@ interface FanoutEnv {
   DB: D1Database;
   ALERT_REGISTRY_ADDRESS: `0x${string}`;
   TELEGRAM_BOT_TOKEN: string;
-  PUBLISHER_PRIVATE_KEY?: string;
 }
 
 export interface FanoutResult {
@@ -24,8 +24,49 @@ export interface FanoutResult {
 
 const TERMINAL_ONCHAIN_STATUSES: ReadonlySet<OnchainStatus> = new Set(['confirmed', 'failed']);
 
+interface DispatchDescriptor {
+  subscriptionId: number;
+  channel: 'webhook' | 'telegram';
+  promise: Promise<DeliveryOutcome>;
+}
+
+function buildDispatches(
+  subs: readonly SubscriberRow[],
+  payload: AlertPayload,
+  env: FanoutEnv,
+): DispatchDescriptor[] {
+  const out: DispatchDescriptor[] = [];
+  for (const sub of subs) {
+    if (sub.webhookUrl) {
+      out.push({
+        subscriptionId: sub.id,
+        channel: 'webhook',
+        promise: deliverWebhook(sub, payload),
+      });
+    }
+    if (sub.telegramChatId) {
+      out.push({
+        subscriptionId: sub.id,
+        channel: 'telegram',
+        promise: deliverTelegram(sub, payload, env),
+      });
+    }
+  }
+  return out;
+}
+
+/**
+ * Processes one alert end-to-end. Ordering:
+ *   1. Dedup lookup on natural key → reuse row on redelivery.
+ *   2. Onchain submit (skipped if status is terminal — prevents redelivery regression).
+ *   3. Fan-out to matching subscribers in parallel with allSettled.
+ *   4. Persist delivery summary.
+ *
+ * If the process dies between steps 2 and 4, the row has tx_hash but no delivery_summary.
+ * Retry replays step 2 (no-op via terminal-status guard) then re-fans out — acceptable per
+ * Phase-1 contract ("subscribers MUST dedup by alert id"). See plan §Design decisions.
+ */
 export async function processAlert(payload: AlertPayload, env: FanoutEnv): Promise<FanoutResult> {
-  // 1. Dedup: find existing row or insert a new pending one.
   const existing = await findAlertByNaturalKey(
     env.DB,
     payload.asset,
@@ -34,23 +75,28 @@ export async function processAlert(payload: AlertPayload, env: FanoutEnv): Promi
   );
   const alertId = existing ? existing.id : await insertAlert(env.DB, payload);
 
-  // 2. Onchain submit — skip if the row already reached a terminal state (confirmed/failed).
-  // Protects against a redelivered queue message regressing a confirmed status.
   if (!existing || !TERMINAL_ONCHAIN_STATUSES.has(existing.onchainStatus)) {
     const onchain = await logAlertOnChain(payload, env);
     await updateAlertOnchain(env.DB, alertId, onchain.txHash, onchain.status);
   }
 
-  // 3. Resolve subscribers and dispatch in parallel.
   const subs = await listActiveSubscribersForAsset(env.DB, payload.asset);
-  const outcomes = await Promise.all(
-    subs.flatMap<Promise<DeliveryOutcome>>((sub) => {
-      const dispatch: Promise<DeliveryOutcome>[] = [];
-      if (sub.webhookUrl) dispatch.push(deliverWebhook(sub, payload));
-      if (sub.telegramChatId) dispatch.push(deliverTelegram(sub, payload, env));
-      return dispatch;
-    }),
-  );
+  const dispatches = buildDispatches(subs, payload, env);
+
+  // allSettled over .all — a rejected promise from any delivery (e.g. future delivery
+  // module that forgets the try/catch) won't abort the batch; it surfaces as an error
+  // outcome so updateAlertDelivery always runs.
+  const settled = await Promise.allSettled(dispatches.map((d) => d.promise));
+  const outcomes: DeliveryOutcome[] = settled.map((s, i) => {
+    const d = dispatches[i];
+    if (s.status === 'fulfilled') return s.value;
+    return {
+      subscriptionId: d?.subscriptionId ?? -1,
+      channel: d?.channel ?? 'webhook',
+      status: 'error',
+      error: s.reason instanceof Error ? s.reason.message : String(s.reason),
+    };
+  });
 
   await updateAlertDelivery(env.DB, alertId, { attempts: 1, outcomes });
 

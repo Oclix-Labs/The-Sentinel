@@ -5,15 +5,16 @@
  *   3. Deliver to subscribers: webhook POST, Telegram bot sendMessage.
  *
  * Queue retry semantics:
- *   - Each message is processed independently; successful → msg.ack().
- *   - Any fan-out failure (non-2xx response or network error) → msg.retry().
+ *   - Each message is validated at boundary with zod. Malformed → ack + log (permanent failure).
+ *   - Valid message: processAlert outcome → msg.ack() on ok, msg.retry() on ok=false or throw.
  *   - Cloudflare Queue retry cap + exponential backoff configured in wrangler.jsonc
- *     (`max_retries: 3`) so we don't loop forever.
+ *     (`max_retries: 3`) so we don't loop forever on transient failures.
  *
  * Owner: 모진영 (core) + 권상현 (contract call — D4 pairing).
  */
 
 import { processAlert } from './fanout';
+import { alertPayloadSchema } from './schema';
 import type { AlertPayload } from './types';
 
 export interface Env {
@@ -21,19 +22,23 @@ export interface Env {
   DB: D1Database;
   ALERT_REGISTRY_ADDRESS: `0x${string}`;
   TELEGRAM_BOT_TOKEN: string;
-  PUBLISHER_PRIVATE_KEY?: string;
   BASE_RPC_URL?: string;
+  // PUBLISHER_PRIVATE_KEY will be added in the D4 pairing commit that introduces
+  // the real viem writeContract call — declaring it before it's read misleads ops.
 }
 
 export default {
-  async queue(
-    batch: MessageBatch<AlertPayload>,
-    env: Env,
-    _ctx: ExecutionContext,
-  ): Promise<void> {
+  async queue(batch: MessageBatch<AlertPayload>, env: Env, _ctx: ExecutionContext): Promise<void> {
     for (const msg of batch.messages) {
+      const parsed = alertPayloadSchema.safeParse(msg.body);
+      if (!parsed.success) {
+        // Permanent failure — retrying won't fix a schema mismatch. Ack + log, move on.
+        console.error('[alert-writer] invalid AlertPayload, dropping message', parsed.error.issues);
+        msg.ack();
+        continue;
+      }
       try {
-        const result = await processAlert(msg.body, env);
+        const result = await processAlert(parsed.data, env);
         if (result.ok) {
           msg.ack();
         } else {
