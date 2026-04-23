@@ -35,6 +35,9 @@ export async function deliverTelegram(
     );
   }
 
+  // TODO: move bot token out of URL path (Telegram flags this in error traces) when
+  // migrating to post-MVP hardening. Header-based auth isn't supported by Bot API today,
+  // so this is a monitoring/redaction issue only.
   const url = `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`;
   const body = JSON.stringify({
     chat_id: sub.telegramChatId,

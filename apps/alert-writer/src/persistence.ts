@@ -36,7 +36,9 @@ export async function findAlertByNaturalKey(
 ): Promise<{ id: number; onchainStatus: OnchainStatus } | null> {
   const row = await db
     .prepare(
-      'SELECT id, onchain_status FROM alerts WHERE asset = ? AND oracle_pair = ? AND block_timestamp = ? LIMIT 1',
+      `SELECT id, onchain_status FROM alerts
+       WHERE asset = ? AND oracle_pair = ? AND block_timestamp = ?
+       ORDER BY id ASC LIMIT 1`,
     )
     .bind(asset, oraclePair, blockTimestamp)
     .first<{ id: number; onchain_status: OnchainStatus }>();

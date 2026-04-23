@@ -118,4 +118,26 @@ describe('listActiveSubscribersForAsset', () => {
     const chatIds = rows.map((r) => r.telegramChatId).sort();
     expect(chatIds).toEqual(['1', '3']);
   });
+
+  it('tolerates whitespace around CSV entries', async () => {
+    await seedSubscription({ telegramChatId: '1', assetFilter: ' BTC/USD , ETH/USD ' });
+    const rows = await listActiveSubscribersForAsset(env.DB, 'BTC/USD');
+    expect(rows.map((r) => r.telegramChatId)).toEqual(['1']);
+  });
+
+  it('rejects an empty asset_filter string (treated as empty allow-list)', async () => {
+    await seedSubscription({ telegramChatId: '1', assetFilter: '' });
+    await seedSubscription({ telegramChatId: '2', assetFilter: null });
+
+    const rows = await listActiveSubscribersForAsset(env.DB, 'BTC/USD');
+    // Empty string parses to [''], which does not include 'BTC/USD' — exclude sub 1.
+    // NULL filter means all-assets — include sub 2.
+    expect(rows.map((r) => r.telegramChatId)).toEqual(['2']);
+  });
+
+  it('ignores empty CSV entries from malformed filter strings', async () => {
+    await seedSubscription({ telegramChatId: '1', assetFilter: 'BTC/USD,,ETH/USD' });
+    const rows = await listActiveSubscribersForAsset(env.DB, 'BTC/USD');
+    expect(rows.map((r) => r.telegramChatId)).toEqual(['1']);
+  });
 });
