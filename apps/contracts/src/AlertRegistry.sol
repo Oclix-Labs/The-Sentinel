@@ -26,7 +26,7 @@ contract AlertRegistry {
         bytes32 asset;            // asset identifier, e.g. keccak256("cbETH/USD")
         bytes32 oraclePair;       // oracle pair identifier, e.g. keccak256("chainlink_vs_pyth")
         int256  deviationBps;     // signed deviation in basis points (10000 = 100%)
-        uint64  blockTimestamp;   // unix seconds at detection
+        uint64  blockTimestamp;   // L2 block time at logAlert tx (chain time, not off-chain detection time)
         bytes32 evidenceHash;     // hash of off-chain evidence payload (feed values, tx hashes)
         uint32  alertType;        // reserved (0 = price-cross-check, 1 = attestation-expiry)
     }
