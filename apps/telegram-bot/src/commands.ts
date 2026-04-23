@@ -42,10 +42,13 @@ export async function handleSubscribe(
   if (parsed.kind === 'invalid') {
     return {
       text:
-        'Usage: /subscribe <asset>\n\nExamples:\n  /subscribe BTC\n  /subscribe cbETH\n  /subscribe all',
+        "Usage: /subscribe <asset>\n\nExamples:\n  /subscribe BTC\n  /subscribe cbETH\n  /subscribe all\n\nUse 'all' on its own to subscribe to every asset.",
     };
   }
 
+  // Phase-1 decision (plan §Design decisions): no dedup — a repeated /subscribe
+  // creates a duplicate row. /list shows both; /unsubscribe deactivates all. Harmless
+  // but cosmetic; a future PR can add "already subscribed" short-circuit behavior.
   if (parsed.kind === 'all') {
     await insertTelegramSubscription(ctx.db, { chatId: ctx.chatId, assetFilter: null });
     return { text: 'Subscribed to all assets. Use /list to review or /unsubscribe to stop.' };

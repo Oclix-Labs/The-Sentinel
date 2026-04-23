@@ -23,7 +23,17 @@ describe('normalizeAsset', () => {
     expect(normalizeAsset('BTC/USD')).toEqual({ kind: 'asset', value: 'BTC/USD' });
     expect(normalizeAsset('btc-usd')).toEqual({ kind: 'asset', value: 'BTC/USD' });
     expect(normalizeAsset('BTC_USD')).toEqual({ kind: 'asset', value: 'BTC/USD' });
-    expect(normalizeAsset('cbeth/usd')).toEqual({ kind: 'asset', value: 'CBETH/USD' });
+  });
+
+  it('canonicalizes cbETH case to match poller PHASE_1_ASSETS symbol', () => {
+    // Poller writes alerts.asset as literal 'cbETH/USD' (mixed case). alert-writer
+    // uses exact string equality on asset_filter. If we stored 'CBETH/USD', a
+    // user's /subscribe cbETH would silently never receive alerts.
+    expect(normalizeAsset('cbeth')).toEqual({ kind: 'asset', value: 'cbETH/USD' });
+    expect(normalizeAsset('CBETH')).toEqual({ kind: 'asset', value: 'cbETH/USD' });
+    expect(normalizeAsset('cbETH')).toEqual({ kind: 'asset', value: 'cbETH/USD' });
+    expect(normalizeAsset('cbeth/usd')).toEqual({ kind: 'asset', value: 'cbETH/USD' });
+    expect(normalizeAsset('CBETH-USD')).toEqual({ kind: 'asset', value: 'cbETH/USD' });
   });
 
   it('rejects empty / whitespace / multi-token input', () => {

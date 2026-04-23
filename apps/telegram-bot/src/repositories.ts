@@ -4,6 +4,12 @@ export interface TelegramSubscriptionRow {
   assetFilter: string | null;
 }
 
+/**
+ * DB boundary note: the `subscriptions.telegram_chat_id` column is TEXT (schema
+ * constraint + the CHECK predicate that enforces webhook_url XOR telegram_chat_id).
+ * Callers pass chatId as a number (Telegram API type); all three functions below
+ * convert to String() internally before binding. Do not bypass these helpers.
+ */
 export async function insertTelegramSubscription(
   db: D1Database,
   input: { chatId: number; assetFilter: string | null },

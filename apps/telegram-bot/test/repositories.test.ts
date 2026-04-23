@@ -59,6 +59,17 @@ describe('listActiveForChat', () => {
     const rows = await listActiveForChat(env.DB, 7);
     expect(rows[0]?.assetFilter).toBeNull();
   });
+
+  it('does NOT return webhook-url-only rows (different telegram_chat_id OR null)', async () => {
+    // A webhook-only subscription created via the API's POST /subscribers will
+    // have telegram_chat_id=NULL, so listActiveForChat(anyChatId) must not match.
+    await env.DB.prepare(
+      "INSERT INTO subscriptions (webhook_url, active) VALUES ('https://hook.example.com/x', 1)",
+    ).run();
+
+    const rows = await listActiveForChat(env.DB, 42);
+    expect(rows).toEqual([]);
+  });
 });
 
 describe('deactivateAllForChat', () => {
