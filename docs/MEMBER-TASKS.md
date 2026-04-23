@@ -24,7 +24,7 @@
 
 ### D2 (4/21 Mon)
 - [ ] `AlertRegistry.sol` 구현 초안 + unit tests (Foundry)
-- [ ] OpenZeppelin AccessControl 패턴 적용
+- [ ] Access control 확정 — custom mapping 유지 ([ADR 0006](./DECISIONS/0006-custom-access-control.md))
 - [ ] Gas-optimization 1-pass
 
 ### D3 (4/22 Tue)

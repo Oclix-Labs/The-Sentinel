@@ -5,7 +5,8 @@ pragma solidity ^0.8.24;
 /// @notice Off-chain poller detects deviation > threshold and calls `logAlert`.
 ///         Anyone can read historical alerts without trusting our backend.
 /// @dev Phase 1 MVP. Access control restricted to authorized publisher addresses
-///      (set by DEFAULT_ADMIN_ROLE). Phase 2 adds multi-operator consensus.
+///      (managed by `admin`, see docs/DECISIONS/0006-custom-access-control.md).
+///      Phase 2 adds multi-operator consensus.
 contract AlertRegistry {
     // ------------------------------------------------------------------
     // Roles
@@ -25,7 +26,7 @@ contract AlertRegistry {
         bytes32 asset;            // asset identifier, e.g. keccak256("cbETH/USD")
         bytes32 oraclePair;       // oracle pair identifier, e.g. keccak256("chainlink_vs_pyth")
         int256  deviationBps;     // signed deviation in basis points (10000 = 100%)
-        uint64  blockTimestamp;   // unix seconds at detection
+        uint64  blockTimestamp;   // L2 block time at logAlert tx (chain time, not off-chain detection time)
         bytes32 evidenceHash;     // hash of off-chain evidence payload (feed values, tx hashes)
         uint32  alertType;        // reserved (0 = price-cross-check, 1 = attestation-expiry)
     }
