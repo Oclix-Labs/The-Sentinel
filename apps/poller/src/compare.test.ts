@@ -64,6 +64,10 @@ describe('Moonwell MIP-X43 cbETH regression (2026-02-15)', () => {
     expect(alerts[0]?.deviationBps).toBeGreaterThan(10_000);
     expect(alerts[0]?.evidence.chainlinkValue).toBe(misconfigured.toString());
     expect(alerts[0]?.evidence.pythValue).toBe(market.toString());
+    // Staleness delta (review feedback): downstream consumers see now-updatedAt
+    // without having to subtract on their own.
+    expect(alerts[0]?.evidence.chainlinkStalenessSec).toBeGreaterThanOrEqual(0);
+    expect(alerts[0]?.evidence.pythStalenessSec).toBeGreaterThanOrEqual(0);
   });
 });
 

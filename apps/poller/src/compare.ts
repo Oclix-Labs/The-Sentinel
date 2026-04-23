@@ -47,6 +47,13 @@ export function buildAlerts(
           [`${right.source}Value`]: right.priceE18.toString(),
           [`${left.source}UpdatedAt`]: left.updatedAt,
           [`${right.source}UpdatedAt`]: right.updatedAt,
+          // Staleness delta surfaces a frozen-feed scenario to subscribers and
+          // downstream Grafana views without forcing them to compute it.
+          // Reviewer flag: Base Chainlink cbETH heartbeat is 'uncertain' per
+          // .research/oracle-inventory-base.md §2.1; two frozen feeds could match
+          // each other while the market moves.
+          [`${left.source}StalenessSec`]: Math.max(0, blockTimestamp - left.updatedAt),
+          [`${right.source}StalenessSec`]: Math.max(0, blockTimestamp - right.updatedAt),
         },
         alertType: 0,
       });
