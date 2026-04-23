@@ -51,8 +51,10 @@ coverage/
 # OS
 .DS_Store
 
-# Brainstorming (SuperPowers) session state
+# Brainstorming (SuperPowers) session state + plans + scratch
 .superpowers/
+docs/superpowers/
+**/*.superpowers.md
 
 # Local planning scratch
 .planning/

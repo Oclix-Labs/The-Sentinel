@@ -5,20 +5,40 @@
   "compatibility_date": "2026-04-01",
   "compatibility_flags": ["nodejs_compat"],
 
+  // Before the first staging deploy, create the underlying resources and paste
+  // their IDs in place of REPLACE_ME below (same D1 + KV used by poller —
+  // see apps/poller/wrangler.jsonc for the create commands):
+  //
+  //   pnpm --filter @oclix/api exec wrangler d1 list              # confirm DB id
+  //   pnpm --filter @oclix/api exec wrangler kv namespace list    # confirm KV id
+  //
+  // Local tests use @cloudflare/vitest-pool-workers with miniflare-managed
+  // D1/KV so real IDs aren't needed for development.
+
   "env": {
     "staging": {
       "name": "rwa-sentinel-api-staging",
       "vars": {
         "ENVIRONMENT": "staging"
       }
-      // "d1_databases": [{ "binding": "DB", "database_id": "REPLACE_ME" }],
-      // "kv_namespaces": [{ "binding": "PRICES", "id": "REPLACE_ME" }]
+      // "d1_databases": [
+      //   { "binding": "DB", "database_name": "rwa-sentinel-staging", "database_id": "REPLACE_ME" }
+      // ],
+      // "kv_namespaces": [
+      //   { "binding": "PRICES", "id": "REPLACE_ME" }
+      // ]
     },
     "production": {
       "name": "rwa-sentinel-api",
       "vars": {
         "ENVIRONMENT": "production"
       }
+      // "d1_databases": [
+      //   { "binding": "DB", "database_name": "rwa-sentinel", "database_id": "REPLACE_ME" }
+      // ],
+      // "kv_namespaces": [
+      //   { "binding": "PRICES", "id": "REPLACE_ME" }
+      // ]
     }
   }
 }
