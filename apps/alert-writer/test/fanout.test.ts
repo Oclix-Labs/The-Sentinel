@@ -87,11 +87,13 @@ describe('processAlert', () => {
   it('is idempotent on redelivery of the same natural key', async () => {
     await seedSubscription({ webhookUrl: 'https://hooks.example.com/sentinel' });
 
-    fetchMock
-      .get('https://hooks.example.com')
-      .intercept({ path: '/sentinel', method: 'POST' })
-      .reply(200, 'ok')
-      .persist();
+    // Two processAlert calls → two POSTs. Register per-call (avoid .persist()).
+    for (let i = 0; i < 2; i++) {
+      fetchMock
+        .get('https://hooks.example.com')
+        .intercept({ path: '/sentinel', method: 'POST' })
+        .reply(200, 'ok');
+    }
 
     const first = await processAlert(makeAlertPayload(), env);
     const second = await processAlert(makeAlertPayload(), env);
@@ -108,11 +110,12 @@ describe('processAlert', () => {
 
   it('preserves confirmed onchain_status on redelivery (no regression to pending)', async () => {
     await seedSubscription({ webhookUrl: 'https://hooks.example.com/sentinel' });
-    fetchMock
-      .get('https://hooks.example.com')
-      .intercept({ path: '/sentinel', method: 'POST' })
-      .reply(200, 'ok')
-      .persist();
+    for (let i = 0; i < 2; i++) {
+      fetchMock
+        .get('https://hooks.example.com')
+        .intercept({ path: '/sentinel', method: 'POST' })
+        .reply(200, 'ok');
+    }
 
     const first = await processAlert(makeAlertPayload(), env);
     // Simulate D4-pairing state: mark as confirmed out-of-band.
