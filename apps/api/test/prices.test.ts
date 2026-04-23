@@ -22,9 +22,7 @@ describe('GET /prices', () => {
     };
     expect(body.prices).toHaveLength(3);
 
-    const btcChainlink = body.prices.find(
-      (p) => p.asset === 'BTC/USD' && p.source === 'chainlink',
-    );
+    const btcChainlink = body.prices.find((p) => p.asset === 'BTC/USD' && p.source === 'chainlink');
     expect(btcChainlink).toEqual({
       asset: 'BTC/USD',
       source: 'chainlink',

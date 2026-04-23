@@ -15,9 +15,8 @@ export const subscriptionCreateSchema = z
     assetFilter: z.array(z.string().min(1)).optional(),
     secret: z.string().min(8).optional(),
   })
-  .refine(
-    (data) => (data.webhookUrl !== undefined) !== (data.telegramChatId !== undefined),
-    { message: 'Provide exactly one of webhookUrl or telegramChatId' },
-  );
+  .refine((data) => (data.webhookUrl !== undefined) !== (data.telegramChatId !== undefined), {
+    message: 'Provide exactly one of webhookUrl or telegramChatId',
+  });
 
 export type SubscriptionCreate = z.infer<typeof subscriptionCreateSchema>;
