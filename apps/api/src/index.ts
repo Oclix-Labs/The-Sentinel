@@ -49,8 +49,10 @@ app.get('/alerts', zValidator('query', alertsQuerySchema), async (c) => {
   return c.json({ alerts });
 });
 
-app.post('/subscribers', async (c) =>
-  c.json({ error: 'not implemented', note: 'stub — implemented in Task 6' }, 501),
-);
+app.post('/subscribers', zValidator('json', subscriptionCreateSchema), async (c) => {
+  const input = c.req.valid('json');
+  const created = await createSubscription(c.env.DB, input);
+  return c.json(created, 201);
+});
 
 export default app;
