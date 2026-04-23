@@ -9,9 +9,10 @@
     "deploy:staging": "wrangler deploy --env staging",
     "deploy:prod": "wrangler deploy --env production",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@pythnetwork/pyth-evm-js": "^1.72.0",
     "hono": "^4.6.0",
     "viem": "^2.21.0",
     "zod": "^3.23.0"
