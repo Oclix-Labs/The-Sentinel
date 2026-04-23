@@ -1,4 +1,4 @@
-import { env, fetchMock, SELF } from 'cloudflare:test';
+import { SELF, env, fetchMock } from 'cloudflare:test';
 import { describe, expect, it } from 'vitest';
 
 interface TelegramUpdate {

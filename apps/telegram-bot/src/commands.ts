@@ -34,15 +34,11 @@ export async function handleHelp(_ctx: CommandContext): Promise<CommandResult> {
   return { text: HELP };
 }
 
-export async function handleSubscribe(
-  ctx: CommandContext,
-  args: string,
-): Promise<CommandResult> {
+export async function handleSubscribe(ctx: CommandContext, args: string): Promise<CommandResult> {
   const parsed = normalizeAsset(args);
   if (parsed.kind === 'invalid') {
     return {
-      text:
-        "Usage: /subscribe <asset>\n\nExamples:\n  /subscribe BTC\n  /subscribe cbETH\n  /subscribe all\n\nUse 'all' on its own to subscribe to every asset.",
+      text: "Usage: /subscribe <asset>\n\nExamples:\n  /subscribe BTC\n  /subscribe cbETH\n  /subscribe all\n\nUse 'all' on its own to subscribe to every asset.",
     };
   }
 

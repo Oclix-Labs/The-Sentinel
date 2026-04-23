@@ -1,4 +1,4 @@
-import { Bot, type UserFromGetMe } from 'grammy';
+import { Bot } from 'grammy';
 import {
   handleHelp,
   handleList,
@@ -12,18 +12,17 @@ import type { Env } from './types';
  * Preset bot identity. grammy's webhookCallback internally calls `bot.init()` on the
  * first update, which issues a `getMe` API request — that would hang indefinitely in
  * tests where fetchMock.disableNetConnect() blocks outbound. Presetting botInfo lets
- * init() skip the API call entirely. Safe to use a placeholder username/id because
- * we never use these fields in command logic.
+ * init() skip the API call entirely. Safe to use a placeholder id because we never
+ * use these fields in command logic.
  *
  * In production, the real bot token identifies us correctly; this preset only affects
  * grammy's own heuristics (e.g. stripping `@username` from group-chat command texts).
- * If the bot is actually added to groups and this matters, swap the hardcoded username
- * for an env var.
+ * Username is env-configurable so the group-chat parser matches the real bot handle.
  */
-function makeBotInfo(username: string): UserFromGetMe {
+function makeBotInfo(username: string) {
   return {
     id: 1,
-    is_bot: true,
+    is_bot: true as const,
     first_name: 'RWA Sentinel',
     username,
     can_join_groups: true,
@@ -31,6 +30,9 @@ function makeBotInfo(username: string): UserFromGetMe {
     supports_inline_queries: false,
     can_connect_to_business: false,
     has_main_web_app: false,
+    can_manage_bots: false,
+    has_topics_enabled: false,
+    allows_users_to_create_topics: false,
   };
 }
 

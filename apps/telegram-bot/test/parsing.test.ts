@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeAsset, type ParsedSubscribeArg } from '../src/parsing';
+import { type ParsedSubscribeArg, normalizeAsset } from '../src/parsing';
 
 describe('normalizeAsset', () => {
   it("returns {kind:'all'} for the literal 'all' case-insensitive", () => {
