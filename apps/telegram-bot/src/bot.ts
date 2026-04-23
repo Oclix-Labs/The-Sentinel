@@ -20,20 +20,23 @@ import type { Env } from './types';
  * If the bot is actually added to groups and this matters, swap the hardcoded username
  * for an env var.
  */
-const BOT_INFO: UserFromGetMe = {
-  id: 1,
-  is_bot: true,
-  first_name: 'RWA Sentinel',
-  username: 'rwa_sentinel_bot',
-  can_join_groups: true,
-  can_read_all_group_messages: false,
-  supports_inline_queries: false,
-  can_connect_to_business: false,
-  has_main_web_app: false,
-};
+function makeBotInfo(username: string): UserFromGetMe {
+  return {
+    id: 1,
+    is_bot: true,
+    first_name: 'RWA Sentinel',
+    username,
+    can_join_groups: true,
+    can_read_all_group_messages: false,
+    supports_inline_queries: false,
+    can_connect_to_business: false,
+    has_main_web_app: false,
+  };
+}
 
 export function buildBot(env: Env): Bot {
-  const bot = new Bot(env.TELEGRAM_BOT_TOKEN, { botInfo: BOT_INFO });
+  const username = env.TELEGRAM_BOT_USERNAME ?? 'rwa_sentinel_bot';
+  const bot = new Bot(env.TELEGRAM_BOT_TOKEN, { botInfo: makeBotInfo(username) });
 
   bot.command('start', async (ctx) => {
     const chatId = ctx.chat?.id;

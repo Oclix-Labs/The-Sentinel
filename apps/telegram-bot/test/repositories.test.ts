@@ -70,6 +70,21 @@ describe('listActiveForChat', () => {
     const rows = await listActiveForChat(env.DB, 42);
     expect(rows).toEqual([]);
   });
+
+  it('round-trips negative Telegram group chat_id (large negative int)', async () => {
+    // Telegram group/supergroup chat IDs are negative and up to ~12 digits.
+    // Verify String(negativeBig) -> bind -> Number() preserves precision.
+    const groupChatId = -1_001_234_567_890;
+    const id = await insertTelegramSubscription(env.DB, {
+      chatId: groupChatId,
+      assetFilter: 'BTC/USD',
+    });
+    expect(id).toBeGreaterThan(0);
+
+    const rows = await listActiveForChat(env.DB, groupChatId);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.chatId).toBe(groupChatId);
+  });
 });
 
 describe('deactivateAllForChat', () => {

@@ -22,13 +22,25 @@ const app = new Hono<{ Bindings: Env }>();
 app.get('/health', (c) => c.json({ status: 'ok', env: c.env.ENVIRONMENT }));
 
 app.post('/webhook', async (c) => {
+  // Secret check MUST stay outside the error-swallowing try/catch. A 401 is a real
+  // auth failure we want Telegram (or a probing attacker) to see.
   const token = c.req.header('x-telegram-bot-api-secret-token');
   if (token !== c.env.TELEGRAM_WEBHOOK_SECRET) {
     return c.text('unauthorized', 401);
   }
-  const bot = buildBot(c.env);
-  const handle = webhookCallback(bot, 'hono');
-  return handle(c);
+
+  // Grammy handler errors must NOT propagate as 5xx — Telegram retries 5xx with
+  // backoff, which amplifies transient bugs (bad payload, DB blip, reply failure)
+  // into duplicate alerts. Always ack 200 once the secret is verified; log the
+  // error for operator triage.
+  try {
+    const bot = buildBot(c.env);
+    const handle = webhookCallback(bot, 'hono');
+    return await handle(c);
+  } catch (err) {
+    console.error('[telegram-bot] webhook handler error', err);
+    return c.text('ok', 200);
+  }
 });
 
 export default app;

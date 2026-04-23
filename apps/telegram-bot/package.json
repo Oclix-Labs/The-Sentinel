@@ -13,8 +13,7 @@
   },
   "dependencies": {
     "grammy": "^1.30.0",
-    "hono": "^4.6.0",
-    "zod": "^3.23.0"
+    "hono": "^4.6.0"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.5.0",
