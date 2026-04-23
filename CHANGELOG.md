@@ -12,6 +12,13 @@ All notable changes to The Sentinel will be documented here. Format follows [Kee
 - GitHub issue + PR templates, CODEOWNERS, CI workflow
 - AlertRegistry Foundry project: forge-std submodule, `remappings.txt`, `script/Deploy.s.sol`, `.env.example`, workspace `package.json`
 - ADR 0006: custom access control for AlertRegistry (vs OpenZeppelin)
+- `apps/contracts/.gas-snapshot` captured as regression baseline
+- `acceptAdmin` + `cancelAdminTransfer` functions + `AdminTransferInitiated` event + `NotPendingAdmin` error
+
+### Changed
+- `AlertRegistry.Alert` struct packed from 6 → 4 storage slots (`int128 deviationBps`, reordered fields) — `logAlert` median gas 147K → 123K
+- `transferAdmin` is now 2-step: step 1 records `pendingAdmin`, step 2 requires `acceptAdmin()` from the new address. Typo-safe rotation, matches OpenZeppelin `Ownable2Step` semantics without the import. Removes the "unrecoverable typo" cost flagged in ADR 0006 §Consequences.
+- `AlertLogged` event + `logAlert` param `deviationBps` narrowed from `int256` to `int128` (±1.7e38 bps — still well beyond any historical oracle deviation)
 
 ---
 
