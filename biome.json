@@ -38,6 +38,7 @@
       "dist",
       "build",
       ".wrangler",
+      ".claude",
       "apps/contracts/out",
       "apps/contracts/cache",
       "apps/contracts/lib",
