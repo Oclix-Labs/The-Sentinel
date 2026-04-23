@@ -13,6 +13,7 @@
 
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { readLatestPrices } from './repositories';
 
 export interface Env {
   ENVIRONMENT: 'staging' | 'production' | 'test';
@@ -35,7 +36,10 @@ app.get('/', (c) =>
 
 app.get('/health', (c) => c.json({ status: 'ok', env: c.env.ENVIRONMENT }));
 
-app.get('/prices', async (c) => c.json({ prices: [], note: 'stub — implemented in Task 4' }));
+app.get('/prices', async (c) => {
+  const prices = await readLatestPrices(c.env.PRICES);
+  return c.json({ prices });
+});
 
 app.get('/alerts', async (c) => c.json({ alerts: [], note: 'stub — implemented in Task 5' }));
 
