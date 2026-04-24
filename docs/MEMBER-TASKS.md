@@ -28,9 +28,9 @@
 - [x] Gas-optimization 1-pass — struct 6→4 slots, `logAlert` −24K gas; 2-step `transferAdmin`; `.gas-snapshot` baseline
 
 ### D3 (4/22 Tue)
-- [ ] `AlertRegistry.sol` 테스트 전체 green
-- [ ] **Base Mainnet ETH ~$30-40 pre-fund** (거래소 → Base L2 bridge 또는 Coinbase Wallet swap)
-- [ ] Base Sepolia 배포 + 테스트 tx emit
+- [x] `AlertRegistry.sol` 테스트 전체 green — 11/11 pass (D2 hardening 반영)
+- [ ] **Base Mainnet ETH ~$30-40 pre-fund** (거래소 → Base L2 bridge 또는 Coinbase Wallet swap) — D5 직전 처리
+- [x] Base Sepolia 배포 + 테스트 tx emit — `0x79b5d74A301079c86D13eb71e2787852F403F876`, first `AlertLogged` at block 40,620,070 ([docs/ADDRESSES.md](./ADDRESSES.md#alertregistry))
 
 ### D4 (4/23 Wed) — 🔴 Mid-sprint gate
 - [ ] 모진영과 15분 pair programming (viem으로 `AlertRegistry.logAlert()` 호출 코드)
