@@ -21,20 +21,24 @@
         "BASE_RPC_URL": "https://sepolia.base.org",
         // D3 Sepolia deployment — see docs/ADDRESSES.md#alertregistry
         "ALERT_REGISTRY_ADDRESS": "0x79b5d74A301079c86D13eb71e2787852F403F876"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "rwa-sentinel-staging",
+          "database_id": "3431cd82-453d-4dba-8ae7-58dc2c55a7d6"
+        }
+      ],
+      "queues": {
+        "consumers": [
+          {
+            "queue": "rwa-sentinel-alerts-staging",
+            "max_batch_size": 10,
+            "max_batch_timeout": 5,
+            "max_retries": 3
+          }
+        ]
       }
-      // "d1_databases": [
-      //   { "binding": "DB", "database_name": "rwa-sentinel-staging", "database_id": "REPLACE_ME" }
-      // ],
-      // "queues": {
-      //   "consumers": [
-      //     {
-      //       "queue": "rwa-sentinel-alerts-staging",
-      //       "max_batch_size": 10,
-      //       "max_batch_timeout": 5,
-      //       "max_retries": 3
-      //     }
-      //   ]
-      // }
     },
     "production": {
       "name": "rwa-sentinel-alert-writer",
