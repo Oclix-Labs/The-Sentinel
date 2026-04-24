@@ -1,6 +1,7 @@
 import { env } from 'cloudflare:test';
+import { base, baseSepolia } from 'viem/chains';
 import { describe, expect, it } from 'vitest';
-import { logAlertOnChain } from '../src/deliveries/onchain';
+import { logAlertOnChain, selectChain } from '../src/deliveries/onchain';
 import { makeAlertPayload } from './fixtures';
 
 /**
@@ -37,5 +38,30 @@ describe('env wiring', () => {
     expect(env.ALERT_REGISTRY_ADDRESS).toMatch(/^0x[0-9a-fA-F]{40}$/);
     expect(env.BASE_RPC_URL).toBeTruthy();
     expect(env.PUBLISHER_PRIVATE_KEY).toMatch(/^0x[0-9a-fA-F]{64}$/);
+  });
+});
+
+describe('selectChain — env-gated Mainnet vs Sepolia', () => {
+  it("returns base (Mainnet) when ENVIRONMENT === 'production'", () => {
+    expect(selectChain('production')).toBe(base);
+  });
+
+  it("returns baseSepolia when ENVIRONMENT === 'staging'", () => {
+    expect(selectChain('staging')).toBe(baseSepolia);
+  });
+
+  it("returns baseSepolia when ENVIRONMENT === 'test'", () => {
+    expect(selectChain('test')).toBe(baseSepolia);
+  });
+
+  it('defaults to baseSepolia when ENVIRONMENT is undefined (fail-safe: never accidental Mainnet)', () => {
+    expect(selectChain(undefined)).toBe(baseSepolia);
+  });
+
+  it('defaults to baseSepolia for unknown ENVIRONMENT strings', () => {
+    expect(selectChain('preview')).toBe(baseSepolia);
+    expect(selectChain('')).toBe(baseSepolia);
+    // Guard against case mismatch — 'PRODUCTION' must NOT route to Mainnet.
+    expect(selectChain('PRODUCTION')).toBe(baseSepolia);
   });
 });

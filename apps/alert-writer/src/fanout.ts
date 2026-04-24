@@ -17,6 +17,7 @@ interface FanoutEnv {
   BASE_RPC_URL: string;
   PUBLISHER_PRIVATE_KEY: string;
   TELEGRAM_BOT_TOKEN: string;
+  ENVIRONMENT?: string;
 }
 
 export interface FanoutResult {

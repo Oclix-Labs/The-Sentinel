@@ -1,12 +1,13 @@
 import { http, createPublicClient, createWalletClient } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { baseSepolia } from 'viem/chains';
+import { type Chain, base, baseSepolia } from 'viem/chains';
 import { hashAsset, hashEvidence, hashOraclePair } from '../canonical';
 import type { AlertPayload, OnchainStatus } from '../types';
 
 /**
- * Calls `AlertRegistry.logAlert` on Base Sepolia. Implements ADR 0007 §§1–6
- * canonical encoding via canonical.ts. Replaces the D3 stub.
+ * Calls `AlertRegistry.logAlert` on Base Sepolia (staging) or Base Mainnet
+ * (production). Chain is selected from `env.ENVIRONMENT` via `selectChain`.
+ * Implements ADR 0007 §§1–6 canonical encoding via canonical.ts.
  *
  * Failure modes & status matrix:
  *   - env.ALERT_REGISTRY_ADDRESS === 0x0…0  → sentinel disabled, status `pending`,
@@ -24,6 +25,17 @@ import type { AlertPayload, OnchainStatus } from '../types';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_HASH = `0x${'0'.repeat(64)}` as const;
 const RECEIPT_TIMEOUT_MS = 30_000; // ~15 Base blocks @ 2s; fits CF Worker 30s CPU limit
+
+/**
+ * Selects the viem chain config for the onchain clients. Centralized + exported
+ * so unit tests assert the mapping explicitly (production → base, everything
+ * else → baseSepolia). Default-safe: any unknown/missing ENVIRONMENT falls
+ * through to Sepolia, so a misconfigured Worker never accidentally writes to
+ * Mainnet.
+ */
+export function selectChain(environment: string | undefined): Chain {
+  return environment === 'production' ? base : baseSepolia;
+}
 
 const ALERT_REGISTRY_ABI = [
   {
@@ -45,6 +57,7 @@ export interface OnchainEnv {
   ALERT_REGISTRY_ADDRESS: `0x${string}`;
   BASE_RPC_URL: string;
   PUBLISHER_PRIVATE_KEY: string;
+  ENVIRONMENT?: string;
 }
 
 export async function logAlertOnChain(
@@ -56,12 +69,14 @@ export async function logAlertOnChain(
     return { txHash: ZERO_HASH, status: 'pending' };
   }
 
+  const chain = selectChain(env.ENVIRONMENT);
+
   let txHash: `0x${string}`;
   try {
     const account = privateKeyToAccount(env.PUBLISHER_PRIVATE_KEY as `0x${string}`);
     const wallet = createWalletClient({
       account,
-      chain: baseSepolia,
+      chain,
       transport: http(env.BASE_RPC_URL),
     });
 
@@ -84,7 +99,7 @@ export async function logAlertOnChain(
 
   try {
     const publicClient = createPublicClient({
-      chain: baseSepolia,
+      chain,
       transport: http(env.BASE_RPC_URL),
     });
     const receipt = await publicClient.waitForTransactionReceipt({
