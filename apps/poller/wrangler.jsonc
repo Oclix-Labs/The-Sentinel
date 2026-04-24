@@ -9,11 +9,10 @@
     "crons": ["* * * * *"] // every minute
   },
 
-  // Staging bindings are active (activated 2026-04-24 for D5 E2E). Production bindings
-  // remain commented; create and paste IDs after the Base Mainnet contract deploy (D5+).
-  //   pnpm --filter @oclix/poller exec wrangler d1 create rwa-sentinel
-  //   pnpm --filter @oclix/poller exec wrangler kv namespace create PRICES_PROD
-  //   pnpm --filter @oclix/poller exec wrangler queues create rwa-sentinel-alerts-production
+  // Staging + production bindings both active (production activated 2026-04-24 after D5
+  // Mainnet AlertRegistry deploy). Staging writes to Sepolia AlertRegistry, production
+  // writes to Mainnet — alert-writer's src/deliveries/onchain.ts selectChain() handles
+  // the chain fork based on ENVIRONMENT.
 
   "env": {
     "staging": {
@@ -42,16 +41,19 @@
       "vars": {
         "ENVIRONMENT": "production",
         "BASE_RPC_URL": "https://mainnet.base.org"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "rwa-sentinel",
+          "database_id": "9226b54f-d312-4710-8b33-296198d51873",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "kv_namespaces": [{ "binding": "PRICES", "id": "1f8928efdd5c4a3bbbeba58eb25ac32d" }],
+      "queues": {
+        "producers": [{ "binding": "ALERTS", "queue": "rwa-sentinel-alerts-production" }]
       }
-      // "d1_databases": [
-      //   { "binding": "DB", "database_name": "rwa-sentinel", "database_id": "REPLACE_ME", "migrations_dir": "migrations" }
-      // ],
-      // "kv_namespaces": [
-      //   { "binding": "PRICES", "id": "REPLACE_ME" }
-      // ],
-      // "queues": {
-      //   "producers": [{ "binding": "ALERTS", "queue": "rwa-sentinel-alerts-production" }]
-      // }
     }
   }
 }
