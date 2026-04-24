@@ -44,11 +44,13 @@
       "name": "rwa-sentinel-alert-writer",
       "vars": {
         "ENVIRONMENT": "production",
-        "BASE_RPC_URL": "https://mainnet.base.org",
         // D5 Mainnet AlertRegistry — see docs/ADDRESSES.md#alertregistry.
         // ENVIRONMENT='production' routes the viem walletClient to `base` chain
         // (8453) via selectChain() in src/deliveries/onchain.ts.
         "ALERT_REGISTRY_ADDRESS": "0x79b5d74A301079c86D13eb71e2787852F403F876"
+        // BASE_RPC_URL is provisioned via `wrangler secret put BASE_RPC_URL --env production`
+        // — use an Alchemy / QuickNode / private endpoint to avoid the public
+        // mainnet.base.org rate limits hit during D5 production smoke.
       },
       "d1_databases": [
         {
