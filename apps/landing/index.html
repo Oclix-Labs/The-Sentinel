@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RWA Sentinel — Base Batches 003 Submission</title>
+<meta name="description" content="Public-good watchdog for tokenized RWAs on Base. Multi-oracle cross-check (Chainlink + Pyth + RedStone) with an append-only on-chain alert log. Shipping MVP April 27, 2026.">
+<meta property="og:title" content="RWA Sentinel — Base Batches 003 Submission">
+<meta property="og:description" content="Public-good watchdog for tokenized RWAs on Base. Open-source (MIT), retail-facing, Base-exclusive.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RWA Sentinel — Base Batches 003 Submission">
+<meta name="twitter:description" content="Public-good watchdog for tokenized RWAs on Base.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{colors:{primary:'#0052FF','primary-light':'#E8EFFF',surface:'#F5F8FF','surface-alt':'#F8FAFC',dark:'#0A0F1E','op-red':'#FF0420'},fontFamily:{serif:['Newsreader','serif'],sans:['Inter','sans-serif'],mono:['IBM Plex Mono','monospace']}}}}
+</script>
+<style>
+:root{--primary:#0052FF;--dark:#0A0F1E;--border:#E2E8F0}
+body{font-family:'Inter',sans-serif;background:#fff;color:#0F172A}
+h1,h2,h3,.font-serif{font-family:'Newsreader',serif}
+.dot-grid{background-image:radial-gradient(circle,#cbd5e1 1px,transparent 1px);background-size:32px 32px}
+.gradient-mesh{background:radial-gradient(at 0% 0%,rgba(0,82,255,.05) 0%,transparent 50%),radial-gradient(at 100% 0%,rgba(0,82,255,.03) 0%,transparent 50%),radial-gradient(at 50% 50%,#fff 0%,transparent 100%)}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all .3s}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06);border-color:rgba(0,82,255,.3)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.diff-hl{background:rgba(0,82,255,.04)}.diff-hl td:last-child{color:#0052FF;font-weight:700}
+.blue-glow{box-shadow:0 0 60px rgba(0,82,255,.12)}
+.roadmap-glow{background:radial-gradient(circle at center,rgba(0,82,255,.1) 0%,transparent 70%)}
+@keyframes ping{75%,100%{transform:scale(2);opacity:0}}
+.animate-ping{animation:ping 1s cubic-bezier(0,0,.2,1) infinite}
+.lang-btn{transition:all .15s}.lang-btn.active{background:#0052FF;color:#fff}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:2px}
+.prose-title{letter-spacing:-.025em}
+.flow-arrow{fill:none;stroke:#0052FF;stroke-width:2;marker-end:url(#arrowhead)}
+a:focus-visible,button:focus-visible{outline:2px solid #0052FF;outline-offset:3px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.animate-ping{animation:none}*{transition-duration:0ms!important}}
+</style>
+</head>
+<body class="antialiased selection:bg-primary/10">
+
+<!-- NAV -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
+  <div class="flex items-center gap-2">
+    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"><span class="material-symbols-outlined text-white text-lg" style="font-variation-settings:'FILL' 1" aria-hidden="true">shield</span></div>
+    <span class="font-bold text-xl tracking-tight">RWA <span class="text-primary">Sentinel</span></span>
+  </div>
+  <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600" id="nav-links"></div>
+  <div class="flex items-center gap-4">
+    <div class="flex bg-slate-100 p-1 rounded-full" role="group" aria-label="Language selector">
+      <button onclick="setLang('en')" id="btn-en" aria-pressed="true" class="lang-btn px-3 py-1 rounded-full text-[10px] font-mono font-bold active shadow-sm">EN</button>
+      <button onclick="setLang('ko')" id="btn-ko" aria-pressed="false" class="lang-btn px-3 py-1 rounded-full text-[10px] font-mono font-bold text-slate-400">KR</button>
+    </div>
+    <a href="#batches" class="hidden sm:inline-flex bg-primary text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-blue-700 transition-all" data-i18n="nav_cta">View Submission</a>
+    <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" aria-label="Toggle navigation menu" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors"><span class="material-symbols-outlined text-slate-600" aria-hidden="true">menu</span></button>
+  </div>
+</div>
+<!-- Mobile menu -->
+<div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 px-6 py-4">
+  <div class="flex flex-col gap-3 text-sm font-medium text-slate-600" id="mobile-nav-links"></div>
+</div>
+</nav>
+
+<main>
+<!-- HERO -->
+<section class="relative pt-40 pb-32 overflow-hidden">
+<div class="absolute inset-0 dot-grid opacity-40"></div>
+<div class="absolute inset-0 gradient-mesh"></div>
+<div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
+  <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary text-xs font-mono font-bold uppercase tracking-wider mb-8">
+    <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span>
+    <span data-i18n="hero_badge">Base Batches 003 · Student Track · MVP Ships 2026-04-27</span>
+  </div>
+  <h1 class="font-serif text-5xl md:text-7xl font-semibold leading-tight mb-6 prose-title" data-i18n="hero_title">The Public Watchdog for<br><span class="text-primary italic">Tokenized RWAs</span> on Base</h1>
+  <p class="max-w-2xl mx-auto text-lg text-slate-500 mb-10 leading-relaxed" data-i18n="hero_desc">RWA Sentinel cross-checks multiple oracle feeds (Chainlink, Pyth, RedStone) for 5 core Base assets and writes detected deviations to an append-only on-chain log. Free, open-source, retail-facing — Base-exclusive.</p>
+  <div class="flex flex-wrap justify-center gap-4">
+    <a href="#diff" class="bg-primary text-white px-8 py-4 rounded-full font-semibold flex items-center gap-2 hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20" data-i18n="hero_cta1">Explore Architecture <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span></a>
+    <a href="https://github.com/Oclix-Labs/The-Sentinel" target="_blank" rel="noopener" class="bg-white border border-slate-200 text-slate-700 px-8 py-4 rounded-full font-semibold hover:bg-slate-50 transition-all" data-i18n="hero_cta2">View on GitHub</a>
+  </div>
+
+  <!-- Stats bar — problem-framed -->
+  <div class="mt-20 max-w-4xl mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 bg-white rounded-2xl overflow-hidden blue-glow" style="border:1px solid var(--border)">
+      <div class="p-6 text-center border-r border-slate-100"><div class="text-3xl font-serif font-bold text-red-600">9</div><div class="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider mt-1" data-i18n="stat1">Oracle Failures / 18mo</div><div class="text-[9px] text-slate-400 mt-0.5">Base-adjacent DeFi</div></div>
+      <div class="p-6 text-center border-r border-slate-100"><div class="text-3xl font-serif font-bold text-red-600">≥$50M</div><div class="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider mt-1" data-i18n="stat2">Lost to Oracle Issues</div><div class="text-[9px] text-slate-400 mt-0.5">Latest: Moonwell cbETH Feb 2026</div></div>
+      <div class="p-6 text-center border-r border-slate-100"><div class="text-3xl font-serif font-bold text-primary">5</div><div class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mt-1" data-i18n="stat3">Assets at Phase 1 Launch</div></div>
+      <div class="p-6 text-center"><div class="text-3xl font-serif font-bold text-primary">0</div><div class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mt-1" data-i18n="stat4">Base-Native Public-Good RWA Watchdogs</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- S0: WHAT IS RWA -->
+<section id="rwa101" class="py-24">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="grid md:grid-cols-2 gap-16 items-center reveal">
+    <div>
+      <div class="flex items-center gap-2 text-primary text-[11px] font-mono font-bold uppercase tracking-wider mb-4"><span class="material-symbols-outlined text-base">school</span> <span data-i18n="s0_label">00 — What is RWA?</span></div>
+      <h2 class="font-serif text-4xl font-semibold mb-6 prose-title" data-i18n="s0_title">Redefining Asset <span class="text-primary italic">Transparency</span></h2>
+      <p class="text-slate-500 mb-6 leading-relaxed" data-i18n="s0_desc1">Real-World Assets (RWAs) are the next frontier of blockchain utility — US Treasuries, real estate, and private credit brought on-chain for 24/7 liquidity and global access. The market is at <span class="font-semibold">~$29.7B</span> as of April 2026 <span class="text-xs text-slate-400">(Source: RWA.xyz, 16 Apr 2026, Distributed Asset Value)</span>, with tokenized US Treasuries alone at ~$13.5B (~50× growth since early 2024).</p>
+      <p class="text-slate-500 mb-8 leading-relaxed" data-i18n="s0_desc2">But every RWA and DeFi price on Base depends on oracles — and oracles fail. RWA Sentinel is the neutral, independent watchdog that cross-checks them so retail users don't have to trust a single feed.</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100"><div class="text-3xl font-bold text-primary mb-1">~$29.7B</div><div class="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider" data-i18n="qs1">RWA Market On-Chain</div><div class="text-[9px] text-slate-400 mt-1">Source: RWA.xyz, 16 Apr 2026</div></div>
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100"><div class="text-3xl font-bold text-primary mb-1">~$13.5B</div><div class="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider" data-i18n="qs2">Tokenized US Treasuries (~50× since 2024)</div><div class="text-[9px] text-slate-400 mt-1">Source: RWA.xyz, Apr 2026</div></div>
+      </div>
+    </div>
+    <!-- Right: dark pillar card -->
+    <div class="rounded-3xl p-8 text-white relative overflow-hidden" style="background:var(--dark)">
+      <div class="absolute top-0 right-0 w-48 h-48 rounded-full" style="background:rgba(0,82,255,.15);filter:blur(80px)"></div>
+      <div class="relative z-10">
+        <h3 class="text-xl font-bold mb-6" data-i18n="pillar_t">Verification Pillars</h3>
+        <div class="space-y-6">
+          <div class="flex gap-4"><span class="material-symbols-outlined text-primary">cell_tower</span><div><h4 class="font-bold" data-i18n="pil1t">Multi-Oracle Cross-Check</h4><p class="text-sm text-slate-400" data-i18n="pil1d">Chainlink + Pyth + RedStone compared every minute. A ±2% deviation triggers an alert in the same block the deviation occurs — exactly the mechanism that would have caught Moonwell cbETH.</p></div></div>
+          <div class="flex gap-4"><span class="material-symbols-outlined text-primary">gavel</span><div><h4 class="font-bold" data-i18n="pil2t">On-Chain Attestation Tracking</h4><p class="text-sm text-slate-400" data-i18n="pil2d">Chainlink Proof-of-Reserve feeds on Base (USDO at Phase 1). Monitor <code>AnswerUpdated</code> events and flag staleness or reserve-vs-supply deltas.</p></div></div>
+          <div class="flex gap-4"><span class="material-symbols-outlined text-primary">verified</span><div><h4 class="font-bold" data-i18n="pil3t">Append-Only On-Chain Alert Log</h4><p class="text-sm text-slate-400" data-i18n="pil3d">Every detected deviation is written to <code>AlertRegistry</code> on Base Mainnet. Anyone can verify historical detection integrity without trusting our backend.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- S1: DIFFERENTIATION TABLE -->
+<section id="diff" class="py-24 bg-surface-alt border-y border-slate-100">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="text-center mb-16 reveal">
+    <div class="inline-flex items-center gap-2 text-primary text-[11px] font-mono font-bold uppercase tracking-wider mb-3"><span class="material-symbols-outlined text-base">difference</span> <span data-i18n="s1_label">01 — Differentiation</span></div>
+    <h2 class="font-serif text-4xl font-semibold mb-4 prose-title" data-i18n="s1_title">Why <span class="text-primary italic">RWA Sentinel</span>?</h2>
+    <p class="text-slate-500 max-w-xl mx-auto" data-i18n="s1_desc">Every existing monitor serves protocols or institutions — Chaos Labs (7-figure SLAs), Hypernative (enterprise-only), Forta (paid FORT-token), RWA.xyz ($500/seat/mo, no alerts). Retail users have nothing.</p>
+  </div>
+  <div class="overflow-x-auto reveal">
+    <table class="w-full bg-white rounded-2xl overflow-hidden min-w-[640px]" style="border:1px solid var(--border)">
+      <thead class="bg-slate-50"><tr>
+        <th class="px-8 py-5 text-left text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider" data-i18n="diff_th">Features</th>
+        <th class="px-6 py-5 text-center text-sm font-bold text-primary bg-primary/5" data-i18n="diff_th_sentinel">RWA Sentinel</th>
+        <th class="px-6 py-5 text-center text-sm font-bold text-slate-500">RWA.xyz</th>
+        <th class="px-6 py-5 text-center text-sm font-bold text-slate-500">Chainlink PoR</th>
+        <th class="px-6 py-5 text-center text-sm font-bold text-slate-500">DeFiLlama</th>
+      </tr></thead>
+      <tbody class="divide-y divide-slate-100" id="diff-tbody"></tbody>
+    </table>
+  </div>
+  <p class="mt-3 text-xs text-slate-400 font-mono text-center" data-i18n="diff_note">* Phase 1 (2026 Q2) ships with Chainlink + Pyth + RedStone cross-check for 5 Base assets + AlertRegistry on Base Mainnet.</p>
+  <div class="mt-6 p-6 rounded-2xl bg-gradient-to-r from-primary-light to-blue-50 border border-primary/15 reveal">
+    <div class="flex items-start gap-4"><span class="material-symbols-outlined text-primary text-2xl mt-0.5" style="font-variation-settings:'FILL' 1">lightbulb</span>
+    <div><h4 class="font-bold text-sm mb-1" data-i18n="co_t">Core Positioning</h4><p class="text-sm text-slate-600 leading-relaxed" data-i18n="co_d">Chainlink PoR is a tool for <strong>issuers to self-attest</strong>. RWA.xyz <strong>displays data</strong>. Commercial stacks (Chaos, Hypernative, Forta) sell to <strong>protocols and institutions</strong>. RWA Sentinel is the <strong>free, Base-native, retail-facing watchdog</strong> with provable on-chain detection history.</p></div></div>
+  </div>
+
+  <!-- Related Tools honesty callout -->
+  <div class="mt-6 p-6 rounded-2xl bg-white border border-slate-200 reveal">
+    <div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-slate-500">handshake</span><h4 class="font-bold text-sm" data-i18n="rel_t">Related Tools & The Specific Gap We Fill</h4></div>
+    <p class="text-xs text-slate-500 mb-4" data-i18n="rel_desc">Commercial monitoring stacks already exist — we're not claiming a greenfield. Here's the honest landscape and where we structurally differ.</p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm min-w-[640px]" id="rel-table"></table>
+    </div>
+    <p class="mt-4 text-xs text-slate-600 leading-relaxed" data-i18n="rel_gap"><strong>Our real gap:</strong> Base-exclusive, retail-facing, public-good monitoring — free to read forever, MIT-licensed, with an on-chain alert log anyone can verify. Enterprise competitors cannot match "free + public-good + MIT" without cannibalizing their enterprise ACVs.</p>
+  </div>
+</div>
+</section>
+
+<!-- S2: PROBLEM & SOLUTION -->
+<section id="problem" class="py-24">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="text-center mb-12 reveal">
+    <div class="inline-flex items-center gap-2 text-primary text-[11px] font-mono font-bold uppercase tracking-wider mb-3"><span class="material-symbols-outlined text-base">help_outline</span> <span data-i18n="s2_label">02 — Problem & Solution</span></div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-8 reveal">
+    <div class="p-10 rounded-3xl bg-red-50/50 border border-red-100">
+      <span class="material-symbols-outlined text-red-500 text-4xl mb-4">warning</span>
+      <h3 class="text-2xl font-bold mb-4" data-i18n="prob_t">A Pattern, Not an Incident</h3>
+      <p class="text-slate-600 leading-relaxed" data-i18n="prob_d">Over the past 18 months, at least <strong>nine oracle-composition or hardcoded-oracle failures</strong> across Base-adjacent DeFi have caused <strong>≥$50M in losses</strong> — roughly one incident every two months. The most recent is the Moonwell cbETH incident of February 2026 (<strong>$2.68M impacting ~181 borrowers</strong>) caused by an OEV wrapper misconfiguration. Every single one of those incidents would have been caught by a multi-oracle ±2% cross-check in the same block it occurred. This is a systemic failure mode, not a one-off.</p>
+    </div>
+    <div class="p-10 rounded-3xl bg-primary/5 border border-primary/10">
+      <span class="material-symbols-outlined text-primary text-4xl mb-4">bolt</span>
+      <h3 class="text-2xl font-bold mb-4" data-i18n="sol_t">The Sentinel Solution</h3>
+      <p class="text-slate-600 leading-relaxed" data-i18n="sol_d">An always-on cross-check of Chainlink, Pyth, and RedStone for 5 core Base assets on a 1-minute cadence. When deviation exceeds ±2%, the event is queued, fanned out to Telegram/webhook subscribers, and written to <code>AlertRegistry</code> on Base Mainnet as an append-only record. Every line of code is MIT-licensed; every alert is publicly verifiable on-chain.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- S3: ARCHITECTURE -->
+<section id="solution" class="py-24 bg-surface-alt border-y border-slate-100">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="text-center mb-16 reveal">
+    <div class="inline-flex items-center gap-2 text-primary text-[11px] font-mono font-bold uppercase tracking-wider mb-3"><span class="material-symbols-outlined text-base">architecture</span> <span data-i18n="s3_label">03 — Architecture</span></div>
+    <h2 class="font-serif text-4xl font-semibold mb-4 prose-title" data-i18n="s3_title">Edge Workers + <span class="text-primary italic">On-Chain Registry</span></h2>
+    <p class="text-slate-500 max-w-xl mx-auto" data-i18n="s3_desc">Cross-check runs on Cloudflare Workers (~$55/mo at scale vs ~$8.7K/mo fully on-chain). Alerts are delivered off-chain for speed and anchored on-chain for auditability.</p>
+  </div>
+  <!-- 4-step flow cards -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8 reveal">
+    <div class="card p-6 text-center group cursor-pointer"><div class="w-14 h-14 rounded-2xl bg-primary/5 border border-primary/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary group-hover:border-primary transition-colors"><span class="material-symbols-outlined text-2xl text-primary group-hover:text-white transition-colors">schedule</span></div><div class="font-mono text-[9px] text-primary font-bold mb-1">STEP 01</div><h4 class="font-bold text-sm" data-i18n="a1t">Poller Worker (Cron 1 min)</h4></div>
+    <div class="card p-6 text-center group cursor-pointer"><div class="w-14 h-14 rounded-2xl bg-primary/5 border border-primary/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary group-hover:border-primary transition-colors"><span class="material-symbols-outlined text-2xl text-primary group-hover:text-white transition-colors">compare_arrows</span></div><div class="font-mono text-[9px] text-primary font-bold mb-1">STEP 02</div><h4 class="font-bold text-sm" data-i18n="a2t">Cross-Check (±2%)</h4></div>
+    <div class="card p-6 text-center group cursor-pointer"><div class="w-14 h-14 rounded-2xl bg-primary/5 border border-primary/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary group-hover:border-primary transition-colors"><span class="material-symbols-outlined text-2xl text-primary group-hover:text-white transition-colors">notifications_active</span></div><div class="font-mono text-[9px] text-primary font-bold mb-1">STEP 03</div><h4 class="font-bold text-sm" data-i18n="a3t">AlertWriter (Queue)</h4></div>
+    <div class="card p-6 text-center group cursor-pointer"><div class="w-14 h-14 rounded-2xl bg-primary/5 border border-primary/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary group-hover:border-primary transition-colors"><span class="material-symbols-outlined text-2xl text-primary group-hover:text-white transition-colors">history_edu</span></div><div class="font-mono text-[9px] text-primary font-bold mb-1">STEP 04</div><h4 class="font-bold text-sm" data-i18n="a4t">AlertRegistry on Base</h4></div>
+  </div>
+
+  <!-- Architecture Flow Diagram (SVG) -->
+  <div class="w-full max-w-4xl mx-auto mb-12 reveal">
+    <svg viewBox="0 0 840 220" class="w-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0052FF"/></marker>
+        <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#0052FF;stop-opacity:0.08"/><stop offset="100%" style="stop-color:#0052FF;stop-opacity:0.02"/></linearGradient>
+      </defs>
+      <rect x="0" y="0" width="840" height="220" rx="16" fill="url(#flowGrad)" stroke="#E2E8F0" stroke-width="1"/>
+      <!-- Oracle Sources -->
+      <rect x="20" y="30" width="150" height="160" rx="12" fill="white" stroke="#E2E8F0"/>
+      <text x="95" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#0052FF">ORACLE SOURCES</text>
+      <rect x="35" y="68" width="120" height="28" rx="6" fill="#F0F4FF" stroke="#0052FF" stroke-width="0.5"/><text x="95" y="86" text-anchor="middle" font-family="Inter" font-size="11" fill="#0F172A">Chainlink</text>
+      <rect x="35" y="104" width="120" height="28" rx="6" fill="#F0F4FF" stroke="#0052FF" stroke-width="0.5"/><text x="95" y="122" text-anchor="middle" font-family="Inter" font-size="11" fill="#0F172A">Pyth Network</text>
+      <rect x="35" y="140" width="120" height="28" rx="6" fill="#F0F4FF" stroke="#0052FF" stroke-width="0.5"/><text x="95" y="158" text-anchor="middle" font-family="Inter" font-size="11" fill="#0F172A">RedStone</text>
+      <!-- Arrow 1 -->
+      <line x1="175" y1="110" x2="220" y2="110" class="flow-arrow"/>
+      <!-- Poller + Cross-Check Engine -->
+      <rect x="225" y="50" width="150" height="120" rx="12" fill="#0052FF" stroke="none"/>
+      <text x="300" y="80" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="rgba(255,255,255,0.7)">CF WORKERS</text>
+      <text x="300" y="105" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="white">Poller + Cross-Check</text>
+      <text x="300" y="123" text-anchor="middle" font-family="Inter" font-size="11" fill="rgba(255,255,255,0.8)">±2% deviation</text>
+      <text x="300" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="rgba(255,255,255,0.5)">Cron 1 min · KV cache</text>
+      <!-- Arrow 2 -->
+      <line x1="380" y1="110" x2="425" y2="110" class="flow-arrow"/>
+      <!-- AlertWriter -->
+      <rect x="430" y="50" width="150" height="120" rx="12" fill="white" stroke="#0052FF" stroke-width="1.5"/>
+      <text x="505" y="80" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#0052FF">QUEUE CONSUMER</text>
+      <text x="505" y="105" text-anchor="middle" font-family="Inter" font-size="12" font-weight="600" fill="#0F172A">AlertWriter</text>
+      <text x="505" y="125" text-anchor="middle" font-family="Inter" font-size="10" font-weight="600" fill="#64748B">Fan-out: D1 · Webhook</text>
+      <text x="505" y="155" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#94A3B8">Telegram · AlertRegistry</text>
+      <!-- Arrow 3 -->
+      <line x1="585" y1="110" x2="630" y2="110" class="flow-arrow"/>
+      <!-- Output: Base Mainnet + Public API -->
+      <rect x="635" y="30" width="185" height="160" rx="12" fill="white" stroke="#E2E8F0"/>
+      <text x="727" y="55" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" font-weight="600" fill="#0052FF">OUTPUT</text>
+      <rect x="650" y="68" width="155" height="28" rx="6" fill="#F0F4FF" stroke="#0052FF" stroke-width="0.5"/><text x="727" y="86" text-anchor="middle" font-family="Inter" font-size="11" fill="#0F172A">AlertRegistry (Base)</text>
+      <rect x="650" y="104" width="155" height="28" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="0.5"/><text x="727" y="122" text-anchor="middle" font-family="Inter" font-size="11" fill="#92400E">Telegram / Webhook</text>
+      <rect x="650" y="140" width="155" height="28" rx="6" fill="#F0FDF4" stroke="#22C55E" stroke-width="0.5"/><text x="727" y="158" text-anchor="middle" font-family="Inter" font-size="11" fill="#166534">Public API (Hono)</text>
+    </svg>
+  </div>
+
+  <!-- Module grid -->
+  <div class="grid md:grid-cols-2 gap-4" id="modules-grid"></div>
+
+  <!-- Coverage Feasibility -->
+  <div class="mt-12 reveal">
+    <div class="p-8 rounded-2xl bg-white border border-slate-200">
+      <div class="flex items-center gap-2 mb-6"><span class="material-symbols-outlined text-primary">science</span><h4 class="font-bold" data-i18n="feas_t">Phase 1 Coverage — Oracle Overlap on Base</h4></div>
+      <p class="text-sm text-slate-500 mb-6" data-i18n="feas_desc">Multi-oracle cross-check requires at least 2 independent feeds for the same asset. Phase 1 is locked to 5 assets where Base oracle overlap has been verified in <code>.research/oracle-inventory-base.md</code>:</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[600px]" id="feas-table"></table>
+      </div>
+      <div class="mt-6 space-y-4">
+        <div class="p-4 rounded-xl bg-amber-50 border border-amber-100">
+          <h5 class="font-bold text-sm text-amber-800 mb-1" data-i18n="feas_limit_t">Known Limitations & Mitigations</h5>
+          <ul class="text-xs text-amber-700 space-y-1.5" data-i18n="feas_limit_d">
+            <li>- <strong>cbETH is dual-sourced, not triple:</strong> only Chainlink (OEV-wrapped post-Feb 2026) and Pyth sponsored publish cbETH on Base. RedStone feed is not currently live for cbETH. Dual-source still catches the Moonwell-style misconfiguration in the same block.</li>
+            <li>- <strong>USDO uses Chainlink PoR, not price deviation:</strong> attestation tracking monitors <code>AnswerUpdated</code> staleness and reserve-vs-supply delta, not cross-oracle price agreement. Pyth/RedStone do not publish USDO attestations.</li>
+            <li>- <strong>Alert latency vs feed heartbeats:</strong> Our &lt;60s target is the alert <em>dispatch</em> latency once a qualifying event is observed. Chainlink heartbeats (24h for PoR, event-driven for prices) determine how quickly the underlying feed updates.</li>
+            <li>- <strong>Centralized Phase 1:</strong> A single Oclix Labs-operated poller runs Phase 1. Phase 2 introduces 2–3 independent federated operators; Phase 3 opens permissionless staking.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- S4: ASSETS -->
+<section id="protocols" class="py-24">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="text-center mb-12 reveal">
+    <div class="inline-flex items-center gap-2 text-primary text-[11px] font-mono font-bold uppercase tracking-wider mb-3"><span class="material-symbols-outlined text-base">hub</span> <span data-i18n="s4_label">04 — Phase 1 Assets</span></div>
+    <h2 class="font-serif text-4xl font-semibold prose-title" data-i18n="s4_title">Five Core Assets <span class="text-primary italic">on Base</span></h2>
+  </div>
+  <div class="grid md:grid-cols-3 gap-6" id="proto-cards"></div>
+</div>
+</section>
+
+<!-- S5: BASE BATCHES ALIGNMENT -->
+<section id="batches" class="py-24 bg-surface-alt border-y border-slate-100">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="reveal">
+    <div class="flex items-center gap-2 text-primary text-[11px] font-mono font-bold uppercase tracking-wider mb-3"><span class="material-symbols-outlined text-base">volunteer_activism</span> <span data-i18n="s5_label">05 — Base Batches Fit</span></div>
+    <h2 class="font-serif text-4xl font-semibold mb-10 prose-title" data-i18n="s5_title"><span class="text-primary italic">Base Batches 003</span> Alignment</h2>
+  </div>
+  <div class="grid lg:grid-cols-2 gap-6" id="grants-grid"></div>
+</div>
+</section>
+
+<!-- S6: BUDGET & TEAM -->
+<section id="budget" class="py-24">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="grid lg:grid-cols-2 gap-16 reveal">
+    <div>
+      <div class="flex items-center gap-2 text-primary text-[11px] font-mono font-bold uppercase tracking-wider mb-3"><span class="material-symbols-outlined text-base">account_balance</span> <span data-i18n="s6_label">06 — Budget & Team</span></div>
+      <h2 class="font-serif text-4xl font-semibold mb-8 prose-title" data-i18n="s6_title">Transparency <span class="text-primary italic">Budget</span></h2>
+      <div class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest mb-4" data-i18n="b_phase">Phase 1 Allocation — Base Batches 003 ($50K)</div>
+      <div class="bg-white rounded-2xl overflow-hidden" style="border:1px solid var(--border)">
+        <table class="w-full text-sm"><thead><tr class="bg-slate-50">
+          <th class="px-5 py-4 text-left font-bold text-slate-500" data-i18n="b_th1">Item</th>
+          <th class="px-4 py-4 text-right font-bold text-slate-500" data-i18n="b_th2">Allocation</th>
+          <th class="px-5 py-4 text-left font-bold text-slate-400 text-xs" data-i18n="b_th3">Basis</th>
+        </tr></thead>
+        <tbody class="divide-y divide-slate-100" id="budget-tbody"></tbody>
+        <tfoot><tr class="border-t-2 border-slate-200"><td class="px-5 py-4 font-bold" data-i18n="b_total">Total Request</td><td class="px-4 py-4 text-right font-mono font-bold text-primary text-lg">$50,000</td><td></td></tr></tfoot></table>
+      </div>
+    </div>
+    <div>
+      <div class="flex items-center gap-4 mb-8">
+        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center"><span class="material-symbols-outlined text-primary">groups</span></div>
+        <div><div class="font-bold" data-i18n="tt">Oclix Labs — Core Team</div><div class="text-xs text-slate-500" data-i18n="t_sub">4 undergrads · Yonsei BAY Blockchain Society</div></div>
+      </div>
+      <div class="space-y-4" id="team-list"></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- S7: KPIs / SUCCESS METRICS -->
+<section id="kpis" class="py-24 bg-surface-alt border-y border-slate-100">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="text-center mb-16 reveal">
+    <div class="inline-flex items-center gap-2 text-primary text-[11px] font-mono font-bold uppercase tracking-wider mb-3"><span class="material-symbols-outlined text-base">target</span> <span data-i18n="s7a_label">07 — Success Metrics</span></div>
+    <h2 class="font-serif text-4xl font-semibold mb-4 prose-title" data-i18n="s7a_title">Phase 1 <span class="text-primary italic">Success Criteria</span></h2>
+    <p class="text-slate-500 max-w-xl mx-auto" data-i18n="s7a_desc">Measurable outcomes by end of Phase 1 (2026 Q2). Full list in <code>docs/ROADMAP.md</code>.</p>
+  </div>
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6" id="kpi-grid"></div>
+  <div class="mt-8 p-6 rounded-2xl bg-white border border-slate-200 reveal">
+    <h4 class="font-bold text-sm mb-3" data-i18n="sustain_t">Sustainability Plan</h4>
+    <p class="text-sm text-slate-600 leading-relaxed" data-i18n="sustain_d">Post-Phase 1 plan in order of likelihood: <strong>(1) Phase 2 pre-seed ($1–2M)</strong> from crypto-native funds after MVP ships and validates retail demand — federates 2–3 operators and launches Premium tier (~$200–500/mo for webhook + historical + custom thresholds). <strong>(2) Follow-on Base ecosystem grants</strong> and Coinbase Ventures conversations. <strong>(3) Phase 3 seed/Series A ($5–10M) + SENTINEL token launch</strong> — permissionless operator staking, DAO governance, subscription payment in SENTINEL. Public free tier is guaranteed across all phases. Full sustainability / zero-revenue contingency plan in <code>docs/ROADMAP.md</code>.</p>
+  </div>
+</div>
+</section>
+
+<!-- S8: ROADMAP -->
+<section id="roadmap" class="py-24 text-white relative overflow-hidden" style="background:var(--dark)">
+<div class="absolute inset-0 roadmap-glow"></div>
+<div class="max-w-7xl mx-auto px-6 relative z-10">
+  <div class="text-center mb-16 reveal">
+    <div class="inline-flex items-center gap-2 text-primary text-[11px] font-mono font-bold uppercase tracking-wider mb-3"><span class="material-symbols-outlined text-base">timeline</span> <span data-i18n="s8_label">08 — Roadmap</span></div>
+    <h2 class="font-serif text-4xl font-semibold prose-title" data-i18n="s8_title">Progressive <span class="text-primary italic">Decentralization</span></h2>
+    <p class="text-slate-400 mt-2" data-i18n="s8_sub">Centralized MVP → Federated operators → Permissionless network + SENTINEL token.</p>
+  </div>
+  <div class="relative">
+    <div class="hidden md:block absolute left-1/2 -translate-x-1/2 h-full w-px bg-slate-800"></div>
+    <div class="space-y-16" id="roadmap-items"></div>
+  </div>
+</div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="py-16 border-t border-slate-100">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="grid md:grid-cols-3 gap-12 mb-16">
+    <div>
+      <div class="flex items-center gap-2 mb-6"><div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"><span class="material-symbols-outlined text-white text-lg" style="font-variation-settings:'FILL' 1" aria-hidden="true">shield</span></div><span class="font-bold text-lg">RWA <span class="text-primary">Sentinel</span></span></div>
+      <p class="text-sm text-slate-500 mb-6" data-i18n="footer_desc">Public-good watchdog for tokenized RWAs on Base. By Oclix Labs.</p>
+      <a href="https://github.com/Oclix-Labs/The-Sentinel" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"><span class="material-symbols-outlined text-base" aria-hidden="true">code</span> GitHub Repository</a>
+    </div>
+    <div><h4 class="font-bold text-sm uppercase tracking-wider mb-6" data-i18n="f_infra">Infrastructure</h4><ul class="space-y-3 text-sm text-slate-500"><li>Poller Worker</li><li>AlertWriter Worker</li><li>Public API (Hono)</li><li>AlertRegistry.sol</li></ul></div>
+    <div><h4 class="font-bold text-sm uppercase tracking-wider mb-6" data-i18n="f_eco">Phase 1 Assets</h4><ul class="space-y-3 text-sm text-slate-500"><li>BTC / USD</li><li>ETH / USD</li><li>USDC / USD</li><li>cbETH / USD</li><li>USDO (attestation)</li></ul></div>
+  </div>
+  <div class="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 font-medium">
+    <p>&copy; 2026 Oclix Labs. RWA Sentinel is a public good for Base.</p>
+    <div class="flex gap-8"><a href="https://github.com/Oclix-Labs/The-Sentinel/blob/main/LICENSE" target="_blank" rel="noopener" class="hover:text-slate-600">MIT License</a></div>
+  </div>
+</div>
+</footer>
+
+<script>
+// i18n Data — RWA Sentinel landing (Base Batches 003)
+const T={en:{
+nav:['Overview','Architecture','Assets','Batches','KPIs','Roadmap'],nav_cta:'View Submission',
+hero_badge:'Base Batches 003 · Student Track · MVP Ships 2026-04-27',hero_title:'The Public Watchdog for<br><span class="text-primary italic">Tokenized RWAs</span> on Base',hero_desc:'RWA Sentinel cross-checks multiple oracle feeds (Chainlink, Pyth, RedStone) for 5 core Base assets and writes detected deviations to an append-only on-chain log. Free, open-source, retail-facing — Base-exclusive.',hero_cta1:'Explore Architecture <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>',hero_cta2:'View on GitHub',
+stat1:'Oracle Failures / 18mo',stat2:'Lost to Oracle Issues',stat3:'Assets at Phase 1 Launch',stat4:'Base-Native Public-Good RWA Watchdogs',
+s0_label:'00 — What is RWA?',s0_title:'Redefining Asset <span class="text-primary italic">Transparency</span>',s0_desc1:'Real-World Assets (RWAs) are the next frontier of blockchain utility — US Treasuries, real estate, and private credit brought on-chain for 24/7 liquidity and global access. The market is at <span class="font-semibold">~$29.7B</span> as of April 2026 <span class="text-xs text-slate-400">(Source: <a href="https://www.rwa.xyz" target="_blank" class="underline">RWA.xyz</a>, 16 Apr 2026, Distributed Asset Value)</span>, with tokenized US Treasuries alone at ~$13.5B (~50× growth since early 2024).',s0_desc2:'But every RWA and DeFi price on Base depends on oracles — and oracles fail. RWA Sentinel is the neutral, independent watchdog that cross-checks them so retail users don\'t have to trust a single feed.',qs1:'RWA Market On-Chain',qs2:'Tokenized US Treasuries (~50× since 2024)',
+pillar_t:'Verification Pillars',pil1t:'Multi-Oracle Cross-Check',pil1d:'Chainlink + Pyth + RedStone compared every minute. A ±2% deviation triggers an alert in the same block the deviation occurs — exactly the mechanism that would have caught Moonwell cbETH.',pil2t:'On-Chain Attestation Tracking',pil2d:'Chainlink Proof-of-Reserve feeds on Base (USDO at Phase 1). Monitor <code>AnswerUpdated</code> events and flag staleness or reserve-vs-supply deltas.',pil3t:'Append-Only On-Chain Alert Log',pil3d:'Every detected deviation is written to <code>AlertRegistry</code> on Base Mainnet. Anyone can verify historical detection integrity without trusting our backend.',
+s1_label:'01 — Differentiation',s1_title:'Why <span class="text-primary italic">RWA Sentinel</span>?',s1_desc:'Every existing monitor serves protocols or institutions — Chaos Labs (7-figure SLAs), Hypernative (enterprise-only), Forta (paid FORT-token), RWA.xyz ($500/seat/mo, no alerts). Retail users have nothing.',diff_th:'Features',diff_th_sentinel:'RWA Sentinel',diff_note:'* Phase 1 (2026 Q2) ships with Chainlink + Pyth + RedStone cross-check for 5 Base assets + AlertRegistry on Base Mainnet.',
+diff_f:['Multi-Oracle ±2% Cross-Check','On-Chain Attestation Tracking','Real-time Anomaly Alerts','Base-Exclusive + Base-Native','Protocol Independent (3rd party)','Market Analytics / Rollups','Free Public API (MIT)','On-Chain Alert Log'],
+co_t:'Core Positioning',co_d:'Chainlink PoR is a tool for <strong>issuers to self-attest</strong>. RWA.xyz <strong>displays data</strong>. Commercial stacks (Chaos, Hypernative, Forta) sell to <strong>protocols and institutions</strong>. RWA Sentinel is the <strong>free, Base-native, retail-facing watchdog</strong> with provable on-chain detection history.',
+rel_t:'Related Tools & The Specific Gap We Fill',rel_desc:"Commercial monitoring stacks already exist — we're not claiming a greenfield. Here's the honest landscape and where we structurally differ.",rel_gap:'<strong>Our real gap:</strong> Base-exclusive, retail-facing, public-good monitoring — free to read forever, MIT-licensed, with an on-chain alert log anyone can verify. Enterprise competitors cannot match "free + public-good + MIT" without cannibalizing their enterprise ACVs.',
+rel_th:['Tool','What they cover','How we differ'],
+rel_rows:[
+['Chaos Labs / Gauntlet','7-figure risk engagements with Aave, Morpho, etc. — oracle & parameter management under commercial SLAs.','Free public-good layer. No protocol contract required, retail-readable dashboard, MIT-licensed.'],
+['Hypernative / Forta','Enterprise-only (Hypernative) or paid FORT-token subscription (Forta). Chain-agnostic threat detection for SOCs / institutions.','Base-exclusive, retail-facing, free. On-chain alert log provides provable detection history.'],
+['Chainlink PoR','Self-attestation tool for issuers. Publishes reserve data; does not trigger alerts.','Independent 3rd-party monitor. Triggers alerts on staleness + reserve-vs-supply delta; anchors to AlertRegistry on Base.'],
+['RWA.xyz / DeFiLlama / Dune','Market-level dashboards ($500/seat/mo for RWA.xyz Pro), TVL rollups. No alert layer.','Detect anomalies and stale attestations in real-time and push alerts (not just display).']],
+s2_label:'02 — Problem & Solution',prob_t:'A Pattern, Not an Incident',prob_d:'Over the past 18 months, at least <strong>nine oracle-composition or hardcoded-oracle failures</strong> across Base-adjacent DeFi have caused <strong>≥$50M in losses</strong> — roughly one incident every two months. The most recent is the Moonwell cbETH incident of February 2026 (<strong>$2.68M impacting ~181 borrowers</strong>) caused by an OEV wrapper misconfiguration. Every single one of those incidents would have been caught by a multi-oracle ±2% cross-check in the same block it occurred. This is a systemic failure mode, not a one-off.',
+sol_t:'The Sentinel Solution',sol_d:'An always-on cross-check of Chainlink, Pyth, and RedStone for 5 core Base assets on a 1-minute cadence. When deviation exceeds ±2%, the event is queued, fanned out to Telegram/webhook subscribers, and written to <code>AlertRegistry</code> on Base Mainnet as an append-only record. Every line of code is MIT-licensed; every alert is publicly verifiable on-chain.',
+s3_label:'03 — Architecture',s3_title:'Edge Workers + <span class="text-primary italic">On-Chain Registry</span>',s3_desc:'Cross-check runs on Cloudflare Workers (~$55/mo at scale vs ~$8.7K/mo fully on-chain). Alerts are delivered off-chain for speed and anchored on-chain for auditability.',
+a1t:'Poller Worker (Cron 1 min)',a2t:'Cross-Check (±2%)',a3t:'AlertWriter (Queue)',a4t:'AlertRegistry on Base',
+feas_t:'Phase 1 Coverage — Oracle Overlap on Base',
+feas_desc:'Multi-oracle cross-check requires at least 2 independent feeds for the same asset. Phase 1 is locked to 5 assets where Base oracle overlap has been verified in <code>.research/oracle-inventory-base.md</code>:',
+feas_limit_t:'Known Limitations & Mitigations',
+feas_limit_d:'<li>- <strong>cbETH is dual-sourced, not triple:</strong> only Chainlink (OEV-wrapped post-Feb 2026) and Pyth sponsored publish cbETH on Base. RedStone feed is not currently live for cbETH. Dual-source still catches the Moonwell-style misconfiguration in the same block.</li><li>- <strong>USDO uses Chainlink PoR, not price deviation:</strong> attestation tracking monitors <code>AnswerUpdated</code> staleness and reserve-vs-supply delta, not cross-oracle price agreement. Pyth/RedStone do not publish USDO attestations.</li><li>- <strong>Alert latency vs feed heartbeats:</strong> Our &lt;60s target is the alert <em>dispatch</em> latency once a qualifying event is observed. Chainlink heartbeats (24h for PoR, event-driven for prices) determine how quickly the underlying feed updates.</li><li>- <strong>Centralized Phase 1:</strong> A single Oclix Labs-operated poller runs Phase 1. Phase 2 introduces 2–3 independent federated operators; Phase 3 opens permissionless staking.</li>',
+feas_th:['Asset','Chainlink','Pyth','RedStone','Cross-Check','Replay Target'],
+feas_rows:[
+['BTC / USD','✓','✓','✓','Triple-sourced','—'],
+['ETH / USD','✓','✓','✓','Triple-sourced','—'],
+['USDC / USD','✓','✓','✓','Triple-sourced','—'],
+['cbETH / USD','✓ (OEV)','✓ sponsored','—','Dual-sourced','Moonwell cbETH (Feb 2026)'],
+['USDO','✓ PoR','—','—','Attestation (staleness + Δ)','—']],
+mods:[
+{i:'schedule',t:'Poller Worker',s:'Phase 1',d:'Cloudflare Worker on Cron Trigger (1-minute interval). Fetches 5 assets × up to 3 oracles per cycle. Writes latest prices to KV cache and queues deviations exceeding ±2%.'},
+{i:'compare_arrows',t:'Cross-Check Engine',s:'Phase 1',d:'Pure-function ±2% deviation check across pairs of oracle readings in the same cycle. Moonwell cbETH replay fixture enforced in test suite.'},
+{i:'notifications_active',t:'AlertWriter Worker',s:'Phase 1',d:'Cloudflare Queues consumer. Fans each alert out to D1 (history), Telegram / webhook subscribers, and <code>AlertRegistry</code> on Base Mainnet.'},
+{i:'history_edu',t:'AlertRegistry.sol',s:'Phase 1',d:'Append-only Solidity contract on Base Mainnet. <code>(asset, oracle_pair, deviation_bps, block_timestamp, evidence_hash)</code>. MIT-licensed, Foundry-tested.'},
+{i:'api',t:'Public API Worker',s:'Phase 1',d:'Hono-based REST API on Cloudflare Workers. <code>GET /alerts</code>, <code>/prices</code>, <code>/assets</code>. Rate-limited free tier; Premium placeholder reserved.'},
+{i:'groups',t:'Federated Operators',s:'Phase 2',d:'2–3 independent operators run the same poller and submit signed attestations. Off-chain aggregator requires N-of-M agreement.',a:1}],
+s4_label:'04 — Phase 1 Assets',s4_title:'Five Core Assets <span class="text-primary italic">on Base</span>',
+s5_label:'05 — Base Batches Fit',s5_title:'<span class="text-primary italic">Base Batches 003</span> Alignment',
+gl:'BASE BATCHES — KEY APPEAL',gb:[
+{t:'Base-native public-good watchdog',d:'Commercial monitors (Chaos, Hypernative, Forta) serve paid enterprise customers. Sentinel fills the free, retail-facing, Base-specific gap none of them can structurally match.'},
+{t:'5 real Base assets at MVP launch',d:'BTC/USD, ETH/USD, USDC/USD, cbETH/USD (Moonwell replay target), USDO (Chainlink PoR) — all on Base Mainnet.'},
+{t:'Provable on-chain alert history',d:'<code>AlertRegistry</code> on Base Mainnet — append-only, publicly readable, verifies detection integrity without trusting our backend.'},
+{t:'Fully open-source (MIT)',d:'Every Worker, contract, and doc is MIT-licensed. Base Batches 003 Student Track submission.'}],
+ol:'PROGRESSIVE DECENTRALIZATION PATH',ob:[
+{t:'Phase 2 — Federated operators',d:'2–3 independent operators run identical pollers; N-of-M consensus on alerts reduces single-point-of-failure.'},
+{t:'Phase 3 — Permissionless + DAO',d:'Anyone stakes SENTINEL to run an operator. DAO governs thresholds, asset coverage, slashing, and treasury.'},
+{t:'Public good forever',d:'Free public alerts and on-chain registry never degrade across all phases, regardless of Premium adoption.'},
+{t:'Base-exclusive, Superchain-ready',d:'AlertRegistry deployed only on Base. Superchain expansion (OP Mainnet, Zora) considered in Phase 3.'}],
+s6_label:'06 — Budget & Team',s6_title:'Transparency <span class="text-primary italic">Budget</span>',b_phase:'Phase 1 Allocation — Base Batches 003 ($50K)',b_th1:'Item',b_th2:'Allocation',b_th3:'Basis',b_total:'Total Request',
+bi:[
+{t:'Poller + Cross-Check Engine (Workers + tests)',v:'$18,000',b:'3 person-months, core dev'},
+{t:'AlertWriter + AlertRegistry contract + deploy',v:'$12,000',b:'2 person-months, Solidity + Foundry'},
+{t:'Public API + Landing + Dashboard',v:'$10,000',b:'2 person-months + design'},
+{t:'Infrastructure (6 months)',v:'$3,500',b:'Alchemy Growth ≈$299/mo + CF usage + gas'},
+{t:'Security Self-Review',v:'$2,500',b:'Slither, Foundry invariants, internal review + bounty seed'},
+{t:'Documentation & Onboarding',v:'$4,000',b:'Research SSOT, technical docs, video, English polish'}],
+tt:'Oclix Labs — Core Team',t_sub:'4 undergrads · Yonsei BAY Blockchain Society',
+tm:[
+{a:'SH',t:'Sanghyun Kwon (권상현)',r:'Team Lead / Smart Contracts',d:'AlertRegistry.sol + mainnet ops',gh:''},
+{a:'JY',t:'Jinyoung Mo (모진영)',r:'Core Engine / Backend / Infra',d:'Poller, AlertWriter, Public API (CF Workers)',gh:''},
+{a:'JG',t:'Jaegeun Lee (이재근)',r:'Marketing / Community / Frontend',d:'Landing, dashboard, Base ecosystem outreach',gh:''},
+{a:'HW',t:'Hyunwoo Kim (김현우)',r:'Research / Video / Documentation',d:'Research SSOT, whitepaper, English polish',gh:''}],
+tn:'* 4 contributors at ~0.5 FTE each × 6 months ≈ 12 person-months. Incorporating Oclix Labs (Delaware) post-Base Batches. Full KYC available on request. External security audit planned for Phase 2 follow-on; Phase 1 uses internal self-review (Slither, Foundry invariants, peer review) per <code>docs/ROADMAP.md</code>.',
+s7a_label:'07 — Success Metrics',s7a_title:'Phase 1 <span class="text-primary italic">Success Criteria</span>',s7a_desc:'Measurable outcomes by end of Phase 1 (2026 Q2). Full list in <code>docs/ROADMAP.md</code>.',
+kpis:[{i:'hub',v:'5',l:'Assets Monitored',d:'BTC, ETH, USDC, cbETH (price) + USDO (attestation) continuously monitored with >99% uptime'},{i:'notifications_active',v:'<60s',l:'Alert Dispatch Latency',d:'Median time from deviation detection to Telegram/webhook delivery + on-chain log'},{i:'verified',v:'≥10',l:'On-Chain Alerts Logged',d:'AlertRegistry on Base Mainnet with at least 10 detected deviations (incl. Moonwell cbETH replay)'},{i:'code',v:'MIT',l:'Fully Open Source',d:'All Workers, contracts, research, and docs published under MIT on Oclix-Labs/The-Sentinel'}],
+sustain_t:'Sustainability Plan',sustain_d:'Post-Phase 1 plan in order of likelihood: <strong>(1) Phase 2 pre-seed ($1–2M)</strong> from crypto-native funds after MVP ships and validates retail demand — federates 2–3 operators and launches Premium tier (~$200–500/mo for webhook + historical + custom thresholds). <strong>(2) Follow-on Base ecosystem grants</strong> and Coinbase Ventures conversations. <strong>(3) Phase 3 seed/Series A ($5–10M) + SENTINEL token launch</strong> — permissionless operator staking, DAO governance, subscription payment in SENTINEL. Public free tier is guaranteed across all phases. Full sustainability / zero-revenue contingency plan in <code>docs/ROADMAP.md</code>.',
+s8_label:'08 — Roadmap',s8_title:'Progressive <span class="text-primary italic">Decentralization</span>',s8_sub:'Centralized MVP → Federated operators → Permissionless network + SENTINEL token.',
+rm:[{p:'Phase 1 (2026 Q2)',t:'Centralized MVP · Base Batches 003',d:['5 assets monitored: BTC, ETH, USDC, cbETH, USDO','AlertRegistry.sol deployed to Base Mainnet','Telegram + webhook alerts; Public API (Hono)','Moonwell cbETH replay as regression test','No token issued'],ac:1},{p:'Phase 2 (2026 Q4 – 2027 Q1)',t:'Federated Operators · Pre-seed',d:['2–3 independent operators with N-of-M consensus','10–15 assets incl. wstETH, USDT, DAI, EURC, cbBTC','Premium tier GA — target >$5K MRR','Third-party security audit','Token designed, not issued']},{p:'Phase 3 (2027 Q2+)',t:'Permissionless + SENTINEL Token',d:['StakingManager + Governance + Treasury contracts','SENTINEL utility token live on Base (CCIP to ETH/OP)','DAO-governed thresholds, coverage, slashing','30+ assets monitored','Community airdrop to Phase 1–2 subscribers']}],
+footer_desc:'Public-good watchdog for tokenized RWAs on Base. By Oclix Labs.',f_infra:'Infrastructure',f_eco:'Phase 1 Assets'
+},ko:{
+nav:['개요','아키텍처','자산','Base Batches','KPIs','로드맵'],nav_cta:'제출물 보기',
+hero_badge:'Base Batches 003 · Student Track · MVP 2026-04-27 출시',hero_title:'Base 위 토큰화 RWA를 위한<br><span class="text-primary italic">퍼블릭 감시 레이어</span>',hero_desc:'RWA Sentinel은 Base의 5개 핵심 자산에 대해 Chainlink · Pyth · RedStone 오라클 피드를 교차 검증하고, 탐지된 편차를 추가 전용 온체인 로그에 기록합니다. 무료 · 오픈소스 · 리테일 친화 · Base 전용.',hero_cta1:'아키텍처 탐색 <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>',hero_cta2:'GitHub에서 보기',
+stat1:'18개월 내 오라클 장애',stat2:'오라클 이슈로 인한 손실',stat3:'Phase 1 출시 자산',stat4:'Base 전용 공공재 RWA 감시자',
+s0_label:'00 — RWA란?',s0_title:'자산 투명성의 <span class="text-primary italic">재정의</span>',s0_desc1:'RWA(Real World Assets)는 블록체인 유틸리티의 다음 프론티어입니다. 미국 국채, 부동산, 사모 대출을 온체인화하여 24시간 유동성과 글로벌 접근성을 제공합니다 — 2026년 4월 기준 <span class="font-semibold">~$29.7B 시장</span> <span class="text-xs text-slate-400">(출처: <a href="https://www.rwa.xyz" target="_blank" class="underline">RWA.xyz</a>, 2026년 4월 16일)</span>, 토큰화 미국 국채만 ~$13.5B (2024년 초 대비 ~50배).',s0_desc2:'하지만 Base 위 모든 RWA와 DeFi 가격은 오라클에 의존하며, 오라클은 실패합니다. RWA Sentinel은 리테일 사용자가 단일 피드를 신뢰하지 않아도 되도록 이를 교차 검증하는 중립적 독립 감시 레이어입니다.',qs1:'온체인 RWA 시장',qs2:'토큰화 미국 국채 (2024년 초 대비 ~50배)',
+pillar_t:'검증 3원칙',pil1t:'멀티-오라클 크로스체크',pil1d:'Chainlink · Pyth · RedStone을 1분 주기로 비교. ±2% 편차 발생 시 동일 블록에서 알림 — Moonwell cbETH가 잡혔을 방식 그대로.',pil2t:'온체인 증명 추적',pil2d:'Base 위 Chainlink Proof-of-Reserve 피드(Phase 1: USDO). <code>AnswerUpdated</code> 이벤트 모니터링 및 staleness / 공급-준비금 델타 플래그.',pil3t:'추가 전용 온체인 알림 로그',pil3d:'탐지된 모든 편차는 Base Mainnet의 <code>AlertRegistry</code>에 기록. 백엔드를 신뢰하지 않고도 이력 무결성 검증 가능.',
+s1_label:'01 — 차별화',s1_title:'왜 <span class="text-primary italic">RWA Sentinel</span>인가?',s1_desc:'기존 모니터는 전부 프로토콜이나 기관 대상 — Chaos Labs (7자리 SLA), Hypernative (기업 전용), Forta (FORT 토큰 유료), RWA.xyz ($500/좌석/월, 알림 없음). 리테일 사용자에게 주어진 것은 없습니다.',diff_th:'기능',diff_th_sentinel:'RWA Sentinel',diff_note:'* Phase 1 (2026 Q2)에서 Chainlink · Pyth · RedStone 크로스체크 (5개 Base 자산) + Base Mainnet AlertRegistry 출시.',
+diff_f:['멀티-오라클 ±2% 크로스체크','온체인 증명 추적','실시간 이상 탐지 알림','Base 전용 네이티브','프로토콜 독립 (제3자)','시장 데이터 / 집계','무료 퍼블릭 API (MIT)','온체인 알림 로그'],
+co_t:'핵심 포지셔닝',co_d:'Chainlink PoR은 <strong>발행자 자체 증명 도구</strong>. RWA.xyz는 <strong>데이터 표시</strong>. 상업 스택 (Chaos · Hypernative · Forta)은 <strong>프로토콜 · 기관 대상 판매</strong>. RWA Sentinel은 <strong>무료 · Base 네이티브 · 리테일 대상 감시 레이어</strong> + 검증 가능한 온체인 탐지 이력.',
+rel_t:'관련 도구 & 우리가 채우는 구체적 갭',rel_desc:'상업용 모니터링 스택은 이미 존재합니다 — 무주공산이 아닙니다. 정직한 경쟁 지형과 구조적 차별점:',rel_gap:'<strong>우리가 채우는 진짜 갭:</strong> Base 전용 · 리테일 대상 · 공공재 모니터링 — 영원히 무료 · MIT 라이센스 · 누구나 검증 가능한 온체인 알림 로그. 위 상업 경쟁자들은 "무료 + 공공재 + MIT"를 기업 ACV를 훼손하지 않고 구조적으로 매칭할 수 없습니다.',
+rel_th:['도구','커버 범위','차별점'],
+rel_rows:[
+['Chaos Labs / Gauntlet','Aave · Morpho 등 프로토콜과 7자리 상업 SLA 체결 — 리스크 오라클 및 파라미터 관리.','무료 공공재 레이어. 프로토콜 계약 불필요, 리테일 친화 대시보드, MIT 라이센스.'],
+['Hypernative / Forta','Hypernative는 기업 전용, Forta는 FORT 토큰 유료 구독. 체인 아그노스틱 위협 탐지.','Base 전용 · 리테일 대상 · 무료. 온체인 알림 로그로 검증 가능한 탐지 이력 제공.'],
+['Chainlink PoR','발행자 자체 증명 도구. 준비금 데이터 게시하지만 알림은 트리거하지 않음.','독립 제3자 모니터. Staleness + 공급-준비금 델타로 알림 트리거; Base AlertRegistry에 앵커.'],
+['RWA.xyz / DeFiLlama / Dune','시장 단위 대시보드 (RWA.xyz Pro $500/좌석/월), TVL 집계. 알림 레이어 없음.','단순 전시가 아닌 이상치 · 증명 지연 실시간 탐지 + 알림 전송.']],
+s2_label:'02 — 문제 & 솔루션',prob_t:'일회성 사건이 아닌 패턴',prob_d:'지난 18개월간 Base 주변 DeFi에서 최소 <strong>9건의 오라클 구성 · 하드코딩 오라클 장애</strong>가 발생했고 누적 손실은 <strong>≥$50M</strong>에 달합니다 — 약 2개월에 한 번꼴. 가장 최근은 2026년 2월 Moonwell cbETH 사건 (<strong>$2.68M, 약 181명 차입자 피해</strong>), OEV wrapper 오구성이 원인이었습니다. 이 사건들 전부 단순한 멀티-오라클 ±2% 크로스체크로 발생 즉시 (동일 블록) 탐지 가능했습니다. 이것은 일회성이 아니라 구조적 실패 모드입니다.',
+sol_t:'Sentinel 솔루션',sol_d:'Base 위 5개 핵심 자산에 대해 Chainlink · Pyth · RedStone을 1분 주기로 상시 크로스체크. ±2% 초과 편차 발생 시 이벤트를 큐에 넣고, Telegram · 웹훅 구독자에게 팬아웃하며, Base Mainnet <code>AlertRegistry</code>에 추가 전용 기록. 모든 코드는 MIT 라이센스, 모든 알림은 온체인 공개 검증 가능.',
+s3_label:'03 — 아키텍처',s3_title:'엣지 워커 + <span class="text-primary italic">온체인 레지스트리</span>',s3_desc:'크로스체크는 Cloudflare Workers에서 실행 (스케일 시 ~$55/월 vs 완전 온체인 ~$8.7K/월). 알림은 속도를 위해 오프체인으로 전달되고 감사 가능성을 위해 온체인에 앵커.',
+a1t:'Poller Worker (1분 Cron)',a2t:'크로스체크 (±2%)',a3t:'AlertWriter (큐)',a4t:'Base AlertRegistry',
+feas_t:'Phase 1 커버리지 — Base 오라클 겹침',
+feas_desc:'멀티-오라클 크로스체크는 동일 자산에 대해 최소 2개의 독립 피드가 필요합니다. Phase 1은 <code>.research/oracle-inventory-base.md</code>에서 Base 오라클 겹침이 확인된 5개 자산으로 고정:',
+feas_limit_t:'알려진 한계 & 대응 방안',
+feas_limit_d:'<li>- <strong>cbETH는 삼중이 아닌 이중 소스:</strong> cbETH는 Chainlink (2026-02 이후 OEV-wrapped)와 Pyth sponsored만 Base에서 게시. RedStone 피드는 cbETH에 대해 현재 미지원. 이중 소스로도 동일 블록에서 Moonwell 스타일 오구성 탐지 가능.</li><li>- <strong>USDO는 가격 편차가 아닌 Chainlink PoR 사용:</strong> 증명 추적은 <code>AnswerUpdated</code> staleness와 공급-준비금 델타를 모니터링하며, 오라클 간 가격 일치가 아님. Pyth/RedStone은 USDO 증명을 게시하지 않음.</li><li>- <strong>알림 지연 vs 피드 하트비트:</strong> &lt;60s 목표는 감지 이벤트 발생 후 알림 <em>전송</em> 지연. Chainlink 하트비트 (PoR 24h, 가격은 이벤트 기반)는 기저 피드 업데이트 속도를 결정.</li><li>- <strong>Phase 1은 중앙화:</strong> Phase 1은 Oclix Labs 단일 운영 poller가 실행. Phase 2에서 2–3 독립 federated operator 도입, Phase 3에서 permissionless staking 개방.</li>',
+feas_th:['자산','Chainlink','Pyth','RedStone','크로스체크','리플레이 타겟'],
+feas_rows:[
+['BTC / USD','✓','✓','✓','3중 소스','—'],
+['ETH / USD','✓','✓','✓','3중 소스','—'],
+['USDC / USD','✓','✓','✓','3중 소스','—'],
+['cbETH / USD','✓ (OEV)','✓ sponsored','—','2중 소스','Moonwell cbETH (2026-02)'],
+['USDO','✓ PoR','—','—','증명 (staleness + Δ)','—']],
+mods:[
+{i:'schedule',t:'Poller Worker',s:'Phase 1',d:'Cron Trigger (1분 주기) 기반 Cloudflare Worker. 매 주기마다 5개 자산 × 최대 3개 오라클 조회. 최신 가격을 KV 캐시에 기록하고 ±2% 초과 편차를 큐에 넣음.'},
+{i:'compare_arrows',t:'Cross-Check Engine',s:'Phase 1',d:'동일 주기의 오라클 읽기 쌍에 대한 순수 함수 ±2% 편차 체크. Moonwell cbETH 리플레이 픽스처를 테스트 스위트에 강제.'},
+{i:'notifications_active',t:'AlertWriter Worker',s:'Phase 1',d:'Cloudflare Queues 컨슈머. 각 알림을 D1 (히스토리) · Telegram · 웹훅 구독자 · Base Mainnet <code>AlertRegistry</code>로 팬아웃.'},
+{i:'history_edu',t:'AlertRegistry.sol',s:'Phase 1',d:'Base Mainnet 추가 전용 Solidity 컨트랙트. <code>(asset, oracle_pair, deviation_bps, block_timestamp, evidence_hash)</code>. MIT 라이센스, Foundry 테스트.'},
+{i:'api',t:'Public API Worker',s:'Phase 1',d:'Cloudflare Workers 위 Hono 기반 REST API. <code>GET /alerts</code>, <code>/prices</code>, <code>/assets</code>. 무료 티어 rate-limited, Premium placeholder 예약.'},
+{i:'groups',t:'Federated Operators',s:'Phase 2',d:'독립 운영자 2–3명이 동일 poller 실행 및 서명된 attestation 제출. 오프체인 aggregator가 N-of-M 합의 요구.',a:1}],
+s4_label:'04 — Phase 1 자산',s4_title:'Base 위 <span class="text-primary italic">5개 핵심 자산</span>',
+s5_label:'05 — Base Batches 적합성',s5_title:'<span class="text-primary italic">Base Batches 003</span> 적합성',
+gl:'BASE BATCHES 핵심 어필',gb:[
+{t:'Base 네이티브 공공재 감시 레이어',d:'상업 모니터 (Chaos · Hypernative · Forta)는 유료 기업 고객 대상. Sentinel은 그들이 구조적으로 커버 불가능한 무료 · 리테일 · Base 특화 갭을 채움.'},
+{t:'MVP 출시 시 Base 자산 5개',d:'BTC/USD, ETH/USD, USDC/USD, cbETH/USD (Moonwell 리플레이 타겟), USDO (Chainlink PoR) — 전부 Base Mainnet.'},
+{t:'검증 가능한 온체인 알림 이력',d:'Base Mainnet의 <code>AlertRegistry</code> — 추가 전용 · 공개 조회 · 백엔드를 신뢰하지 않고도 탐지 무결성 검증.'},
+{t:'완전 오픈소스 (MIT)',d:'모든 Worker · 컨트랙트 · 문서가 MIT 라이센스. Base Batches 003 Student Track 제출.'}],
+ol:'PROGRESSIVE DECENTRALIZATION 경로',ob:[
+{t:'Phase 2 — 연합 운영자',d:'2–3 독립 운영자가 동일한 poller 실행; N-of-M 합의로 단일 장애점 감소.'},
+{t:'Phase 3 — Permissionless + DAO',d:'누구나 SENTINEL을 스테이킹하여 운영자 참여. DAO가 임계치 · 자산 커버리지 · 슬래싱 · 트레저리 거버넌스.'},
+{t:'영원한 공공재',d:'무료 퍼블릭 알림과 온체인 레지스트리는 Premium 도입 여부와 무관하게 모든 단계에서 유지.'},
+{t:'Base 전용, Superchain 대응',d:'AlertRegistry는 Base에만 배포. Superchain (OP Mainnet, Zora) 확장은 Phase 3에서 검토.'}],
+s6_label:'06 — 예산 & 팀',s6_title:'투명성 <span class="text-primary italic">예산</span>',b_phase:'Phase 1 배분 — Base Batches 003 ($50K)',b_th1:'항목',b_th2:'배분',b_th3:'산정 근거',b_total:'총 요청 금액',
+bi:[
+{t:'Poller + Cross-Check Engine (Workers + 테스트)',v:'$18,000',b:'3 인·월, 코어 개발'},
+{t:'AlertWriter + AlertRegistry 컨트랙트 + 배포',v:'$12,000',b:'2 인·월, Solidity + Foundry'},
+{t:'퍼블릭 API + 랜딩 + 대시보드',v:'$10,000',b:'2 인·월 + 디자인'},
+{t:'인프라 운영 (6개월)',v:'$3,500',b:'Alchemy Growth ≈$299/월 + CF 사용료 + 가스비'},
+{t:'보안 자체 리뷰',v:'$2,500',b:'Slither · Foundry invariants · 내부 리뷰 + bounty seed'},
+{t:'문서화 & 온보딩',v:'$4,000',b:'Research SSOT · 기술 문서 · 비디오 · 영문 번역'}],
+tt:'Oclix Labs — Core Team',t_sub:'연세대 BAY 블록체인 학회 학부생 4명',
+tm:[
+{a:'SH',t:'권상현 (Sanghyun Kwon)',r:'Team Lead / 스마트 컨트랙트',d:'AlertRegistry.sol + 메인넷 운영',gh:''},
+{a:'JY',t:'모진영 (Jinyoung Mo)',r:'코어 엔진 / 백엔드 / 인프라',d:'Poller · AlertWriter · Public API (CF Workers)',gh:''},
+{a:'JG',t:'이재근 (Jaegeun Lee)',r:'마케팅 / 커뮤니티 / 프론트엔드',d:'랜딩 · 대시보드 · Base 생태계 아웃리치',gh:''},
+{a:'HW',t:'김현우 (Hyunwoo Kim)',r:'리서치 / 비디오 / 문서',d:'Research SSOT · 백서 · 영문 번역',gh:''}],
+tn:'* 기여자 4명, 각자 6개월 ~0.5 FTE ≈ 12 인·월. Base Batches 이후 Oclix Labs (델라웨어) 법인 설립 예정. 요청 시 전체 KYC 제공 가능. 외부 보안 감사는 Phase 2 후속 단계에서 진행; Phase 1은 내부 자체 리뷰 (Slither · Foundry invariants · 피어 리뷰) 사용 — <code>docs/ROADMAP.md</code> 참조.',
+s7a_label:'07 — 성공 지표',s7a_title:'Phase 1 <span class="text-primary italic">성공 기준</span>',s7a_desc:'Phase 1 종료 시점 (2026 Q2) 측정 가능한 결과. 전체 목록은 <code>docs/ROADMAP.md</code> 참조.',
+kpis:[{i:'hub',v:'5',l:'모니터링 자산',d:'BTC · ETH · USDC · cbETH (가격) + USDO (증명)을 >99% 가동률로 연속 모니터링'},{i:'notifications_active',v:'<60초',l:'알림 전송 지연',d:'편차 탐지 → Telegram/웹훅 전달 + 온체인 기록까지의 중앙값 시간'},{i:'verified',v:'≥10',l:'온체인 기록 알림',d:'Base Mainnet AlertRegistry에 최소 10건의 탐지된 편차 기록 (Moonwell cbETH 리플레이 포함)'},{i:'code',v:'MIT',l:'완전 오픈소스',d:'모든 Worker · 컨트랙트 · 리서치 · 문서를 Oclix-Labs/The-Sentinel 저장소에 MIT 라이센스로 공개'}],
+sustain_t:'지속가능성 계획',sustain_d:'Phase 1 이후 가능성 순: <strong>(1) Phase 2 pre-seed ($1–2M)</strong> — MVP 출시 및 리테일 수요 검증 후 crypto-native VC로부터 조달. 2–3 federated operator 도입 및 Premium 티어 출시 (웹훅 + 히스토리 + 커스텀 임계치 ~$200–500/월). <strong>(2) Base 생태계 후속 Grant</strong> 및 Coinbase Ventures 협의. <strong>(3) Phase 3 seed/Series A ($5–10M) + SENTINEL 토큰 출시</strong> — permissionless operator staking · DAO 거버넌스 · SENTINEL 구독 결제. 모든 단계에서 무료 퍼블릭 티어는 보장. 전체 지속가능성 · 무수익 컨틴전시 계획은 <code>docs/ROADMAP.md</code> 참조.',
+s8_label:'08 — 로드맵',s8_title:'Progressive <span class="text-primary italic">Decentralization</span>',s8_sub:'중앙화 MVP → 연합 운영자 → Permissionless 네트워크 + SENTINEL 토큰.',
+rm:[{p:'Phase 1 (2026 Q2)',t:'중앙화 MVP · Base Batches 003',d:['5개 자산 모니터링: BTC · ETH · USDC · cbETH · USDO','AlertRegistry.sol Base Mainnet 배포','Telegram + 웹훅 알림; Public API (Hono)','Moonwell cbETH 회귀 테스트 픽스처','토큰 미발행'],ac:1},{p:'Phase 2 (2026 Q4 – 2027 Q1)',t:'연합 운영자 · Pre-seed',d:['2–3 독립 운영자 · N-of-M 합의','10–15개 자산 (wstETH · USDT · DAI · EURC · cbBTC 포함)','Premium 티어 GA · >$5K MRR 목표','제3자 보안 감사','토큰 설계 완료, 미발행']},{p:'Phase 3 (2027 Q2+)',t:'Permissionless + SENTINEL 토큰',d:['StakingManager + Governance + Treasury 컨트랙트','Base에서 SENTINEL 유틸리티 토큰 출시 (ETH/OP CCIP)','DAO 거버넌스: 임계치 · 커버리지 · 슬래싱','30+ 자산 모니터링','Phase 1–2 구독자 대상 커뮤니티 에어드랍']}],
+footer_desc:'Base 위 토큰화 RWA를 위한 공공재 감시 레이어. Oclix Labs 제공.',f_infra:'인프라',f_eco:'Phase 1 자산'
+}};
+
+// Diff table data — Sentinel column
+const dv=[['✓','—','—','—'],['✓','—','△','—'],['✓','—','—','—'],['✓','—','—','—'],['✓','✓','—','✓'],['—','✓','—','✓'],['✓','△','—','✓'],['✓','—','—','—']];
+const dh=[1,1,1,1,0,0,0,1];
+
+// Phase 1 Assets
+const P=[
+{n:'BTC / USD',y:'Price Deviation',icon:'currency_bitcoin',ic:'amber',st:'Phase 1',sc:'green',tvl:'—',oracles:['Chainlink','Pyth','RedStone'],attest:'Triple-sourced cross-check'},
+{n:'ETH / USD',y:'Price Deviation',icon:'token',ic:'blue',st:'Phase 1',sc:'green',tvl:'—',oracles:['Chainlink','Pyth','RedStone'],attest:'Triple-sourced cross-check'},
+{n:'USDC / USD',y:'Price Deviation',icon:'paid',ic:'indigo',st:'Phase 1',sc:'green',tvl:'—',oracles:['Chainlink','Pyth','RedStone'],attest:'Triple-sourced cross-check'},
+{n:'cbETH / USD',y:'Price Deviation · Moonwell Replay',icon:'trending_up',ic:'violet',st:'Phase 1',sc:'green',tvl:'—',oracles:['Chainlink (OEV)','Pyth sponsored'],attest:'Dual-sourced · Feb 2026 replay'},
+{n:'USDO',y:'Attestation (Chainlink PoR)',icon:'verified',ic:'slate',st:'Phase 1',sc:'green',tvl:'—',oracles:['Chainlink PoR'],attest:'Staleness + reserve/supply delta'}];
+
+let lang='en';
+function setLang(l){lang=l;document.documentElement.lang=l;const be=document.getElementById('btn-en'),bk=document.getElementById('btn-ko');be.className='lang-btn px-3 py-1 rounded-full text-[10px] font-mono font-bold '+(l==='en'?'active shadow-sm':'text-slate-400');bk.className='lang-btn px-3 py-1 rounded-full text-[10px] font-mono font-bold '+(l==='ko'?'active shadow-sm':'text-slate-400');be.setAttribute('aria-pressed',l==='en');bk.setAttribute('aria-pressed',l==='ko');render()}
+
+function render(){
+const t=T[lang];
+document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(t[k]!==undefined)el.innerHTML=t[k]});
+// Nav
+const h=['#rwa101','#solution','#protocols','#batches','#kpis','#roadmap'];
+document.getElementById('nav-links').innerHTML=t.nav.map((n,i)=>`<a href="${h[i]}" class="hover:text-primary transition-colors">${n}</a>`).join('');
+document.getElementById('mobile-nav-links').innerHTML=t.nav.map((n,i)=>`<a href="${h[i]}" class="hover:text-primary transition-colors py-2" onclick="document.getElementById('mobile-menu').classList.add('hidden')">${n}</a>`).join('');
+// Diff table
+const ic=v=>{if(v.startsWith('✓'))return`<span class="material-symbols-outlined text-primary text-lg">check_circle</span>`;if(v==='—')return`<span class="material-symbols-outlined text-slate-300 text-lg">cancel</span>`;return`<span class="material-symbols-outlined text-slate-400 text-lg">check_circle</span>`};
+document.getElementById('diff-tbody').innerHTML=t.diff_f.map((f,i)=>`<tr class="${dh[i]?'bg-primary/[.03]':''}"><td class="px-8 py-5 font-semibold">${f}</td><td class="px-6 py-5 text-center bg-primary/5"><div class="flex flex-col items-center gap-1">${ic(dv[i][0])}</div></td><td class="px-6 py-5 text-center">${ic(dv[i][1])}</td><td class="px-6 py-5 text-center">${ic(dv[i][2])}</td><td class="px-6 py-5 text-center">${ic(dv[i][3])}</td></tr>`).join('');
+// Modules
+document.getElementById('modules-grid').innerHTML=t.mods.map(m=>`<div class="card !shadow-sm p-5 flex gap-4 reveal visible"><div class="w-10 h-10 rounded-lg ${m.a?'bg-amber-50':'bg-primary/5'} flex items-center justify-center shrink-0"><span class="material-symbols-outlined ${m.a?'text-amber-600':'text-primary'} text-xl">${m.i}</span></div><div><div class="flex items-center gap-2 mb-1"><h4 class="font-bold text-sm">${m.t}</h4><span class="px-2 py-0.5 ${m.a?'bg-amber-50 text-amber-700':'bg-green-50 text-green-700'} rounded-full text-[9px] font-bold uppercase">${m.s}</span></div><p class="text-xs text-slate-500 leading-relaxed">${m.d}</p></div></div>`).join('');
+// Related tools table
+if(t.rel_th&&document.getElementById('rel-table')){
+document.getElementById('rel-table').innerHTML=`<thead><tr class="bg-slate-50">${t.rel_th.map(h=>`<th class="px-3 py-3 text-left text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">${h}</th>`).join('')}</tr></thead><tbody class="divide-y divide-slate-100">${t.rel_rows.map(r=>`<tr><td class="px-3 py-3 text-xs font-semibold text-slate-700">${r[0]}</td><td class="px-3 py-3 text-xs text-slate-500">${r[1]}</td><td class="px-3 py-3 text-xs text-primary">${r[2]}</td></tr>`).join('')}</tbody>`;
+}
+// Feasibility table
+if(t.feas_th&&document.getElementById('feas-table')){
+const oc=v=>v==='—'?'text-slate-300':'text-green-600 font-semibold';
+document.getElementById('feas-table').innerHTML=`<thead><tr class="bg-slate-50">${t.feas_th.map(h=>`<th class="px-3 py-3 text-left text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">${h}</th>`).join('')}</tr></thead><tbody class="divide-y divide-slate-100">${t.feas_rows.map(r=>`<tr>${r.map((c,i)=>`<td class="px-3 py-3 text-xs ${i>=1&&i<=3?oc(c):''}">${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+// Asset cards
+const cic={blue:'bg-blue-100 text-primary',indigo:'bg-indigo-100 text-indigo-600',violet:'bg-violet-100 text-violet-600',amber:'bg-amber-100 text-amber-600',slate:'bg-slate-100 text-slate-500'};
+const scc={green:'bg-green-100 text-green-700',slate:'bg-slate-100 text-slate-500'};
+const pLabels=lang==='ko'?{ac:'타입',tvl:'TVL',live:'Phase 1',soon:'예정',oracles:'오라클 커버리지',attest:'검증 방식'}:{ac:'Type',tvl:'TVL',live:'Phase 1',soon:'Soon',oracles:'Oracle Coverage',attest:'Verification'};
+document.getElementById('proto-cards').innerHTML=P.map(p=>`<div class="card p-6 ${p.sc==='slate'?'opacity-75':''}"><div class="flex items-center justify-between mb-6"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-lg ${cic[p.ic]} flex items-center justify-center"><span class="material-symbols-outlined">${p.icon}</span></div><span class="font-bold text-lg">${p.n}</span></div><span class="px-2 py-1 rounded ${scc[p.sc]} text-[10px] font-bold uppercase">${p.st==='Phase 1'?pLabels.live:pLabels.soon}</span></div><div class="space-y-3 text-sm"><div class="flex justify-between"><span class="text-slate-500">${pLabels.ac}</span><span class="font-medium">${p.y}</span></div><div class="flex justify-between items-start"><span class="text-slate-500 shrink-0">${pLabels.oracles}</span><div class="flex flex-wrap gap-1 justify-end">${p.oracles.map(o=>`<span class="px-1.5 py-0.5 bg-blue-50 text-primary text-[9px] font-mono font-bold rounded">${o}</span>`).join('')}</div></div><div class="flex justify-between items-start gap-2"><span class="text-slate-500 shrink-0">${pLabels.attest}</span><span class="font-medium text-xs text-right">${p.attest}</span></div></div></div>`).join('');
+// Base Batches cards
+const gc=(l,items,bg,icc)=>`<div class="bg-white rounded-2xl overflow-hidden reveal visible" style="border:1px solid var(--border)"><div class="h-1 ${bg}"></div><div class="p-7"><div class="font-mono text-[11px] font-bold ${icc} uppercase tracking-wider mb-5">${l}</div><div class="space-y-5">${items.map(x=>`<div class="flex gap-3"><span class="material-symbols-outlined ${icc} text-lg mt-0.5" style="font-variation-settings:'FILL' 1">check_circle</span><div><h4 class="font-bold text-sm mb-0.5">${x.t}</h4><p class="text-xs text-slate-500">${x.d}</p></div></div>`).join('')}</div></div></div>`;
+document.getElementById('grants-grid').innerHTML=gc(t.gl,t.gb,'bg-primary','text-primary')+gc(t.ol,t.ob,'bg-op-red','text-red-500');
+// Budget
+document.getElementById('budget-tbody').innerHTML=t.bi.map(b=>`<tr><td class="px-5 py-4">${b.t}</td><td class="px-4 py-4 text-right font-semibold font-mono">${b.v}</td><td class="px-5 py-4 text-xs font-mono text-slate-400">${b.b}</td></tr>`).join('');
+// Team
+document.getElementById('team-list').innerHTML=t.tm.map(m=>`<div class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100"><div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0"><span class="font-mono text-sm font-bold text-primary">${m.a}</span></div><div><p class="font-bold text-sm">${m.t}</p><p class="text-xs text-slate-500">${m.r} · ${m.d}</p>${m.gh?`<a href="https://${m.gh}" target="_blank" class="text-[10px] font-mono text-primary hover:underline mt-1 inline-block">${m.gh}</a>`:''}</div></div>`).join('')+`<p class="text-xs text-slate-400 mt-4 italic">${t.tn}</p>`;
+// KPIs
+if(t.kpis&&document.getElementById('kpi-grid')){
+document.getElementById('kpi-grid').innerHTML=t.kpis.map(k=>`<div class="card p-6 text-center reveal visible"><div class="w-12 h-12 rounded-2xl bg-primary/5 border border-primary/20 flex items-center justify-center mx-auto mb-4"><span class="material-symbols-outlined text-2xl text-primary">${k.i}</span></div><div class="text-3xl font-serif font-bold text-primary mb-1">${k.v}</div><div class="font-bold text-sm mb-2">${k.l}</div><p class="text-xs text-slate-500">${k.d}</p></div>`).join('');
+}
+// Sustainability
+document.querySelectorAll('[data-i18n="sustain_t"]').forEach(el=>{if(t.sustain_t)el.innerHTML=t.sustain_t});
+document.querySelectorAll('[data-i18n="sustain_d"]').forEach(el=>{if(t.sustain_d)el.innerHTML=t.sustain_d});
+// Roadmap — zigzag
+document.getElementById('roadmap-items').innerHTML=t.rm.map((r,i)=>{
+  const isLeft=i%2===0;
+  return `<div class="relative grid md:grid-cols-2 gap-8 items-center reveal visible">
+    <div class="${isLeft?'md:text-right':'order-2 md:order-1 md:text-left'}">
+      ${isLeft?`<h3 class="text-xl font-bold ${r.ac?'text-primary':'text-slate-200'} mb-2">${r.p}</h3><p class="text-slate-300 font-semibold">${r.t}</p><ul class="text-sm text-slate-400 mt-2 space-y-1">${r.d.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}
+      ${!isLeft?`<div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 backdrop-blur-sm"><ul class="text-sm text-slate-400 space-y-2">${r.d.map(x=>`<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm">check</span>${x}</li>`).join('')}</ul></div>`:''}
+    </div>
+    <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full ${r.ac?'bg-primary':'bg-slate-700'} border-4 border-slate-900 z-10"></div>
+    <div class="${isLeft?'':'order-1 md:order-2'}">
+      ${!isLeft?`<h3 class="text-xl font-bold text-slate-200 mb-2">${r.p}</h3><p class="text-slate-300 font-semibold">${r.t}</p><ul class="text-sm text-slate-400 mt-2 space-y-1">${r.d.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}
+      ${isLeft?`<div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 backdrop-blur-sm"><ul class="text-sm text-slate-400 space-y-2">${r.d.map(x=>`<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm">check</span>${x}</li>`).join('')}</ul></div>`:''}
+    </div>
+  </div>`;}).join('');
+}
+render();
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a){e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}});
+</script>
+</body>
+</html>

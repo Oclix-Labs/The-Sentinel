@@ -70,6 +70,8 @@ importers:
 
   apps/contracts: {}
 
+  apps/landing: {}
+
   apps/poller:
     dependencies:
       '@pythnetwork/pyth-evm-js':
