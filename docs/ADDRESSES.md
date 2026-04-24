@@ -11,13 +11,17 @@
 | Network | Address | Deployed | Block | Verified | Deployer |
 |---|---|---|---|---|---|
 | Base Sepolia | [`0x79b5d74A301079c86D13eb71e2787852F403F876`](https://sepolia.basescan.org/address/0x79b5d74A301079c86D13eb71e2787852F403F876#code) | 2026-04-24 | 40,619,999 | ✅ [source](https://sepolia.basescan.org/address/0x79b5d74A301079c86D13eb71e2787852F403F876#code) | `0x4F9EA9738Ee50b68FbE255CE6a1551C799dd47DB` |
-| Base Mainnet | `0x_TBD_DEPLOY_D5` | — | — | — | 권상현 |
+| Base Mainnet | [`0x79b5d74A301079c86D13eb71e2787852F403F876`](https://basescan.org/address/0x79b5d74A301079c86D13eb71e2787852F403F876#code) | 2026-04-24 | 45,121,958 | ✅ [source](https://basescan.org/address/0x79b5d74A301079c86D13eb71e2787852F403F876#code) | `0x4F9EA9738Ee50b68FbE255CE6a1551C799dd47DB` |
+
+_The Mainnet and Sepolia addresses are identical because CREATE is deterministic from `(deployer, nonce=0)` and the deployer's first transaction on each chain is the AlertRegistry deploy._
 
 - **Base Sepolia deploy tx**: [`0x4d86042949af7ff02c01248c9fd7adaa98b88420b7b48a8708f73b2e03805915`](https://sepolia.basescan.org/tx/0x4d86042949af7ff02c01248c9fd7adaa98b88420b7b48a8708f73b2e03805915)
-- **First `AlertLogged` on-chain evidence** (D3 smoke, alertId=0): [`0xeffe1780d012b2972c4599be49da725cd54c780d5c45e06d9db3766e7317eb8a`](https://sepolia.basescan.org/tx/0xeffe1780d012b2972c4599be49da725cd54c780d5c45e06d9db3766e7317eb8a) at block 40,620,070 — payload: `keccak256("cbETH/USD") × keccak256("chainlink_vs_pyth")`, deviationBps `-9995` (Moonwell-magnitude), evidenceHash `keccak256("d3-sepolia-smoke")`, alertType `0`.
-- **First end-to-end staging alert** (D4 smoke, alertId=1): canonical-encoded via `apps/alert-writer/src/canonical.ts`, injected through the Cloudflare Queue, picked up by the deployed `rwa-sentinel-alert-writer-staging` Worker, submitted via viem `writeContract`. D1 row readback confirms `onchain_status='confirmed'`. Proves ADR 0007 §§1-6 encoding is bit-identical on both sides (JS `keccak256(stringToBytes(...))` ≡ Solidity `keccak256(bytes(...))`).
-- **Basescan verified**: 2026-04-24 via `forge verify-contract --chain base-sepolia` (Etherscan V2 unified API). Source + ABI public at the `#code` tab.
-- **Admin rotation**: deployer is currently also `admin` and `publisher`. Phase 2 will rotate admin to a multisig via 2-step `transferAdmin` → `acceptAdmin` flow.
+- **Base Mainnet deploy tx**: [`0xf0d9d831d07bbd6667cf72009bde0ad6956fe45652f4a46893cea2cf7d392ecd`](https://basescan.org/tx/0xf0d9d831d07bbd6667cf72009bde0ad6956fe45652f4a46893cea2cf7d392ecd) — 491,742 gas @ 0.005 gwei = 0.00000246 ETH (~$0.007).
+- **First `AlertLogged` on-chain evidence** (D3 Sepolia smoke, alertId=0): [`0xeffe1780d012b2972c4599be49da725cd54c780d5c45e06d9db3766e7317eb8a`](https://sepolia.basescan.org/tx/0xeffe1780d012b2972c4599be49da725cd54c780d5c45e06d9db3766e7317eb8a) at block 40,620,070 — payload: `keccak256("cbETH/USD") × keccak256("chainlink_vs_pyth")`, deviationBps `-9995` (Moonwell-magnitude), evidenceHash `keccak256("d3-sepolia-smoke")`, alertType `0`.
+- **First end-to-end staging alert** (D4 Sepolia smoke, alertId=1): canonical-encoded via `apps/alert-writer/src/canonical.ts`, injected through the Cloudflare Queue, picked up by the deployed `rwa-sentinel-alert-writer-staging` Worker, submitted via viem `writeContract`. D1 row readback confirms `onchain_status='confirmed'`. Proves ADR 0007 §§1-6 encoding is bit-identical on both sides (JS `keccak256(stringToBytes(...))` ≡ Solidity `keccak256(bytes(...))`).
+- **First Mainnet `AlertLogged`** (D5 smoke, alertId=0 on Mainnet): [`0x6887b042a839ec4d1a2b1e936b4bd5c304ee9e2b0f4b9d17cb711d4e04338c09`](https://basescan.org/tx/0x6887b042a839ec4d1a2b1e936b4bd5c304ee9e2b0f4b9d17cb711d4e04338c09) at block 45,121,985 — payload: `keccak256("cbETH/USD") × keccak256("chainlink_vs_pyth")`, deviationBps `9995` (ADR 0007 §4 unsigned), evidenceHash `keccak256("mainnet-d5-first-alert")`, alertType `0`.
+- **Basescan verified**: Sepolia 2026-04-24, Mainnet 2026-04-24 — both via `forge verify-contract` (Etherscan V2 unified API). Source + ABI public at each chain's `#code` tab.
+- **Admin rotation**: deployer is currently also `admin` and `publisher` on both chains. Phase 2 will rotate admin to a multisig via 2-step `transferAdmin` → `acceptAdmin` flow.
 
 ---
 
