@@ -42,6 +42,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@hono/zod-validator':
+        specifier: ^0.4.1
+        version: 0.4.3(hono@4.12.14)(zod@3.25.76)
       hono:
         specifier: ^4.6.0
         version: 4.12.14
@@ -49,6 +52,9 @@ importers:
         specifier: ^3.23.0
         version: 3.25.76
     devDependencies:
+      '@cloudflare/vitest-pool-workers':
+        specifier: ^0.5.0
+        version: 0.5.41(@cloudflare/workers-types@4.20260423.1)(@vitest/runner@2.1.9)(@vitest/snapshot@2.1.9)(vitest@2.1.9(@types/node@25.6.0))
       '@cloudflare/workers-types':
         specifier: ^4.20240925.0
         version: 4.20260423.1
@@ -527,6 +533,12 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@hono/zod-validator@0.4.3':
+    resolution: {integrity: sha512-xIgMYXDyJ4Hj6ekm9T9Y27s080Nl9NXHcJkOvkXPhubOLj8hZkOL8pDnnXfvCf5xEE8Q4oMFenQUZZREUY2gqQ==}
+    peerDependencies:
+      hono: '>=3.9.0'
+      zod: ^3.19.1
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==}
@@ -1750,6 +1762,11 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
+  '@hono/zod-validator@0.4.3(hono@4.12.14)(zod@3.25.76)':
+    dependencies:
+      hono: 4.12.14
+      zod: 3.25.76
+
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:
       '@img/sharp-libvips-darwin-arm64': 1.0.4
@@ -2321,7 +2338,7 @@ snapshots:
   miniflare@3.20241230.0:
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
-      acorn: 8.16.0
+      acorn: 8.14.0
       acorn-walk: 8.3.2
       capnp-ts: 0.7.0
       exit-hook: 2.2.1

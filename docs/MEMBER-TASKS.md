@@ -23,9 +23,9 @@
 - [ ] 팀 PR 리뷰 대기열 초기화
 
 ### D2 (4/21 Mon)
-- [ ] `AlertRegistry.sol` 구현 초안 + unit tests (Foundry)
-- [ ] Access control 확정 — custom mapping 유지 ([ADR 0006](./DECISIONS/0006-custom-access-control.md))
-- [ ] Gas-optimization 1-pass
+- [x] `AlertRegistry.sol` 구현 초안 + unit tests (Foundry)
+- [x] Access control 확정 — custom mapping 유지 ([ADR 0006](./DECISIONS/0006-custom-access-control.md))
+- [x] Gas-optimization 1-pass — struct 6→4 slots, `logAlert` −24K gas; 2-step `transferAdmin`; `.gas-snapshot` baseline
 
 ### D3 (4/22 Tue)
 - [ ] `AlertRegistry.sol` 테스트 전체 green
