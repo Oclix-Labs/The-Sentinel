@@ -10,10 +10,13 @@
 
 | Network | Address | Deployed | Block | Deployer |
 |---|---|---|---|---|
-| Base Sepolia | `0x_TBD_DEPLOY_D3` | — | — | 권상현 |
+| Base Sepolia | [`0x79b5d74A301079c86D13eb71e2787852F403F876`](https://sepolia.basescan.org/address/0x79b5d74A301079c86D13eb71e2787852F403F876) | 2026-04-24 | 40,619,999 | `0x4F9EA9738Ee50b68FbE255CE6a1551C799dd47DB` |
 | Base Mainnet | `0x_TBD_DEPLOY_D5` | — | — | 권상현 |
 
-After deploy, replace `_TBD_*` with real address + Basescan link + block number + deployer address.
+- **Base Sepolia deploy tx**: [`0x4d86042949af7ff02c01248c9fd7adaa98b88420b7b48a8708f73b2e03805915`](https://sepolia.basescan.org/tx/0x4d86042949af7ff02c01248c9fd7adaa98b88420b7b48a8708f73b2e03805915)
+- **First `AlertLogged` on-chain evidence** (D3 smoke, alertId=0): [`0xeffe1780d012b2972c4599be49da725cd54c780d5c45e06d9db3766e7317eb8a`](https://sepolia.basescan.org/tx/0xeffe1780d012b2972c4599be49da725cd54c780d5c45e06d9db3766e7317eb8a) at block 40,620,070 — payload: `keccak256("cbETH/USD") × keccak256("chainlink_vs_pyth")`, deviationBps `-9995` (Moonwell-magnitude), evidenceHash `keccak256("d3-sepolia-smoke")`, alertType `0`.
+- **Basescan verify**: deferred to D5 window (`BASESCAN_API_KEY` pending; will run `forge verify-contract --chain base_sepolia` as part of the mainnet deploy PR).
+- **Admin rotation**: deployer is currently also `admin` and `publisher`. Phase 2 will rotate admin to a multisig via 2-step `transferAdmin` → `acceptAdmin` flow.
 
 ---
 
