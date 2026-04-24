@@ -5,9 +5,9 @@
   "compatibility_date": "2026-04-01",
   "compatibility_flags": ["nodejs_compat"],
 
-  // Staging bindings are active (activated 2026-04-24 for D5 E2E). Shares the D1 + KV
-  // with poller (writer) and alert-writer (writer/reader). Production bindings remain
-  // commented until mainnet deploy window (D5+).
+  // Staging + production bindings both active (production activated 2026-04-24 after D5
+  // Mainnet AlertRegistry deploy). api is read-only on both D1 and KV; writers are poller
+  // (prices, alerts) + alert-writer (alerts) + telegram-bot (subscriptions).
 
   "env": {
     "staging": {
@@ -28,13 +28,15 @@
       "name": "rwa-sentinel-api",
       "vars": {
         "ENVIRONMENT": "production"
-      }
-      // "d1_databases": [
-      //   { "binding": "DB", "database_name": "rwa-sentinel", "database_id": "REPLACE_ME" }
-      // ],
-      // "kv_namespaces": [
-      //   { "binding": "PRICES", "id": "REPLACE_ME" }
-      // ]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "rwa-sentinel",
+          "database_id": "9226b54f-d312-4710-8b33-296198d51873"
+        }
+      ],
+      "kv_namespaces": [{ "binding": "PRICES", "id": "1f8928efdd5c4a3bbbeba58eb25ac32d" }]
     }
   }
 }

@@ -35,10 +35,14 @@
       "name": "rwa-sentinel-telegram-bot",
       "vars": {
         "ENVIRONMENT": "production"
-      }
-      // "d1_databases": [
-      //   { "binding": "DB", "database_name": "rwa-sentinel", "database_id": "REPLACE_ME" }
-      // ]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "rwa-sentinel",
+          "database_id": "9226b54f-d312-4710-8b33-296198d51873"
+        }
+      ]
     }
   }
 }
