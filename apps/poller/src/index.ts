@@ -93,7 +93,19 @@ async function runTick(env: Env, ctx: ExecutionContext): Promise<TickResult> {
   if (env.DB && allPrices.length > 0) {
     sideEffects.push(writePriceHistory(env.DB, allPrices));
   }
-  if (sideEffects.length > 0) ctx.waitUntil(Promise.allSettled(sideEffects));
+  if (sideEffects.length > 0) {
+    // Log rejections explicitly — bare Promise.allSettled swallows them and
+    // staging D1/KV/Queue failures would leave no trace (review feedback on PR #2).
+    ctx.waitUntil(
+      Promise.allSettled(sideEffects).then((results) => {
+        for (const r of results) {
+          if (r.status === 'rejected') {
+            console.error('[poller] side-effect failed', r.reason);
+          }
+        }
+      }),
+    );
+  }
 
   const prices: Record<string, Record<string, string>> = {};
   for (const p of allPrices) {
