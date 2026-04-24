@@ -5,29 +5,31 @@
   "compatibility_date": "2026-04-01",
   "compatibility_flags": ["nodejs_compat"],
 
-  // Before the first staging deploy:
-  //   pnpm --filter @oclix/telegram-bot exec wrangler d1 list                                     # confirm DB id
+  // Staging D1 binding is active (activated 2026-04-24 for D5 E2E). Shares the
+  // subscriptions table with api (POST /subscribers) and alert-writer (reader).
+  // Before deploy, ops must set the three secrets:
   //   pnpm --filter @oclix/telegram-bot exec wrangler secret put TELEGRAM_BOT_TOKEN --env staging
   //   pnpm --filter @oclix/telegram-bot exec wrangler secret put TELEGRAM_WEBHOOK_SECRET --env staging
   //   pnpm --filter @oclix/telegram-bot exec wrangler secret put TELEGRAM_BOT_USERNAME --env staging   # no '@' prefix
-  //   pnpm --filter @oclix/telegram-bot exec wrangler deploy --env staging
   //
   // Then register the webhook with Telegram ONCE:
   //   curl -X POST "https://api.telegram.org/bot<TOKEN>/setWebhook" \
   //        -d "url=https://rwa-sentinel-telegram-bot-staging.workers.dev/webhook" \
   //        -d "secret_token=<SAME_VALUE_AS_TELEGRAM_WEBHOOK_SECRET>"
-  //
-  // Then uncomment the d1_databases block below and paste the real DB id.
 
   "env": {
     "staging": {
       "name": "rwa-sentinel-telegram-bot-staging",
       "vars": {
         "ENVIRONMENT": "staging"
-      }
-      // "d1_databases": [
-      //   { "binding": "DB", "database_name": "rwa-sentinel-staging", "database_id": "REPLACE_ME" }
-      // ]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "rwa-sentinel-staging",
+          "database_id": "3431cd82-453d-4dba-8ae7-58dc2c55a7d6"
+        }
+      ]
     },
     "production": {
       "name": "rwa-sentinel-telegram-bot",
