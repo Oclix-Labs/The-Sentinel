@@ -1,8 +1,8 @@
 # ADR 0007: Canonical encoding for `asset`, `oraclePair`, and `evidenceHash` in `AlertRegistry.logAlert`
 
-**Status**: PROPOSED
-**Date**: 2026-04-23
-**Deciders**: 모진영 (proposer) + 권상현 (approver — finalize at D4 pairing 2026-04-23)
+**Status**: ACCEPTED
+**Date**: 2026-04-23 (proposed) / 2026-04-24 (accepted at D4 pairing)
+**Deciders**: 모진영 (proposer) + 권상현 (approver)
 
 ## Context
 
@@ -144,22 +144,33 @@ To accept this ADR, the D4 pairing commit must:
 
 ```
 // Asset hashes (lowercase hex, leading 0x)
-hashAsset("BTC/USD")     = 0x <TBD at D4>
-hashAsset("ETH/USD")     = 0x <TBD at D4>
-hashAsset("USDC/USD")    = 0x <TBD at D4>
-hashAsset("cbETH/USD")   = 0x <TBD at D4>
-hashAsset("USDO")        = 0x <TBD at D4>
+hashAsset("BTC/USD")     = 0xee62665949c883f9e0f6f002eac32e00bd59dfe6c34e92a91c37d6a8322d6489
+hashAsset("ETH/USD")     = 0x0b43555ace6b39aae1b894097d0a9fc17f504c62fea598fa206cc6f5088e6e45
+hashAsset("USDC/USD")    = 0xff064b881a0c0fff844177f881a313ff894bfc6093d33b5514e34d7faa41b7ef
+hashAsset("cbETH/USD")   = 0x6ff7ab00bfc30fadf94e2141f6e4b8ef2ad332c4ff7c8ce76c3151137414d672
+hashAsset("USDO")        = 0x42afc1d5c054e4b693e255ffbcb6f93026230e00e557e26450701313e06fe7b7
 
 // Oracle pair hashes
-hashOraclePair("chainlink_vs_pyth")      = 0x <TBD at D4>
-hashOraclePair("chainlink_vs_redstone")  = 0x <TBD at D4>
-hashOraclePair("pyth_vs_redstone")       = 0x <TBD at D4>
-hashOraclePair("chainlink_por")          = 0x <TBD at D4>
+hashOraclePair("chainlink_vs_pyth")      = 0x64455ea6882c26d977363c6b521963285797de745c08b0ecb9e3c0b30e5f8f09
+hashOraclePair("chainlink_vs_redstone")  = 0x63e7d4799e78560552575650141e8b8a5a755dac2a069e848948e3a9b8e780cc
+hashOraclePair("pyth_vs_redstone")       = 0x07ae18a7f883686a18cd0bd02c1a730e8580c6b5624ece121a7d3f4082c3dab4
+hashOraclePair("chainlink_por")          = 0xdd5e08d81bd9be0b4b50c953bdc7e67ee3cc40ba88ac57910d0cef8349d23aa7
 
-// Evidence hash example
+// Evidence hash example — canonical JSON form:
+//   {"chainlinkUpdatedAt":1700000000,"chainlinkValue":"77000000000000000000000","pythUpdatedAt":1700000001,"pythValue":"77100000000000000000000"}
 hashEvidence({chainlinkValue: "77000000000000000000000", pythValue: "77100000000000000000000", chainlinkUpdatedAt: 1700000000, pythUpdatedAt: 1700000001})
-= 0x <TBD at D4>
+= 0x46b47a22696216c2900db4fe32d0358450c90f05e0a1d6b43bfe1096fe80be81
+
+// Empty object reference
+hashEvidence({}) = 0xb48d38f93eaa084033fc5970bf96e559c33c4cdc07d889ab00b4d63f9590739d
 ```
+
+Cross-verified against `cast keccak "<input>"` — JS utf8 encoding in
+`apps/alert-writer/src/canonical.ts` produces identical bytes32 values to
+Solidity `keccak256(bytes(...))`. The D3 Sepolia smoke tx (block 40,620,070,
+tx `0xeffe1780...`) emitted `asset=hashAsset("cbETH/USD")` and
+`oraclePair=hashOraclePair("chainlink_vs_pyth")` already matching these
+values — retroactive conformance confirmed.
 
 These values become immutable on ADR acceptance. A change to any canonicalization rule supersedes this ADR with a new one.
 
@@ -170,4 +181,4 @@ These values become immutable on ADR acceptance. A change to any canonicalizatio
 
 ---
 
-_Status transitions to ACCEPTED after D4 pairing with 권상현 confirms all six decisions and the test vectors are computed. Until then, alert-writer's onchain stub MUST NOT be replaced._
+_Status transitioned to ACCEPTED at D4 pairing (2026-04-24) after all six decisions confirmed and test vectors computed. alert-writer's onchain stub is now unblocked and replaced in the same PR._
