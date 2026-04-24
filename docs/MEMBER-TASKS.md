@@ -38,9 +38,9 @@
 - [ ] MVP DoD 10개 중 몇 개 달성 가능한지 판정
 
 ### D5 (4/24 Thu)
-- [ ] **Base Mainnet 배포** (`AlertRegistry`)
-- [x] Basescan verified 확인 — Sepolia verified 2026-04-24 via `forge verify-contract --chain base-sepolia` (Etherscan V2). Mainnet verify는 배포 직후.
-- [x] 테스트 알림 1건 emit (on-chain evidence) — D3 직접 `cast send` alertId=0 + D4 end-to-end staging smoke alertId=1 (ADR 0007 canonical encoding 실환경 증명)
+- [x] **Base Mainnet 배포** (`AlertRegistry`) — `0x79b5d74A301079c86D13eb71e2787852F403F876` at block 45,121,958, tx [`0xf0d9d831...`](https://basescan.org/tx/0xf0d9d831d07bbd6667cf72009bde0ad6956fe45652f4a46893cea2cf7d392ecd). Same address as Sepolia by CREATE determinism.
+- [x] Basescan verified 확인 — Sepolia + **Mainnet** 둘 다 verified 2026-04-24 via `forge verify-contract` (Etherscan V2). Source public at `#code` tab on both chains.
+- [x] 테스트 알림 1건 emit (on-chain evidence) — D3 Sepolia alertId=0 + D4 staging smoke alertId=1 + **D5 Mainnet alertId=0** (tx [`0x6887b042...`](https://basescan.org/tx/0x6887b042a839ec4d1a2b1e936b4bd5c304ee9e2b0f4b9d17cb711d4e04338c09))
 - [x] PR 리뷰 (집중) — PR #4/#5/#6/#7 전부 리뷰 + 머지 완료 (2026-04-24)
 
 ### D6 (4/25 Fri)
