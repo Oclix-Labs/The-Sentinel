@@ -36,7 +36,7 @@ contract AlertRegistryTest is Test {
 
     function test_logAlert_byPublisher_appendsAlert() public {
         bytes32 evidenceHash = keccak256("moonwell-cbeth-2026-02-15");
-        int128 deviationBps = int128(-9995 * 10); // Moonwell cbETH magnitude: ~99.95%
+        int128 deviationBps = int128(9995 * 10); // Moonwell cbETH magnitude: ~99.95% (unsigned per ADR 0007 §4)
 
         vm.expectEmit(true, true, true, true, address(registry));
         emit AlertLogged(

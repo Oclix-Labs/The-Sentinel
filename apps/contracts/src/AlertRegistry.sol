@@ -33,7 +33,7 @@ contract AlertRegistry {
         bytes32 oraclePair;       // slot 1 — keccak256 pair id, e.g. "chainlink_vs_pyth"
         bytes32 evidenceHash;     // slot 2 — hash of off-chain evidence payload
         int128  deviationBps;     // slot 3 (16B) — signed deviation in bps (10000 = 100%)
-        uint64  blockTimestamp;   // slot 3 ( 8B) — L2 block time at logAlert tx
+        uint64  blockTimestamp;   // slot 3 ( 8B) — L2 block time at which this alert was committed (NOT observer detection time — see evidence payload)
         uint32  alertType;        // slot 3 ( 4B) — 0 = price-cross-check, 1 = attestation-expiry
     }
 
@@ -82,6 +82,10 @@ contract AlertRegistry {
 
     /// @notice Append a new alert to the public log. Called by off-chain poller
     ///         when an oracle deviation crosses the configured threshold.
+    /// @dev Input encoding rules for `asset`, `oraclePair`, and `evidenceHash` are NOT
+    ///      enforced on-chain. Off-chain publishers MUST follow the canonical encoding
+    ///      spec in docs/DECISIONS/0007-canonical-encoding.md for alerts to be
+    ///      cross-verifiable by independent third parties.
     function logAlert(
         bytes32 asset,
         bytes32 oraclePair,

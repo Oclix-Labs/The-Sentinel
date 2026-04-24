@@ -14,6 +14,8 @@ import type { AlertPayload, DeliveryOutcome, OnchainStatus } from './types';
 interface FanoutEnv {
   DB: D1Database;
   ALERT_REGISTRY_ADDRESS: `0x${string}`;
+  BASE_RPC_URL: string;
+  PUBLISHER_PRIVATE_KEY: string;
   TELEGRAM_BOT_TOKEN: string;
 }
 

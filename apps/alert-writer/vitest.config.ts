@@ -20,7 +20,13 @@ export default defineWorkersConfig(async () => {
             bindings: {
               ENVIRONMENT: 'test',
               TEST_MIGRATIONS: migrations,
-              ALERT_REGISTRY_ADDRESS: '0x0000000000000000000000000000000000000001',
+              // Zero sentinel: onchain path in src/deliveries/onchain.ts early-returns
+              // with {pending, zero-hash}. Tests that need to exercise the real
+              // writeContract path should override via per-test env or rely on the
+              // Sepolia staging smoke described in the D4 PR body.
+              ALERT_REGISTRY_ADDRESS: '0x0000000000000000000000000000000000000000',
+              BASE_RPC_URL: 'http://127.0.0.1:0',
+              PUBLISHER_PRIVATE_KEY: `0x${'11'.repeat(32)}`,
               TELEGRAM_BOT_TOKEN: 'test-bot-token-not-real',
             },
           },

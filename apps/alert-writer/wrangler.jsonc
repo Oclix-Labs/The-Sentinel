@@ -18,8 +18,9 @@
       "name": "rwa-sentinel-alert-writer-staging",
       "vars": {
         "ENVIRONMENT": "staging",
-        "BASE_RPC_URL": "https://mainnet.base.org",
-        "ALERT_REGISTRY_ADDRESS": "0x0000000000000000000000000000000000000000"
+        "BASE_RPC_URL": "https://sepolia.base.org",
+        // D3 Sepolia deployment — see docs/ADDRESSES.md#alertregistry
+        "ALERT_REGISTRY_ADDRESS": "0x79b5d74A301079c86D13eb71e2787852F403F876"
       }
       // "d1_databases": [
       //   { "binding": "DB", "database_name": "rwa-sentinel-staging", "database_id": "REPLACE_ME" }
@@ -40,6 +41,10 @@
       "vars": {
         "ENVIRONMENT": "production",
         "BASE_RPC_URL": "https://mainnet.base.org",
+        // Zero address is the sentinel that disables onchain writes (see
+        // src/deliveries/onchain.ts). Flip to the real Mainnet AlertRegistry
+        // address after D5 mainnet deploy; until then, production alerts persist
+        // to D1 and fan out to subscribers but skip the on-chain audit step.
         "ALERT_REGISTRY_ADDRESS": "0x0000000000000000000000000000000000000000"
       }
       // "d1_databases": [
