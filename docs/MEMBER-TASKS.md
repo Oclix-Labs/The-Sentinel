@@ -39,9 +39,9 @@
 
 ### D5 (4/24 Thu)
 - [ ] **Base Mainnet 배포** (`AlertRegistry`)
-- [ ] Basescan verified 확인
-- [ ] 테스트 알림 1건 emit (on-chain evidence)
-- [ ] PR 리뷰 (집중)
+- [x] Basescan verified 확인 — Sepolia verified 2026-04-24 via `forge verify-contract --chain base-sepolia` (Etherscan V2). Mainnet verify는 배포 직후.
+- [x] 테스트 알림 1건 emit (on-chain evidence) — D3 직접 `cast send` alertId=0 + D4 end-to-end staging smoke alertId=1 (ADR 0007 canonical encoding 실환경 증명)
+- [x] PR 리뷰 (집중) — PR #4/#5/#6/#7 전부 리뷰 + 머지 완료 (2026-04-24)
 
 ### D6 (4/25 Fri)
 - [ ] Founder video 촬영 참여 (brief 8s cut)
