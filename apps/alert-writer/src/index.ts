@@ -21,10 +21,9 @@ export interface Env {
   ENVIRONMENT: 'staging' | 'production' | 'test';
   DB: D1Database;
   ALERT_REGISTRY_ADDRESS: `0x${string}`;
+  BASE_RPC_URL: string;
+  PUBLISHER_PRIVATE_KEY: string;
   TELEGRAM_BOT_TOKEN: string;
-  BASE_RPC_URL?: string;
-  // PUBLISHER_PRIVATE_KEY will be added in the D4 pairing commit that introduces
-  // the real viem writeContract call — declaring it before it's read misleads ops.
 }
 
 export default {

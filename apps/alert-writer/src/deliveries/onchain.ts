@@ -1,26 +1,107 @@
+import { http, createPublicClient, createWalletClient } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { baseSepolia } from 'viem/chains';
+import { hashAsset, hashEvidence, hashOraclePair } from '../canonical';
 import type { AlertPayload, OnchainStatus } from '../types';
 
-interface OnchainEnv {
+/**
+ * Calls `AlertRegistry.logAlert` on Base Sepolia. Implements ADR 0007 §§1–6
+ * canonical encoding via canonical.ts. Replaces the D3 stub.
+ *
+ * Failure modes & status matrix:
+ *   - env.ALERT_REGISTRY_ADDRESS === 0x0…0  → sentinel disabled, status `pending`,
+ *     no network. Use this to roll back onchain writes without code revert.
+ *   - writeContract throws (nonce, gas, RPC down) → status `failed`, zero txHash
+ *   - waitForTransactionReceipt timeout → status `submitted` + real txHash
+ *     (tx may still land; we kept observability)
+ *   - receipt.status === 'reverted' → status `failed` + real txHash
+ *   - happy path → status `confirmed` + real txHash
+ *
+ * Non-blocking contract: MUST return a status, never throw, so fanout.ts's
+ * subscriber dispatch always runs even when onchain fails.
+ */
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const ZERO_HASH = `0x${'0'.repeat(64)}` as const;
+const RECEIPT_TIMEOUT_MS = 30_000; // ~15 Base blocks @ 2s; fits CF Worker 30s CPU limit
+
+const ALERT_REGISTRY_ABI = [
+  {
+    type: 'function',
+    name: 'logAlert',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'asset', type: 'bytes32' },
+      { name: 'oraclePair', type: 'bytes32' },
+      { name: 'deviationBps', type: 'int128' },
+      { name: 'evidenceHash', type: 'bytes32' },
+      { name: 'alertType', type: 'uint32' },
+    ],
+    outputs: [{ name: 'alertId', type: 'uint256' }],
+  },
+] as const;
+
+export interface OnchainEnv {
   ALERT_REGISTRY_ADDRESS: `0x${string}`;
-  PUBLISHER_PRIVATE_KEY?: string;
+  BASE_RPC_URL: string;
+  PUBLISHER_PRIVATE_KEY: string;
 }
 
-/**
- * Stub. Real implementation lands during D4 pair programming with 권상현
- * once apps/contracts/src/AlertRegistry.sol ABI + deploy address are final.
- *
- * Real version will:
- *   1. viem walletClient + createPublicClient for Base Mainnet via env.BASE_RPC_URL
- *   2. writeContract to ALERT_REGISTRY_ADDRESS — AlertRegistry.logAlert(...)
- *   3. await waitForTransactionReceipt (max 30s)
- *   4. Return { txHash, status: 'confirmed' | 'submitted' }
- */
 export async function logAlertOnChain(
-  _alert: AlertPayload,
-  _env: OnchainEnv,
+  payload: AlertPayload,
+  env: OnchainEnv,
 ): Promise<{ txHash: string; status: OnchainStatus }> {
-  console.warn(
-    '[alert-writer] STUB: skipping onchain logAlert — ABI not yet locked (see docs/MEMBER-TASKS.md D4 권상현 pairing)',
-  );
-  return { txHash: `0x${'0'.repeat(64)}`, status: 'pending' };
+  if (env.ALERT_REGISTRY_ADDRESS === ZERO_ADDRESS) {
+    console.warn('[alert-writer] onchain disabled: zero ALERT_REGISTRY_ADDRESS sentinel');
+    return { txHash: ZERO_HASH, status: 'pending' };
+  }
+
+  let txHash: `0x${string}`;
+  try {
+    const account = privateKeyToAccount(env.PUBLISHER_PRIVATE_KEY as `0x${string}`);
+    const wallet = createWalletClient({
+      account,
+      chain: baseSepolia,
+      transport: http(env.BASE_RPC_URL),
+    });
+
+    txHash = await wallet.writeContract({
+      address: env.ALERT_REGISTRY_ADDRESS,
+      abi: ALERT_REGISTRY_ABI,
+      functionName: 'logAlert',
+      args: [
+        hashAsset(payload.asset),
+        hashOraclePair(payload.oraclePair),
+        BigInt(payload.deviationBps),
+        hashEvidence(payload.evidence),
+        payload.alertType,
+      ],
+    });
+  } catch (err) {
+    console.error('[alert-writer] logAlert writeContract failed', err);
+    return { txHash: ZERO_HASH, status: 'failed' };
+  }
+
+  try {
+    const publicClient = createPublicClient({
+      chain: baseSepolia,
+      transport: http(env.BASE_RPC_URL),
+    });
+    const receipt = await publicClient.waitForTransactionReceipt({
+      hash: txHash,
+      timeout: RECEIPT_TIMEOUT_MS,
+      confirmations: 1,
+    });
+    return {
+      txHash,
+      status: receipt.status === 'success' ? 'confirmed' : 'failed',
+    };
+  } catch (err) {
+    // Timeout or RPC read failure — tx was submitted but we can't confirm.
+    // Preserve the hash for observability; status 'submitted' signals
+    // "check later via Basescan". Not terminal, so the queue may retry and
+    // re-emit a second tx — acceptable Phase-1 wart (documented in ADR 0007).
+    console.warn('[alert-writer] receipt wait inconclusive, tx may still land', txHash, err);
+    return { txHash, status: 'submitted' };
+  }
 }
