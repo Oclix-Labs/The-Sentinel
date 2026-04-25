@@ -355,6 +355,31 @@ a:focus-visible,button:focus-visible{outline:2px solid #0052FF;outline-offset:3p
 <!-- FOOTER -->
 <footer class="py-16 border-t border-slate-100">
 <div class="max-w-7xl mx-auto px-6">
+  <!-- Deployed Contracts callout -->
+  <div class="mb-12 p-6 rounded-2xl bg-primary/5 border border-primary/20">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-primary text-base" aria-hidden="true">verified</span>
+          <span class="text-[10px] font-mono font-bold text-primary uppercase tracking-wider" data-i18n="contracts_label">Live on Base Mainnet · Verified</span>
+        </div>
+        <h4 class="font-bold text-lg" data-i18n="contracts_title">AlertRegistry.sol</h4>
+        <p class="text-sm text-slate-500 mt-1" data-i18n="contracts_desc">Append-only on-chain alert log. Same address on Sepolia and Mainnet via CREATE determinism (deployer nonce 0).</p>
+      </div>
+      <div class="flex flex-col gap-2 font-mono text-xs">
+        <a href="https://basescan.org/address/0x79b5d74A301079c86D13eb71e2787852F403F876#code" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 hover:border-primary hover:text-primary transition-colors" aria-label="View AlertRegistry on Basescan Mainnet">
+          <span class="text-slate-400">Mainnet</span>
+          <span class="font-semibold">0x79b5d7…F403F876</span>
+          <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
+        </a>
+        <a href="https://sepolia.basescan.org/address/0x79b5d74A301079c86D13eb71e2787852F403F876#code" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 hover:border-primary hover:text-primary transition-colors" aria-label="View AlertRegistry on Basescan Sepolia">
+          <span class="text-slate-400">Sepolia</span>
+          <span class="font-semibold">0x79b5d7…F403F876</span>
+          <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
+        </a>
+      </div>
+    </div>
+  </div>
   <div class="grid md:grid-cols-3 gap-12 mb-16">
     <div>
       <div class="flex items-center gap-2 mb-6"><div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"><span class="material-symbols-outlined text-white text-lg" style="font-variation-settings:'FILL' 1" aria-hidden="true">shield</span></div><span class="font-bold text-lg">RWA <span class="text-primary">Sentinel</span></span></div>
@@ -443,6 +468,7 @@ kpis:[{i:'hub',v:'5',l:'Assets Monitored',d:'BTC, ETH, USDC, cbETH (price) + USD
 sustain_t:'Sustainability Plan',sustain_d:'Post-Phase 1 plan in order of likelihood: <strong>(1) Phase 2 pre-seed ($1–2M)</strong> from crypto-native funds after MVP ships and validates retail demand — federates 2–3 operators and launches Premium tier (~$200–500/mo for webhook + historical + custom thresholds). <strong>(2) Follow-on Base ecosystem grants</strong> and Coinbase Ventures conversations. <strong>(3) Phase 3 seed/Series A ($5–10M) + SENTINEL token launch</strong> — permissionless operator staking, DAO governance, subscription payment in SENTINEL. Public free tier is guaranteed across all phases. Full sustainability / zero-revenue contingency plan in <code>docs/ROADMAP.md</code>.',
 s8_label:'08 — Roadmap',s8_title:'Progressive <span class="text-primary italic">Decentralization</span>',s8_sub:'Centralized MVP → Federated operators → Permissionless network + SENTINEL token.',
 rm:[{p:'Phase 1 (2026 Q2)',t:'Centralized MVP · Base Batches 003',d:['5 assets monitored: BTC, ETH, USDC, cbETH, USDO','AlertRegistry.sol deployed to Base Mainnet','Telegram + webhook alerts; Public API (Hono)','Moonwell cbETH replay as regression test','No token issued'],ac:1},{p:'Phase 2 (2026 Q4 – 2027 Q1)',t:'Federated Operators · Pre-seed',d:['2–3 independent operators with N-of-M consensus','10–15 assets incl. wstETH, USDT, DAI, EURC, cbBTC','Premium tier GA — target >$5K MRR','Third-party security audit','Token designed, not issued']},{p:'Phase 3 (2027 Q2+)',t:'Permissionless + SENTINEL Token',d:['StakingManager + Governance + Treasury contracts','SENTINEL utility token live on Base (CCIP to ETH/OP)','DAO-governed thresholds, coverage, slashing','30+ assets monitored','Community airdrop to Phase 1–2 subscribers']}],
+contracts_label:'Live on Base Mainnet · Verified',contracts_title:'AlertRegistry.sol',contracts_desc:'Append-only on-chain alert log. Same address on Sepolia and Mainnet via CREATE determinism (deployer nonce 0).',
 footer_desc:'Public-good watchdog for tokenized RWAs on Base. By Oclix Labs.',f_infra:'Infrastructure',f_eco:'Phase 1 Assets'
 },ko:{
 nav:['개요','아키텍처','자산','Base Batches','KPIs','로드맵'],nav_cta:'제출물 보기',
@@ -514,6 +540,7 @@ kpis:[{i:'hub',v:'5',l:'모니터링 자산',d:'BTC · ETH · USDC · cbETH (가
 sustain_t:'지속가능성 계획',sustain_d:'Phase 1 이후 가능성 순: <strong>(1) Phase 2 pre-seed ($1–2M)</strong> — MVP 출시 및 리테일 수요 검증 후 crypto-native VC로부터 조달. 2–3 federated operator 도입 및 Premium 티어 출시 (웹훅 + 히스토리 + 커스텀 임계치 ~$200–500/월). <strong>(2) Base 생태계 후속 Grant</strong> 및 Coinbase Ventures 협의. <strong>(3) Phase 3 seed/Series A ($5–10M) + SENTINEL 토큰 출시</strong> — permissionless operator staking · DAO 거버넌스 · SENTINEL 구독 결제. 모든 단계에서 무료 퍼블릭 티어는 보장. 전체 지속가능성 · 무수익 컨틴전시 계획은 <code>docs/ROADMAP.md</code> 참조.',
 s8_label:'08 — 로드맵',s8_title:'Progressive <span class="text-primary italic">Decentralization</span>',s8_sub:'중앙화 MVP → 연합 운영자 → Permissionless 네트워크 + SENTINEL 토큰.',
 rm:[{p:'Phase 1 (2026 Q2)',t:'중앙화 MVP · Base Batches 003',d:['5개 자산 모니터링: BTC · ETH · USDC · cbETH · USDO','AlertRegistry.sol Base Mainnet 배포','Telegram + 웹훅 알림; Public API (Hono)','Moonwell cbETH 회귀 테스트 픽스처','토큰 미발행'],ac:1},{p:'Phase 2 (2026 Q4 – 2027 Q1)',t:'연합 운영자 · Pre-seed',d:['2–3 독립 운영자 · N-of-M 합의','10–15개 자산 (wstETH · USDT · DAI · EURC · cbBTC 포함)','Premium 티어 GA · >$5K MRR 목표','제3자 보안 감사','토큰 설계 완료, 미발행']},{p:'Phase 3 (2027 Q2+)',t:'Permissionless + SENTINEL 토큰',d:['StakingManager + Governance + Treasury 컨트랙트','Base에서 SENTINEL 유틸리티 토큰 출시 (ETH/OP CCIP)','DAO 거버넌스: 임계치 · 커버리지 · 슬래싱','30+ 자산 모니터링','Phase 1–2 구독자 대상 커뮤니티 에어드랍']}],
+contracts_label:'Base Mainnet 라이브 · Verified',contracts_title:'AlertRegistry.sol',contracts_desc:'추가 전용 온체인 알림 로그. CREATE 결정성(deployer nonce 0)에 의해 Sepolia · Mainnet 동일 주소.',
 footer_desc:'Base 위 토큰화 RWA를 위한 공공재 감시 레이어. Oclix Labs 제공.',f_infra:'인프라',f_eco:'Phase 1 자산'
 }};
 
