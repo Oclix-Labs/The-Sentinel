@@ -1,0 +1,37 @@
+%% RWA Sentinel — Progressive Decentralization (Phase 1 → 2 → 3)
+%% Excalidraw: Mermaid → Diagram (Cmd+Shift+M, paste this code)
+
+flowchart TB
+    subgraph P1["Phase 1 · 2026 Q2 — Centralized MVP"]
+        direction LR
+        P1OP["Single operator<br/>(Oclix Labs)"]
+        P1AS["5 assets<br/>BTC · ETH · USDC<br/>cbETH · USDO"]
+        P1TK["No token"]
+        P1FU["$50K Base Batches"]
+    end
+
+    subgraph P2["Phase 2 · 2026 Q4 – 2027 Q1 — Federated Operators"]
+        direction LR
+        P2OP["2–3 independent operators<br/>N-of-M consensus"]
+        P2AS["10–15 assets<br/>+ wstETH USDT DAI EURC<br/>cbBTC LBTC USDe"]
+        P2TK["Token<br/><b>designed</b>, not issued<br/>+ airdrop registry"]
+        P2FU["Pre-seed<br/>$1–2M"]
+    end
+
+    subgraph P3["Phase 3 · 2027 Q2+ — Permissionless + SENTINEL"]
+        direction LR
+        P3OP["Anyone stakes SENTINEL<br/>→ runs operator<br/>(10+ permissionless)"]
+        P3AS["30+ tokenized RWAs<br/>+ Superchain expansion"]
+        P3TK["<b>SENTINEL live</b><br/>staking · subscription<br/>governance · ecosystem fund"]
+        P3FU["Seed/Series<br/>$5–10M + token"]
+    end
+
+    P1 ==> P2 ==> P3
+
+    classDef phase1 fill:#E8EFFF,stroke:#0052FF,stroke-width:2px,color:#0F172A
+    classDef phase2 fill:#FFF4E0,stroke:#F59E0B,stroke-width:2px,color:#0F172A
+    classDef phase3 fill:#E8FFF0,stroke:#10B981,stroke-width:2px,color:#0F172A
+
+    class P1OP,P1AS,P1TK,P1FU phase1
+    class P2OP,P2AS,P2TK,P2FU phase2
+    class P3OP,P3AS,P3TK,P3FU phase3
