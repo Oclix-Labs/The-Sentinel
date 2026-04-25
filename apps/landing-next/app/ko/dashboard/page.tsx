@@ -1,5 +1,5 @@
 import { DashboardContent } from "@/components/dashboard-content";
 
 export default function Page() {
-  return <DashboardContent locale="en" />;
+  return <DashboardContent locale="ko" />;
 }

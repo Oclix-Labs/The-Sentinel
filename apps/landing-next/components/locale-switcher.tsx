@@ -1,21 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { Locale } from "@/lib/i18n";
 
-export function LocaleSwitcher({ current }: { current: Locale }) {
-  const pathname = usePathname();
-  const params = useSearchParams();
-
-  function buildHref(target: Locale) {
-    const sp = new URLSearchParams(params?.toString() ?? "");
-    if (target === "en") sp.delete("lang");
-    else sp.set("lang", target);
-    const qs = sp.toString();
-    return `${pathname}${qs ? `?${qs}` : ""}`;
+// Path-based locale switching. EN routes live at root (/, /dashboard).
+// KO routes mirror under /ko (/ko/, /ko/dashboard). Switching just
+// adds or strips the /ko prefix.
+function swapLocale(pathname: string, target: Locale): string {
+  // Strip any existing /ko prefix
+  const stripped = pathname.replace(/^\/ko(\/|$)/, "/");
+  if (target === "ko") {
+    if (stripped === "/") return "/ko/";
+    return `/ko${stripped}`;
   }
+  return stripped;
+}
+
+export function LocaleSwitcher({ current }: { current: Locale }) {
+  const pathname = usePathname() ?? "/";
 
   return (
     <div
@@ -24,7 +28,7 @@ export function LocaleSwitcher({ current }: { current: Locale }) {
       aria-label="Language selector"
     >
       <Link
-        href={buildHref("en")}
+        href={swapLocale(pathname, "en")}
         aria-pressed={current === "en"}
         className={cn(
           "px-3 py-1 rounded-full text-[10px] font-mono font-bold transition-all",
@@ -36,7 +40,7 @@ export function LocaleSwitcher({ current }: { current: Locale }) {
         EN
       </Link>
       <Link
-        href={buildHref("ko")}
+        href={swapLocale(pathname, "ko")}
         aria-pressed={current === "ko"}
         className={cn(
           "px-3 py-1 rounded-full text-[10px] font-mono font-bold transition-all",
