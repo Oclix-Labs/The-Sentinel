@@ -59,6 +59,7 @@ docs/superpowers/
 # Local planning scratch
 .planning/
 TODO.local.md
+JAEGEUN-TODO.md
 
 # OpenAI / Anthropic caches
 .anthropic/
