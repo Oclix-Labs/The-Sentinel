@@ -6,13 +6,10 @@ import { type Locale, getDict } from '@/lib/i18n';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
-const OracleNetworkScene = dynamic(
-  () => import('@/components/scenes/OracleNetworkScene'),
-  {
-    ssr: false,
-    loading: () => <SceneSkeleton />,
-  },
-);
+const OracleNetworkScene = dynamic(() => import('@/components/scenes/OracleNetworkScene'), {
+  ssr: false,
+  loading: () => <SceneSkeleton />,
+});
 
 function SceneSkeleton() {
   return (
