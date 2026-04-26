@@ -1,14 +1,14 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { SiteNav } from '@/components/site-nav';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { fetchAlerts, fetchPrices, type AlertRow, type PriceRow } from '@/lib/api';
-import { getDict, type Locale } from '@/lib/i18n';
+import { type AlertRow, type PriceRow, fetchAlerts, fetchPrices } from '@/lib/api';
+import { type Locale, getDict } from '@/lib/i18n';
 import { localePath } from '@/lib/utils';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 function formatTimestamp(ts: number, locale: Locale): string {
   return new Date(ts * 1000).toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US', {

@@ -1,9 +1,9 @@
-import Link from 'next/link';
-import { Shield } from 'lucide-react';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { Button } from '@/components/ui/button';
-import { localePath } from '@/lib/utils';
 import type { Dict, Locale } from '@/lib/i18n';
+import { localePath } from '@/lib/utils';
+import { Shield } from 'lucide-react';
+import Link from 'next/link';
 
 export function SiteNav({ t, locale }: { t: Dict['nav']; locale: Locale }) {
   return (

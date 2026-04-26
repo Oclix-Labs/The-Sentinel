@@ -1,12 +1,12 @@
-import Link from 'next/link';
-import { ArrowRight, AlertTriangle, ShieldCheck, Zap, History } from 'lucide-react';
-import { SiteNav } from '@/components/site-nav';
 import { ContractsCallout } from '@/components/contracts-callout';
+import { SiteNav } from '@/components/site-nav';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getDict, type Locale } from '@/lib/i18n';
+import { type Locale, getDict } from '@/lib/i18n';
 import { GITHUB_REPO, localePath } from '@/lib/utils';
+import { AlertTriangle, ArrowRight, History, ShieldCheck, Zap } from 'lucide-react';
+import Link from 'next/link';
 
 const STAGE_ICONS = [Zap, AlertTriangle, ShieldCheck, History];
 
@@ -62,8 +62,8 @@ export function LandingContent({ locale }: { locale: Locale }) {
               { v: '≥$50M', l: t.stats.lost },
               { v: '5', l: t.stats.assets },
               { v: '0', l: t.stats.watchdogs },
-            ].map((s, i) => (
-              <div key={i}>
+            ].map((s) => (
+              <div key={s.l}>
                 <div className="font-serif text-4xl md:text-5xl font-semibold text-primary">
                   {s.v}
                 </div>
@@ -112,7 +112,7 @@ export function LandingContent({ locale }: { locale: Locale }) {
               {t.arch.stages.map((s, i) => {
                 const Icon = STAGE_ICONS[i];
                 return (
-                  <Card key={i} className="text-center">
+                  <Card key={s.id} className="text-center">
                     <CardHeader>
                       <div className="w-12 h-12 rounded-2xl bg-primary/5 border border-primary/20 flex items-center justify-center mx-auto mb-3">
                         <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
@@ -167,7 +167,7 @@ export function LandingContent({ locale }: { locale: Locale }) {
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {t.roadmap.phases.map((p, i) => (
-                <Card key={i}>
+                <Card key={p.tag}>
                   <CardHeader>
                     <Badge
                       variant={i === 0 ? 'primary' : i === 1 ? 'amber' : 'success'}
@@ -179,8 +179,8 @@ export function LandingContent({ locale }: { locale: Locale }) {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2 text-sm text-slate-600">
-                      {p.bullets.map((b, j) => (
-                        <li key={j} className="flex gap-2">
+                      {p.bullets.map((b) => (
+                        <li key={b} className="flex gap-2">
                           <span className="text-primary mt-1">→</span>
                           <span>{b}</span>
                         </li>

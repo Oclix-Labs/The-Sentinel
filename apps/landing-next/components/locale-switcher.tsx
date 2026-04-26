@@ -1,9 +1,9 @@
 'use client';
 
+import type { Locale } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import type { Locale } from '@/lib/i18n';
 
 // Path-based locale switching. EN routes live at root (/, /dashboard).
 // KO routes mirror under /ko (/ko/, /ko/dashboard). Switching just
@@ -22,7 +22,10 @@ export function LocaleSwitcher({ current }: { current: Locale }) {
   const pathname = usePathname() ?? '/';
 
   return (
-    <div className="flex bg-slate-100 p-1 rounded-full" role="group" aria-label="Language selector">
+    <fieldset
+      className="flex bg-slate-100 p-1 rounded-full border-0 m-0"
+      aria-label="Language selector"
+    >
       <Link
         href={swapLocale(pathname, 'en')}
         aria-pressed={current === 'en'}
@@ -47,6 +50,6 @@ export function LocaleSwitcher({ current }: { current: Locale }) {
       >
         KR
       </Link>
-    </div>
+    </fieldset>
   );
 }

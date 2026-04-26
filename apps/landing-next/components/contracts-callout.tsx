@@ -1,11 +1,11 @@
-import { ExternalLink, ShieldCheck } from 'lucide-react';
+import type { Dict } from '@/lib/i18n';
 import {
   ALERT_REGISTRY_ADDRESS,
   BASESCAN_MAINNET,
   BASESCAN_SEPOLIA,
   shortenAddress,
 } from '@/lib/utils';
-import type { Dict } from '@/lib/i18n';
+import { ExternalLink, ShieldCheck } from 'lucide-react';
 
 export function ContractsCallout({ t }: { t: Dict['contracts'] }) {
   return (
