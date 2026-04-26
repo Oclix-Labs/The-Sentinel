@@ -99,7 +99,13 @@ Phase 3 migrates the full network on-chain. `StakingManager.sol` accepts SENTINE
 
 ## 4. Tokenomics framework **[DIRECTIONAL]**
 
-> SENTINEL is the utility token of the Phase 3 permissionless operator network. The framework below is **directional**: category allocations are locked, but exact percentages, total supply, and emission curve are intentionally deferred to Phase 2 community input and an independent economic audit. Full long-form spec: [`docs/TOKENOMICS-OUTLINE.md`](./TOKENOMICS-OUTLINE.md).
+> SENTINEL is the utility token of the Phase 3 permissionless operator network. The framework below is **directional**: exact percentages, total supply, and emission curve are deferred to Phase 2 community input and an independent economic audit. The structural commitments — described in §4.0 — are firm. Full long-form spec: [`docs/TOKENOMICS-OUTLINE.md`](./TOKENOMICS-OUTLINE.md).
+
+### 4.0 Founding principle — no team or investor genesis allocation
+
+The four founders of Oclix Labs and any future Phase 2 investors do **not** receive a SENTINEL token allocation at genesis. Founders may participate in the Phase 3 permissionless operator network on the same terms as any external operator, but founder-earned operator emission is additionally subject to a **4-year vest with 1-year cliff** and an aggregate **5% cap** on total operator emission. Phase 2 funding flows into **Oclix Labs Inc** — the SaaS company that operates Premium subscription services on top of the public-good token network — through USD-denominated SAFE or priced equity rounds. There is no SAFT, no token warrant, no pre-launch private sale, and no token-for-service swap to any party at any time.
+
+This separation mirrors the **Vercel / Next.js** and **Apollo GraphQL / Apollo Server** patterns: the protocol token coordinates an open public-good operator network; the corporation captures value from hosted services on top. The materially weakened Howey factor 4 analysis in §8 is a direct structural consequence — no party simultaneously contributing pre-launch effort *and* expecting profit from token-price appreciation exists by design.
 
 ### 4.1 Utility — four functional pillars
 
@@ -112,17 +118,17 @@ SENTINEL exists because four functional requirements of a decentralized public-g
 
 ### 4.2 Allocation framework
 
-Category labels are locked. Percentages are deferred to Phase 2.
+Genesis distribution contains three categories. **No Team category. No Investor category. No founder pre-mine.**
 
-| Category | Direction | Vesting | Purpose |
+| Category | Direction | Vesting / mechanics | Purpose |
 |---|---|---|---|
-| **Operator Incentives** | largest | 10-year linear emission | Sustain operator network; emission curve set by governance |
-| **Community / Early Subscribers** | substantial | None or 6-month linear | Phase 1–2 subscribers, GitHub contributors, research contributors; bootstrap decentralization narrative |
-| **Ecosystem Fund** | meaningful | DAO controlled | Audits, grants, emergency response, legal reserves |
-| **Team & Advisors** | modest | 4 years, 1-year cliff | Long-term commitment; standard crypto-native schedule |
-| **Investors** | proportional to capital raised | 4 years, 1-year cliff | Pre-seed (Phase 2) + Seed/Series A (Phase 3); SAFT + warrants |
+| **Operator Incentives** | largest (≈60–80%) | 10-year linear emission. Founder operator share capped at 5% of this category and subject to additional 4-year vest with 1-year cliff. | Sustain operator network across Phase 3+ |
+| **Community / Early Subscribers** | substantial (≈15–25%) | None or 6-month linear cliff. Distributed via airdrop to Phase 1–2 subscribers, GitHub contributors, research contributors, and operator candidates, weighted by tenure and verifiable activity. | Bootstrap retail network effect; reward early validators of the public-good network |
+| **Ecosystem Fund** | meaningful (≈5–15%) | DAO-controlled. Funded additionally by slashed operator stakes and a governance-set share of subscription revenue. | Audits, grants, emergency response, legal reserves, integrations |
 
-Three anti-patterns we explicitly avoid: (a) Team + Investors combined exceeding 30% (signals captured launch), (b) immediate unlock for any stakeholder (signals rug-pull), (c) Investor allocation exceeding Community (signals extractive launch).
+Percentage ranges are **directional** and finalized by Phase 2 community input plus an independent economic audit. The structural commitments — zero team allocation, zero investor allocation, 5% founder operator cap with extra lock-up — are **firm**.
+
+Four anti-patterns this framework explicitly avoids: (a) team or founder allocation at any percentage (signals captured launch and creates Howey factor 4 exposure), (b) investor token allocation in any form including SAFT or warrants (signals SEC enforcement risk and gives unequal pre-launch upside to capital over labor), (c) immediate unlock for any stakeholder (signals rug-pull), (d) any pre-launch token sale to retail or accredited investors (Coinbase-adjacent regulatory risk).
 
 ### 4.3 Supply and emission
 
@@ -135,13 +141,22 @@ Four mechanisms tie token value to network success:
 1. **Operator demand.** More assets monitored → more operators required → more SENTINEL bonded.
 2. **Subscription demand.** More Premium subscribers → more SENTINEL spent or staked.
 3. **Buy-back and burn** (where legal in applicable jurisdictions). A governance-set portion of subscription revenue buys SENTINEL on the open market and burns it.
-4. **Staker yield.** Remaining subscription revenue flows to stakers — both operators and stake-to-subscribe holders. Stakers absorb dilution during operator emission and are compensated by subscription cash flow.
+4. **Staker yield.** Remaining subscription revenue flows to stakers — both operators and stake-to-subscribe holders. Stakers absorb dilution during operator emission and are compensated by subscription cash flow. Founder operators participating under the §4.0 cap and lock-up earn yield on the **same terms as any other operator**, with no separate founder yield stream.
 
 Equilibrium modeling — the precise relationship between coverage growth, subscription growth, emission rate, and staker yield — is deferred to Phase 2 alongside the independent economic audit.
 
 ### 4.5 Launch mechanism
 
-A hybrid of three components, finalized by Phase 2 governance and investor input: a SAFT with warrants for Phase 2 and Phase 3 investors (accredited only), a community airdrop to Phase 1–2 subscribers and GitHub contributors weighted by tenure and activity, and a Liquidity Bootstrapping Pool (Balancer or Fjord-style) for price discovery. A pure fair launch (LBP + airdrop only, no pre-sale) is on the table but creates fundraising risk for continued development; the hybrid is the working baseline.
+Genesis distribution is a **fair launch** with no pre-sale of any kind:
+
+1. **Operator Incentives pool** — committed to the `StakingManager` contract and emitted on the 10-year linear schedule beginning with Phase 3 launch. Founder operators earn through participation under the 5% cap with extra lock-up.
+2. **Community airdrop** — to verified Phase 1–2 subscribers, GitHub contributors, research contributors, and operator candidates, weighted by tenure and verifiable activity. Eligibility verification and snapshot logic are documented and made public before any claim window opens.
+3. **Ecosystem Fund initial allocation** — minted to the `EcosystemFund` DAO treasury contract.
+4. **Liquidity Bootstrapping Pool (LBP)** — a Balancer or Fjord-style price-discovery event that uses a small portion of the Community / Early Subscribers pool reserved for liquidity. Founders, Oclix Labs Inc, and Phase 2 investors do **not** participate in the LBP either as buyers or sellers.
+
+What does **not** happen at genesis: no SAFT, no SAFE-with-token-warrant, no pre-launch private sale, no OTC allocation to advisors, no token-for-service swap. Phase 2 funding flows entirely through Oclix Labs Inc on a USD-denominated equity instrument (SAFE or priced preferred round); investors receive equity in the SaaS company, **not** the protocol token. The two cap tables — Oclix Labs Inc equity and SENTINEL token — are legally and operationally separate and remain so post-Phase 3.
+
+This structure trades fundraising convenience for a clean public-good narrative and a materially stronger regulatory posture (§8). Investors who require token upside as a condition of participation self-select out of the deal; investors comfortable with the SaaS-on-public-goods thesis (a16z general fund, Coinbase Ventures, Variant, Foundation Capital, Sequoia, NEA — funds that have done equity-only deals for protocol-adjacent SaaS companies like Vercel, Cloudflare, Apollo, and Optimism Labs) remain available.
 
 ### 4.6 Parameters explicitly not set in v0.1
 
@@ -197,7 +212,7 @@ Sentinel is a detection and alerting layer, not a circuit-breaker. The threat mo
 | **Webhook DoS (alert spam)** | Flood subscriber webhooks to exhaust subscriber resources | Medium | Low | Per-subscriber rate limits; webhook signature verification (HMAC over canonical payload); Phase 3 introduces back-pressure on `SubscriptionRouter` |
 | **Sybil operator (Phase 3)** | Register thousands of cheap operator instances, vote false / spam alerts | N/A — closed Phase 1 / 2 | High without mitigation | SENTINEL bond requirement (§4.1.1) priced so honest-minority is cheaper than majority attack; slashing for false / missed alerts |
 | **Adversarial slashing (Phase 3)** | Coordinate false-flag of an honest operator to capture their bond | N/A | Medium-high without mitigation | Slashed tokens flow to **Ecosystem Fund**, not other operators (§4.1.1), eliminating the attack's economic motive |
-| **Governance capture (Phase 3)** | Acquire enough SENTINEL to ratify a parameter change harmful to the network | N/A | Medium | Timelock provides token-holder exit window; Security Council 5-of-7 emergency-pause veto during bootstrap; locked Team / Investor allocation kept ≤30% combined (§4.2) |
+| **Governance capture (Phase 3)** | Acquire enough SENTINEL to ratify a parameter change harmful to the network | N/A | Medium | Zero team and zero investor genesis allocation (§4.0) removes the most concentrated pre-launch vector; founder operator emission capped at 5% with 4-year vest; timelock provides token-holder exit window; Security Council 5-of-7 emergency-pause veto during bootstrap |
 | **Off-chain attestation forgery** | Issuer or custodian publishes a false PoR attestation that Sentinel reproduces | High residual — Sentinel reports what oracles publish; an issuer attesting to fake reserves is a category we surface but cannot prevent | High residual | Cross-check between Chainlink PoR and on-chain total supply (`reserve-vs-supply delta`, §3.1 Stage 3); explicit out-of-scope statement to subscribers |
 
 ### 6.3 Defense-in-depth mapping
@@ -231,7 +246,7 @@ Phase 1 ships a working public-good watchdog with provable on-chain alert histor
 
 ### 7.2 Phase 2 — Federated Operators (2026 Q4 – 2027 Q1)
 
-Phase 2 decentralizes cross-check execution across 2–3 independent operators on different infrastructure (e.g., one Cloudflare, one Vercel/Fly.io, one self-hosted) coordinated by the new `OperatorRegistry.sol` contract. An off-chain aggregator emits a high-confidence alert to `AlertRegistry` only when N-of-M operators agree, while single-operator candidate alerts continue to publish for transparency. Coverage expands to 10–15 assets including wstETH, USDT, DAI, EURC, cbBTC, LBTC, and USDe; cross-chain attestation mirroring brings Backed Finance products (bIB01, bCSPX) to Base via Chainlink CCIP. Funding is a $1–2M pre-seed round with SAFT plus token warrants; investors targeted include crypto-native funds and Coinbase Ventures follow-on if Phase 1 metrics satisfy. The Premium tier launches generally available with a $5K MRR target, and a third-party security audit (Trail of Bits, ChainSecurity, or Halborn) covers both `AlertRegistry` and `OperatorRegistry`. **The token is designed and published in Whitepaper v1.0; the airdrop allocation registry begins recording subscribers and contributors, but no token is issued during Phase 2.**
+Phase 2 decentralizes cross-check execution across 2–3 independent operators on different infrastructure (e.g., one Cloudflare, one Vercel/Fly.io, one self-hosted) coordinated by the new `OperatorRegistry.sol` contract. An off-chain aggregator emits a high-confidence alert to `AlertRegistry` only when N-of-M operators agree, while single-operator candidate alerts continue to publish for transparency. Coverage expands to 10–15 assets including wstETH, USDT, DAI, EURC, cbBTC, LBTC, and USDe; cross-chain attestation mirroring brings Backed Finance products (bIB01, bCSPX) to Base via Chainlink CCIP. Funding is a $1–2M pre-seed round in **USD-denominated equity** (SAFE or priced preferred) into Oclix Labs Inc — **no SAFT, no token warrants** per the §4.0 founding principle. Target investors are funds that have done equity-only deals for protocol-adjacent SaaS companies (Coinbase Ventures, a16z general fund, Variant, Foundation Capital). The Premium tier launches generally available with a $5K MRR target, and a third-party security audit (Trail of Bits, ChainSecurity, or Halborn) covers both `AlertRegistry` and `OperatorRegistry`. **The token is designed and published in Whitepaper v1.0; the airdrop allocation registry begins recording subscribers and contributors, but no token is issued during Phase 2.**
 
 ### 7.3 Phase 3 — Permissionless Network + SENTINEL Token (2027 Q2+)
 
@@ -251,11 +266,13 @@ SENTINEL is designed as a **utility token** with a consumption mechanism (subscr
 
 **Multi-jurisdiction legal review is continuous.** Counsel in the United States, Korea, Singapore, and the Cayman Islands review the protocol and token design on an ongoing basis. The Phase 3 launch is contingent on favorable opinions in the relevant jurisdictions.
 
-**Sale structure avoids US retail public offering.** Token allocation to investors is via SAFT (Simple Agreement for Future Tokens) with warrants, restricted to accredited investors as defined under Rule 501(a) of Regulation D and the equivalent local frameworks elsewhere. Nothing in this whitepaper constitutes an offer to sell or a solicitation to buy any security to or from any person in the United States or any other jurisdiction in which such offer or solicitation would be unlawful.
+**No token sale to any party.** Per §4.0, Sentinel does not use a SAFT, SAFE-with-token-warrant, OTC allocation, or any other instrument that conveys SENTINEL token rights to investors, advisors, or service providers in exchange for capital or work. Phase 2 capital is raised solely as USD-denominated equity in Oclix Labs Inc, the SaaS company. Nothing in this whitepaper constitutes an offer to sell or a solicitation to buy any security to or from any person in the United States or any other jurisdiction in which such offer or solicitation would be unlawful. The community airdrop in Phase 3 is not a sale: recipients pay no consideration and the eligibility snapshot is published before any claim window.
 
 **The community airdrop design is pending Korean legal review.** Several Phase 1 contributors (including the Oclix Labs founding team) are Korean residents. Airdrop eligibility for Korean residents is being reviewed against the Virtual Asset User Protection Act and related Financial Services Commission guidance before any allocation registry is finalized.
 
 **Howey-test factor analysis** — investment of money, common enterprise, expectation of profit, derived from the efforts of others — is deferred to the pre-launch legal document. The token's utility (operator bonding, subscription payment, governance) is operational from genesis, which materially weakens factor 4 (efforts of others) compared with infrastructure tokens that launched without functional utility.
+
+This factor 4 weakening is reinforced *structurally* by the §4.0 founding principle: no Oclix Labs founder, employee, or Phase 2 investor receives any SENTINEL token at genesis. The set of parties simultaneously contributing pre-launch effort to network construction *and* expecting profit from token-price appreciation is **empty by design**. The only token holders at launch are operators (compensated for ongoing service work, not for pre-launch promises and subject to slashing for misbehavior), Phase 1–2 subscribers and contributors (recipients of an airdrop with no purchase consideration), and the Ecosystem Fund (a DAO-controlled treasury that itself does not benefit any individual). Token-side and corporate-side economic interests are kept structurally separate: Oclix Labs Inc raises USD-denominated equity and earns USD-denominated SaaS revenue; SENTINEL coordinates the public-good operator network. This separation is the same pattern used by Vercel relative to the Next.js token-equivalent (which simply does not exist as a token because Vercel did not need one) and by Optimism Labs relative to OP token allocation that reaches Labs employees only through long-vested operating compensation.
 
 Specific risks and disclaimers — including that token value may fluctuate significantly, that nothing here is investment advice, and that the project may be required to make material design changes in response to legal opinion — appear in §10 below.
 
@@ -342,7 +359,7 @@ Defined for the cross-functional reader: a tokenized-RWA-curious investor who kn
 
 ### Token launch & legal
 
-- **SAFT (Simple Agreement for Future Tokens)** — A contract sold to accredited investors representing a right to receive tokens at a future network launch. Used to raise capital before token issuance while staying inside US private-placement exemptions.
+- **SAFT (Simple Agreement for Future Tokens)** — A contract sold to accredited investors representing a right to receive tokens at a future network launch. Used by other protocols to raise capital before token issuance while staying inside US private-placement exemptions. **Sentinel does not use a SAFT** per the §4.0 founding principle; defined here only because the term appears in the Howey-test discussion in §8.
 - **LBP (Liquidity Bootstrapping Pool)** — A Balancer or Fjord-style price-discovery mechanism where a token launches with a high starting price that decays over time, allowing organic price discovery without front-running.
 - **Howey test** — The four-factor US Supreme Court test (investment of money, common enterprise, expectation of profit, derived from the efforts of others) used to determine whether an instrument is an investment contract / security under US federal law.
 - **Airdrop** — Distribution of tokens to a defined set of addresses (typically prior contributors or users) without payment, as a community-bootstrap mechanism.
@@ -382,7 +399,7 @@ Defined for the cross-functional reader: a tokenized-RWA-curious investor who kn
   - Original division of labor:
     - **김현우**: §1 Abstract, §2 Problem (cites `.research/`), §7 Roadmap, §9 Team, §10 Risks
     - **이재근**: §3 Architecture narrative, §4 Tokenomics narrative, §8 Regulatory framing, Appendix A Glossary
-  - **v0.1 actual**: §3 / §4 / §8 / Appendix A / §10 written by 이재근. §1 / §2 / §5 / §6 (with new threat-model subsections) / §7 / §9 drafted by 이재근 on D8 to unblock submission; **김현우 English polish + cross-section narrative review pending pre-PDF-export**.
+  - **v0.1 actual**: §3 / §4 (initial directional version) / §8 / Appendix A / §10 written by 이재근. §1 / §2 / §5 / §6 (with new threat-model subsections) / §7 / §9 drafted by 이재근 on D8 to unblock submission. **§4.0 Founding principle (no team / no investor genesis allocation)** added on D8 with downstream alignment in §4.2 (allocation table → 3 rows), §4.5 (fair launch, no SAFT), §6.2 (governance capture mitigation), §7.2 (Phase 2 funding via Oclix Labs Inc equity), and §8 (Howey factor 4 reinforcement). **김현우 English polish + cross-section narrative review pending pre-PDF-export**.
 - **Technical input** (quick reviews, not drafting): **권상현** (§5 Governance, §6 Security — confirm `AlertRegistry` and threat-model claims), **모진영** (§3 technical accuracy, §4 value-capture mechanism).
 - **Final approval**: 권상현 before any public release.
 - **Public release**: committed to repo + linked from `README.md` after Base Batches 003 submission.
