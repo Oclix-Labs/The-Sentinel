@@ -5,38 +5,53 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Source: docs/DESIGN.md (1:1)
         primary: {
           DEFAULT: '#0052FF',
-          light: '#E8EFFF',
-          50: '#E8EFFF',
-          100: '#D6E2FF',
-          500: '#0052FF',
-          600: '#0044D6',
-          700: '#0038AD',
+          hover: '#0042CC',
         },
-        surface: '#F5F8FF',
-        'surface-alt': '#F8FAFC',
-        dark: '#0A0F1E',
-        'op-red': '#FF0420',
-        amber: {
-          500: '#F59E0B',
+        'on-primary': '#FFFFFF',
+        ink: {
+          DEFAULT: '#0F172A',
+          secondary: '#475569',
+          muted: '#94A3B8',
         },
-        success: {
-          500: '#10B981',
+        surface: {
+          DEFAULT: '#FFFFFF',
+          alt: '#F8FAFC',
         },
+        'border-strong': '#CBD5E1',
+        success: '#10B981',
+        warning: '#F59E0B',
+        error: '#EF4444',
       },
       fontFamily: {
-        serif: ['Newsreader', 'ui-serif', 'Georgia', 'serif'],
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        mono: ['IBM Plex Mono', 'ui-monospace', 'monospace'],
+        // Tokens consumed via next/font CSS variables set in app/layout.tsx
+        serif: ['var(--font-source-serif)', 'ui-serif', 'Georgia', 'serif'],
+        sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-jetbrains-mono)', 'ui-monospace', 'monospace'],
+        kohero: ['var(--font-pretendard)', 'var(--font-inter)', 'ui-sans-serif', 'sans-serif'],
       },
-      backgroundImage: {
-        'dot-grid': 'radial-gradient(circle, #cbd5e1 1px, transparent 1px)',
-        'gradient-mesh':
-          'radial-gradient(at 0% 0%, rgba(0,82,255,.05) 0%, transparent 50%), radial-gradient(at 100% 0%, rgba(0,82,255,.03) 0%, transparent 50%), radial-gradient(at 50% 50%, #fff 0%, transparent 100%)',
+      letterSpacing: {
+        // Source: docs/DESIGN.md typography
+        display: '-0.02em',
+        h1: '-0.015em',
+        caps: '0.06em',
       },
-      backgroundSize: {
-        'dot-grid': '32px 32px',
+      spacing: {
+        // Names mirror DESIGN.md spacing scale
+        xs: '4px',
+        sm: '8px',
+        md: '16px',
+        lg: '24px',
+        xl: '48px',
+        xxl: '96px',
+      },
+      borderRadius: {
+        sm: '4px',
+        md: '8px',
+        lg: '12px',
+        xl: '16px',
       },
     },
   },
