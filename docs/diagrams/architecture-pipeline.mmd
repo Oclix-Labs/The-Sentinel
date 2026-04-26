@@ -1,0 +1,41 @@
+%% RWA Sentinel — Phase 1 Architecture Pipeline
+%% Excalidraw: Mermaid → Diagram (Cmd+Shift+M, paste this code)
+%% Figma: use Mermaid plugin or recreate manually
+
+flowchart LR
+    subgraph EDGE["Cloudflare Edge"]
+        direction TB
+        CRON["Cron 1 min"] --> POLL["Poller Worker"]
+        POLL --> CL["Chainlink<br/>latestRoundData"]
+        POLL --> PY["Pyth Hermes<br/>sponsored / pull"]
+        POLL --> RS["RedStone<br/>REST"]
+        CL --> NORM["Normalize<br/>18 decimals"]
+        PY --> NORM
+        RS --> NORM
+        NORM --> XCHK{"Pairwise deviation<br/>> ±2% ?"}
+        XCHK -->|no| KV["KV PRICES<br/>1h cache"]
+        XCHK -->|yes| Q["Queue<br/>ALERTS"]
+        Q --> AW["AlertWriter<br/>Worker"]
+        AW --> D1["D1<br/>alerts"]
+        AW --> WH["Webhook<br/>fan-out"]
+        AW --> TG["Telegram<br/>sendMessage"]
+        API["API Worker Hono<br/>/prices /alerts /subscribers"]
+        D1 -.read-only.-> API
+        KV -.read-only.-> API
+    end
+
+    AW ==> CHAIN
+
+    subgraph CHAIN["Base Mainnet"]
+        REG["AlertRegistry.sol<br/>append-only log"]
+    end
+
+    classDef edge fill:#E8EFFF,stroke:#0052FF,stroke-width:2px,color:#0F172A
+    classDef chain fill:#FFE5E5,stroke:#FF0420,stroke-width:2px,color:#0F172A
+    classDef store fill:#F8FAFC,stroke:#94A3B8,stroke-width:1px,color:#0F172A
+    classDef alert fill:#FFF4E0,stroke:#F59E0B,stroke-width:2px,color:#0F172A
+
+    class POLL,AW,API edge
+    class REG chain
+    class D1,KV,Q store
+    class XCHK,WH,TG alert
