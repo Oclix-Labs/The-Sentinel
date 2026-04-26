@@ -87,13 +87,13 @@ export function DashboardContent({ locale }: { locale: Locale }) {
             {/* PRICES */}
             <Card>
               <CardHeader>
-                <CardTitle>{t.dashboard.prices_title}</CardTitle>
+                <CardTitle>{t.dashboard.pricesTitle}</CardTitle>
               </CardHeader>
               <CardContent>
                 {loading ? (
                   <p className="text-sm text-slate-400">…</p>
                 ) : prices.length === 0 ? (
-                  <p className="text-sm text-slate-500">{t.dashboard.no_data}</p>
+                  <p className="text-sm text-slate-500">{t.dashboard.noData}</p>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -129,13 +129,13 @@ export function DashboardContent({ locale }: { locale: Locale }) {
             {/* ALERTS */}
             <Card>
               <CardHeader>
-                <CardTitle>{t.dashboard.alerts_title}</CardTitle>
+                <CardTitle>{t.dashboard.alertsTitle}</CardTitle>
               </CardHeader>
               <CardContent>
                 {loading ? (
                   <p className="text-sm text-slate-400">…</p>
                 ) : alerts.length === 0 ? (
-                  <p className="text-sm text-slate-500">{t.dashboard.no_data}</p>
+                  <p className="text-sm text-slate-500">{t.dashboard.noData}</p>
                 ) : (
                   <div className="space-y-3">
                     {alerts.map((a) => (
