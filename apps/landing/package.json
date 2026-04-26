@@ -1,0 +1,11 @@
+{
+  "name": "@oclix/landing",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RWA Sentinel landing page — Base Batches 003 submission (static HTML, Tailwind via CDN)",
+  "scripts": {
+    "dev": "python3 -m http.server 5173",
+    "typecheck": "echo 'no-op: static HTML'",
+    "test": "echo 'no-op: static HTML'"
+  }
+}
