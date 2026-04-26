@@ -1,12 +1,123 @@
-# SENTINEL — Lite Whitepaper v0.1
+<div align="center">
 
-> 🚧 **Working draft v0.1**. Sections 1–10 and Appendices A–B are filled. Sections marked `[DIRECTIONAL]` (notably §4 Tokenomics) are intentionally not final — exact percentages, supply, and emission curve are deferred to Phase 2 community input and an independent economic audit. Individual team bios in §9 link to [`docs/TEAM.md`](./TEAM.md) and are finalized before PDF export.
->
-> **Length**: ~25–30 pages PDF including the four-stage architecture diagram, threat-model and allocation tables, and the Appendix A glossary. Written for a crypto-native investor audience who knows DeFi, oracles, and basic tokenomics patterns. Comparable scope to Chainlink v1 (~38 p) and RedStone (~35 p) whitepapers; this remains the "Lite" v0.1 vs the full Phase 2 Whitepaper v1.0 that will add formal protocol specs and an economic-audit annex.
->
-> **Last updated**: 2026-04-27
+<br><br>
+
+# RWA Sentinel
+
+## Lite Whitepaper v0.1
+
+### The Public Watchdog for Tokenized RWAs on Base
+
+<br><br>
+
+**Oclix Labs**
+Yonsei BAY Blockchain Society
+Seoul, Republic of Korea
+
+<br>
+
+**2026-04-27**
+
+<br>
 
 ---
+
+<br>
+
+### Authors
+
+| Member | Role |
+|---|---|
+| 권상현 (Kwon Sanghyun) | Team Lead · Smart Contract Engineer |
+| 모진영 (Mo Jinyoung) | Core Engine · Backend · Infrastructure |
+| 이재근 (Lee Jaegeun) | Marketing · Community · Frontend · Whitepaper |
+| 김현우 (Kim Hyunwoo) | English · Research · Video · Documentation |
+
+<br>
+
+### Live deployment
+
+**Mainnet contract** — `AlertRegistry.sol` at [`0x79b5d74A301079c86D13eb71e2787852F403F876`](https://basescan.org/address/0x79b5d74A301079c86D13eb71e2787852F403F876) (Basescan-verified)
+
+**Landing page** — [oclixlabs.xyz](https://oclixlabs.xyz)
+
+**Repository** — [github.com/Oclix-Labs/The-Sentinel](https://github.com/Oclix-Labs/The-Sentinel)
+
+**Submission** — Base Batches 003 · Student Track
+
+<br>
+
+### License
+
+This whitepaper is released under the **MIT License**. The Sentinel codebase, smart contracts, and operator client are MIT-licensed forever across all phases (per §7.4).
+
+<br>
+
+</div>
+
+---
+
+> 🚧 **Working draft v0.1.** Sections 1–11 and Appendices A–B are filled. Sections marked `[DIRECTIONAL]` (notably §4 Tokenomics) are intentionally not final — exact percentages, supply, and emission curve are deferred to Phase 2 community input and an independent economic audit. Individual team bios in §9 link to [`docs/TEAM.md`](./TEAM.md) and are finalized before PDF release.
+>
+> **Length**: ~40–45 pages PDF including the four-stage architecture diagram, threat-model and allocation tables, the Appendix A glossary, and the §11 Vision. Written for a crypto-native investor audience who knows DeFi, oracles, and basic tokenomics patterns. Scope is comparable to Chainlink v1 (~38 p) and RedStone (~35 p) whitepapers; this remains the "Lite" v0.1 versus the full Phase 2 Whitepaper v1.0 that will add formal protocol specs, full Howey-test analysis, and an economic-audit annex.
+>
+> **Last updated**: 2026-04-27.
+
+<div style="page-break-after: always;"></div>
+
+## Table of Contents
+
+1. [Abstract](#1-abstract)
+2. [Problem](#2-problem)
+   - 2.1 [Pattern of oracle failures](#21-pattern-of-oracle-failures)
+   - 2.2 [Retail coverage gap](#22-retail-coverage-gap)
+   - 2.3 [Infrastructure without public-goods economics](#23-infrastructure-without-public-goods-economics)
+3. [Architecture](#3-architecture)
+   - 3.1 [Four-stage pipeline](#31-four-stage-pipeline)
+   - 3.2 [Phase 1 — Centralized MVP](#32-phase-1--centralized-mvp)
+   - 3.3 [Phase 2 — Federated Operators](#33-phase-2--federated-operators)
+   - 3.4 [Phase 3 — Permissionless Network](#34-phase-3--permissionless-network)
+   - 3.5 [Why Base, specifically](#35-why-base-specifically)
+   - 3.6 [Composability — Sentinel as a risk-event trigger primitive](#36-composability--sentinel-as-a-risk-event-trigger-primitive)
+4. [Tokenomics framework](#4-tokenomics-framework-directional)
+   - 4.0 [Founding principle — no team or investor genesis allocation](#40-founding-principle--no-team-or-investor-genesis-allocation)
+   - 4.1 [Utility — four functional pillars](#41-utility--four-functional-pillars)
+   - 4.2 [Allocation framework](#42-allocation-framework)
+   - 4.3 [Supply and emission](#43-supply-and-emission)
+   - 4.4 [Value capture](#44-value-capture)
+   - 4.5 [Launch mechanism](#45-launch-mechanism)
+   - 4.6 [Parameters explicitly not set in v0.1](#46-parameters-explicitly-not-set-in-v01)
+5. [Governance](#5-governance)
+   - 5.1 [Phase migration](#51-phase-migration)
+   - 5.2 [Governable parameters](#52-governable-parameters)
+6. [Security](#6-security)
+   - 6.1 [Defensive posture per phase](#61-defensive-posture-per-phase)
+   - 6.2 [Threat model](#62-threat-model)
+   - 6.3 [Defense-in-depth mapping](#63-defense-in-depth-mapping)
+   - 6.4 [Disclosure policy](#64-disclosure-policy)
+7. [Roadmap](#7-roadmap)
+   - 7.1 [Phase 1 — Centralized MVP (2026 Q2)](#71-phase-1--centralized-mvp-2026-q2)
+   - 7.2 [Phase 2 — Federated Operators (2026 Q4 – 2027 Q1)](#72-phase-2--federated-operators-2026-q4--2027-q1)
+   - 7.3 [Phase 3 — Permissionless Network + SENTINEL Token (2027 Q2+)](#73-phase-3--permissionless-network--sentinel-token-2027-q2)
+   - 7.4 [Cross-phase constants](#74-cross-phase-constants)
+8. [Regulatory considerations](#8-regulatory-considerations)
+9. [Team](#9-team)
+10. [Risks & Disclaimers](#10-risks--disclaimers)
+    - 10.1 [Regulatory uncertainty](#101-regulatory-uncertainty)
+    - 10.2 [Technical risk](#102-technical-risk)
+    - 10.3 [Execution risk](#103-execution-risk)
+    - 10.4 [Token value risk](#104-token-value-risk)
+    - 10.5 [No investment advice](#105-no-investment-advice)
+    - 10.6 [Team liability limitations](#106-team-liability-limitations)
+    - 10.7 [Programmable alert reliance](#107-programmable-alert-reliance)
+    - 10.8 [Fork risk and competitive moat narrowness](#108-fork-risk-and-competitive-moat-narrowness)
+11. [Vision](#11-vision)
+- Appendix A: [Glossary](#appendix-a-glossary)
+- Appendix B: [Deferred parameters](#appendix-b-deferred-parameters)
+- [References](#references)
+- [Review & approval workflow](#review--approval-workflow)
+
+<div style="page-break-after: always;"></div>
 
 ## 1. Abstract
 
@@ -56,6 +167,8 @@ Real-time multi-oracle cross-checking can be operated by a single team while the
 The historical solution to this problem is the pattern Chainlink (LINK), The Graph (GRT), and Filecoin (FIL) followed: introduce a token only after the network has demonstrated utility, and restrict the token's role to functions the network genuinely cannot perform without it — operator sybil resistance, slashing recovery, and governance at scale. Without a token of its own, an open monitoring network either remains a single-team service with capped reliability or becomes an enterprise product. RWA Sentinel chooses the third path. The four functional pillars motivating SENTINEL are detailed in §4.1; the regulatory and timing framing is in §8.
 
 ---
+
+<div style="page-break-before: always;"></div>
 
 ## 3. Architecture
 
@@ -155,6 +268,8 @@ Each composition is a B2B revenue tier in Phase 2+ Premium pricing: retail Premi
 
 ---
 
+<div style="page-break-before: always;"></div>
+
 ## 4. Tokenomics framework **[DIRECTIONAL]**
 
 > SENTINEL is the utility token of the Phase 3 permissionless operator network. The framework below is **directional**: exact percentages, total supply, and emission curve are deferred to Phase 2 community input and an independent economic audit. The structural commitments — described in §4.0 — are firm. Full long-form spec: [`docs/TOKENOMICS-OUTLINE.md`](./TOKENOMICS-OUTLINE.md).
@@ -248,6 +363,8 @@ What governance does **not** control: the append-only nature of `AlertRegistry`,
 
 ---
 
+<div style="page-break-before: always;"></div>
+
 ## 6. Security
 
 ### 6.1 Defensive posture per phase
@@ -288,6 +405,8 @@ Out of scope for the Phase 1 spec: protocol-side behavior after an alert is cons
 Vulnerabilities discovered before Phase 3 should be reported to `security@oclixlabs.xyz`; the Phase 1 disclosure window is 30 days from acknowledgement to public write-up unless a coordinated extension is agreed in writing. Phase 3 transitions to the Immunefi-managed disclosure flow with bounty payouts in SENTINEL.
 
 ---
+
+<div style="page-break-before: always;"></div>
 
 ## 7. Roadmap
 
@@ -403,6 +522,8 @@ The honest disclosure: the moat is **community, brand, operator network, and cur
 
 ---
 
+<div style="page-break-before: always;"></div>
+
 ## 11. Vision
 
 By 2030, every tokenized real-world asset on Base — every dollar of tokenized U.S. Treasury, every gram of tokenized gold, every share of cbBTC, every wrapped Treasury ETP — has its oracle layer continuously cross-checked by a permissionless public-good network operated by anyone willing to stake SENTINEL. The default user experience for a retail Base RWA holder is no longer *"check Twitter when something feels wrong"*; it is **if your asset's oracle goes wrong, your wallet alerts you within sixty seconds, and your auto-rescue contract repositions your collateral within the same block — without any action on your part.**
@@ -414,6 +535,8 @@ The 9 oracle incidents of the past 18 months represent ≥$50M in retail and pro
 This is not a token launch white paper dressed as infrastructure. It is an infrastructure white paper that uses a token only where coordination genuinely demands it, and never to enrich the team that built it.
 
 ---
+
+<div style="page-break-before: always;"></div>
 
 ## Appendix A: Glossary
 
