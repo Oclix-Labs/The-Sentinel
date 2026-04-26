@@ -1,10 +1,5 @@
-import {
-  ALERT_REGISTRY_ADDRESS,
-  BASESCAN_MAINNET,
-  GITHUB_REPO,
-  shortenAddress,
-} from '@/lib/utils';
 import { type Locale, getDict } from '@/lib/i18n';
+import { ALERT_REGISTRY_ADDRESS, BASESCAN_MAINNET, GITHUB_REPO, shortenAddress } from '@/lib/utils';
 import { ExternalLink, ShieldCheck } from 'lucide-react';
 
 export function TrustSignals({ locale }: { locale: Locale }) {

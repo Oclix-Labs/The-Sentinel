@@ -69,7 +69,12 @@ export function FooterFinalCta({ locale }: { locale: Locale }) {
               </h4>
               <ul className="space-y-2 text-sm text-ink-secondary">
                 <li>
-                  <a href={TELEGRAM_BOT_LINK} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+                  <a
+                    href={TELEGRAM_BOT_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-ink"
+                  >
                     {t.productLinks.telegram}
                   </a>
                 </li>
@@ -92,10 +97,46 @@ export function FooterFinalCta({ locale }: { locale: Locale }) {
                 {t.columnResources}
               </h4>
               <ul className="space-y-2 text-sm text-ink-secondary">
-                <li><a href={WHITEPAPER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">{nav.whitepaper}</a></li>
-                <li><a href={DOCS_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">{nav.docs}</a></li>
-                <li><a href={RESEARCH_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">{nav.research}</a></li>
-                <li><a href={AUDIT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">{nav.audit}</a></li>
+                <li>
+                  <a
+                    href={WHITEPAPER_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-ink"
+                  >
+                    {nav.whitepaper}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={DOCS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-ink"
+                  >
+                    {nav.docs}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={RESEARCH_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-ink"
+                  >
+                    {nav.research}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={AUDIT_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-ink"
+                  >
+                    {nav.audit}
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -105,11 +146,49 @@ export function FooterFinalCta({ locale }: { locale: Locale }) {
                 {t.columnNetwork}
               </h4>
               <ul className="space-y-2 text-sm text-ink-secondary">
-                <li><a href={BASESCAN_MAINNET} target="_blank" rel="noopener noreferrer" className="hover:text-ink">{t.networkLinks.mainnet}</a></li>
-                <li><span className="text-ink-muted">{t.networkLinks.status}</span></li>
-                <li><a href={TWITTER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">{t.networkLinks.twitter}</a></li>
-                <li><a href={FARCASTER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">{t.networkLinks.farcaster}</a></li>
-                <li><a href={DISCORD_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">{t.networkLinks.discord}</a></li>
+                <li>
+                  <a
+                    href={BASESCAN_MAINNET}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-ink"
+                  >
+                    {t.networkLinks.mainnet}
+                  </a>
+                </li>
+                <li>
+                  <span className="text-ink-muted">{t.networkLinks.status}</span>
+                </li>
+                <li>
+                  <a
+                    href={TWITTER_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-ink"
+                  >
+                    {t.networkLinks.twitter}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={FARCASTER_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-ink"
+                  >
+                    {t.networkLinks.farcaster}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={DISCORD_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-ink"
+                  >
+                    {t.networkLinks.discord}
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

@@ -1,10 +1,10 @@
-import { Hero } from '@/components/sections/Hero';
-import { Stats } from '@/components/sections/Stats';
-import { Problem } from '@/components/sections/Problem';
-import { HowItWorks } from '@/components/sections/HowItWorks';
-import { Roadmap } from '@/components/sections/Roadmap';
-import { TrustSignals } from '@/components/sections/TrustSignals';
 import { FooterFinalCta } from '@/components/sections/FooterFinalCta';
+import { Hero } from '@/components/sections/Hero';
+import { HowItWorks } from '@/components/sections/HowItWorks';
+import { Problem } from '@/components/sections/Problem';
+import { Roadmap } from '@/components/sections/Roadmap';
+import { Stats } from '@/components/sections/Stats';
+import { TrustSignals } from '@/components/sections/TrustSignals';
 import { SiteNav } from '@/components/site-nav';
 import { type Locale, getDict } from '@/lib/i18n';
 

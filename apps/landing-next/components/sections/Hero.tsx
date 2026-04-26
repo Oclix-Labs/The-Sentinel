@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
 import { SectionBadge } from '@/components/section-badge';
+import { Button } from '@/components/ui/button';
 import { type Locale, getDict } from '@/lib/i18n';
 import { TELEGRAM_BOT_LINK, localePath } from '@/lib/utils';
 import { ArrowRight } from 'lucide-react';

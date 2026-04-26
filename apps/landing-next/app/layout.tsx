@@ -1,5 +1,5 @@
-import { Inter, JetBrains_Mono, Source_Serif_4 } from 'next/font/google';
 import type { Metadata } from 'next';
+import { Inter, JetBrains_Mono, Source_Serif_4 } from 'next/font/google';
 import './globals.css';
 
 const sourceSerif = Source_Serif_4({

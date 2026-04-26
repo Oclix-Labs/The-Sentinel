@@ -13,13 +13,11 @@ export const BASESCAN_SEPOLIA = `https://sepolia.basescan.org/address/${ALERT_RE
 export const GITHUB_REPO = 'https://github.com/Oclix-Labs/The-Sentinel';
 
 // Telegram bot link — env-driven, fallback to default username.
-const TELEGRAM_BOT_USERNAME =
-  process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ?? 'rwa_sentinel_bot';
+const TELEGRAM_BOT_USERNAME = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ?? 'rwa_sentinel_bot';
 export const TELEGRAM_BOT_LINK = `https://t.me/${TELEGRAM_BOT_USERNAME}`;
 
 // Premium waitlist placeholder — Phase 1.5 will replace with real form.
-export const PREMIUM_WAITLIST_LINK =
-  'mailto:hello@oclixlabs.xyz?subject=Premium%20waitlist';
+export const PREMIUM_WAITLIST_LINK = 'mailto:hello@oclixlabs.xyz?subject=Premium%20waitlist';
 
 // Social links — TODO: confirm with 이재근 once accounts are active.
 export const TWITTER_URL = 'https://x.com/oclixlabs';

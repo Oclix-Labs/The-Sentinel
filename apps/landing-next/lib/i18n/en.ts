@@ -15,8 +15,7 @@ export const en: Dict = {
   hero: {
     badge: 'LIVE · Base Mainnet',
     title: '$50M lost in 18 months across 9 oracle failures.',
-    subtitle:
-      'Sentinel saw all of them. Get Telegram alerts before the next one — free.',
+    subtitle: 'Sentinel saw all of them. Get Telegram alerts before the next one — free.',
     ctaPrimary: 'Get Telegram alerts',
     ctaSecondary: 'View live dashboard',
   },
@@ -72,11 +71,7 @@ export const en: Dict = {
       },
       {
         tag: 'Q4 2026 → Q1 2027',
-        bullets: [
-          '2–3 federated operators',
-          '10–15 assets',
-          'Premium SLA tier',
-        ],
+        bullets: ['2–3 federated operators', '10–15 assets', 'Premium SLA tier'],
       },
       {
         tag: 'Q2 2027+',

@@ -75,16 +75,40 @@ export function SiteNav({ t, locale }: { t: Dict['nav']; locale: Locale }) {
                 role="menu"
                 className="absolute top-full left-0 mt-2 w-48 rounded-md border border-slate-200 bg-white shadow-sm py-2"
               >
-                <a href={WHITEPAPER_URL} target="_blank" rel="noopener noreferrer" className="block px-4 py-2 text-sm hover:bg-surface-alt" role="menuitem">
+                <a
+                  href={WHITEPAPER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block px-4 py-2 text-sm hover:bg-surface-alt"
+                  role="menuitem"
+                >
                   {t.whitepaper}
                 </a>
-                <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" className="block px-4 py-2 text-sm hover:bg-surface-alt" role="menuitem">
+                <a
+                  href={DOCS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block px-4 py-2 text-sm hover:bg-surface-alt"
+                  role="menuitem"
+                >
                   {t.docs}
                 </a>
-                <a href={RESEARCH_URL} target="_blank" rel="noopener noreferrer" className="block px-4 py-2 text-sm hover:bg-surface-alt" role="menuitem">
+                <a
+                  href={RESEARCH_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block px-4 py-2 text-sm hover:bg-surface-alt"
+                  role="menuitem"
+                >
                   {t.research}
                 </a>
-                <a href={AUDIT_URL} target="_blank" rel="noopener noreferrer" className="block px-4 py-2 text-sm hover:bg-surface-alt" role="menuitem">
+                <a
+                  href={AUDIT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block px-4 py-2 text-sm hover:bg-surface-alt"
+                  role="menuitem"
+                >
                   {t.audit}
                 </a>
               </div>

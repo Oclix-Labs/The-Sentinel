@@ -40,7 +40,13 @@ export type Dict = {
     titlePart1: string;
     titleAccent: string;
     body: string;
-    nodes: { chainlink: string; pyth: string; redstone: string; sentinel: string; registry: string };
+    nodes: {
+      chainlink: string;
+      pyth: string;
+      redstone: string;
+      sentinel: string;
+      registry: string;
+    };
   };
   livePreview: {
     badge: string;

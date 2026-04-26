@@ -15,8 +15,7 @@ export const ko: Dict = {
   hero: {
     badge: 'LIVE · Base 메인넷',
     title: '오라클 사고 9건. 18개월. 손실 $50M.',
-    subtitle:
-      'Sentinel은 전부 잡았습니다. 다음 사고 전 무료 텔레그램 알림을 받으세요.',
+    subtitle: 'Sentinel은 전부 잡았습니다. 다음 사고 전 무료 텔레그램 알림을 받으세요.',
     ctaPrimary: '텔레그램 알림 받기',
     ctaSecondary: '라이브 대시보드 보기',
   },
@@ -64,19 +63,11 @@ export const ko: Dict = {
     cards: [
       {
         tag: 'LIVE NOW · Q2 2026',
-        bullets: [
-          '5 자산 cross-check',
-          '메인넷 AlertRegistry 검증 완료',
-          '무료 텔레그램 알림',
-        ],
+        bullets: ['5 자산 cross-check', '메인넷 AlertRegistry 검증 완료', '무료 텔레그램 알림'],
       },
       {
         tag: 'Q4 2026 → Q1 2027',
-        bullets: [
-          '2–3 federated 오퍼레이터',
-          '10–15 자산',
-          'Premium SLA tier',
-        ],
+        bullets: ['2–3 federated 오퍼레이터', '10–15 자산', 'Premium SLA tier'],
       },
       {
         tag: 'Q2 2027+',
