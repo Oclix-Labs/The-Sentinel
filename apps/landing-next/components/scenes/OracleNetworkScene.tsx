@@ -1,11 +1,11 @@
 'use client';
 
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Html, RoundedBox } from '@react-three/drei';
-import { useRef } from 'react';
-import * as THREE from 'three';
 import type { Locale } from '@/lib/i18n';
 import { getDict } from '@/lib/i18n';
+import { Html, RoundedBox } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
+import * as THREE from 'three';
 
 const PRIMARY = '#0052FF';
 const NEUTRAL = '#FFFFFF';
