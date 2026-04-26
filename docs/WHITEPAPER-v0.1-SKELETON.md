@@ -1,38 +1,55 @@
 # SENTINEL — Lite Whitepaper v0.1
 
-> 🚧 **DRAFT skeleton**. Sections marked `[FILL]` are for 김현우 + 모진영 to complete before 2026-04-27. Sections marked `[DIRECTIONAL]` are intentionally not final — subject to Phase 2 community input and independent audit.
+> 🚧 **Working draft v0.1**. Sections 1–10 and Appendices A–B are filled. Sections marked `[DIRECTIONAL]` (notably §4 Tokenomics) are intentionally not final — exact percentages, supply, and emission curve are deferred to Phase 2 community input and an independent economic audit. Individual team bios in §9 link to [`docs/TEAM.md`](./TEAM.md) and are finalized before PDF export.
 >
-> **Target**: 8–10 pages PDF after fill-in. Written for a crypto-native investor audience who knows DeFi, oracles, and basic tokenomics patterns.
+> **Length**: ~25–30 pages PDF including the four-stage architecture diagram, threat-model and allocation tables, and the Appendix A glossary. Written for a crypto-native investor audience who knows DeFi, oracles, and basic tokenomics patterns. Comparable scope to Chainlink v1 (~38 p) and RedStone (~35 p) whitepapers; this remains the "Lite" v0.1 vs the full Phase 2 Whitepaper v1.0 that will add formal protocol specs and an economic-audit annex.
 >
-> **Last updated**: 2026-04-19
+> **Last updated**: 2026-04-27
 
 ---
 
 ## 1. Abstract
 
-> **[FILL]** — 1 paragraph, ~150 words.
->
-> Structure hint: RWA Sentinel is a progressively-decentralized public-goods watchdog for tokenized real-world assets on Base. In Phase 1, a centralized MVP monitors 5 priority assets with multi-oracle cross-checks and publishes alerts via an MIT-licensed API. In Phase 2, cross-check execution federates across 2–3 independent operators. In Phase 3, a permissionless operator network backed by the SENTINEL utility token opens participation to anyone and governs network parameters via token-weighted voting. This whitepaper introduces the problem (9 oracle incidents / ≥$50M / 18 months), the architecture, the token design, and the regulatory framing.
+RWA Sentinel is a progressively-decentralized public-goods watchdog for tokenized real-world assets on Base. Over the past eighteen months, at least nine oracle-composition or hardcoded-oracle failures across Base-adjacent DeFi caused **≥$50M in cumulative losses** — roughly one incident every two months — and no existing public service performs the multi-oracle cross-check that would have caught them in the same block. In Phase 1, a centralized MVP monitors five priority assets (BTC, ETH, USDC, cbETH, USDO) with Chainlink × Pyth × RedStone cross-checks every minute and writes detected deviations to an append-only contract on Base Mainnet under MIT license. In Phase 2, cross-check execution federates across 2–3 independent operators with N-of-M consensus. In Phase 3, a permissionless operator network backed by the SENTINEL utility token opens participation to anyone and governs network parameters through token-weighted voting. This whitepaper presents the problem, the architecture, the directional token design, the regulatory framing, and the open risks.
 
 ---
 
 ## 2. Problem
 
-### 2.1 Pattern of oracle failures (leverages `.research/incident-forensics-moonwell.md`)
+### 2.1 Pattern of oracle failures
 
-> **[FILL]** — Reuse the 9-incident table from the research doc. Cite specifically Moonwell cbETH (Feb 2026, $2.68M, 99.95% price deviation = 5,000× a 2% threshold) and Stream xUSD (Nov 2025, $93M contagion across Morpho/Euler/Silo/Gearbox).
->
-> End with: "Every one of these incidents could have been detected in the same block via multi-oracle cross-check — but no existing public service performs this check."
+The Phase 1 coverage choices and the urgency of this whitepaper are anchored in a specific empirical claim: oracle-composition failures have moved from rare to recurring across Base-adjacent DeFi, and the existing infrastructure has no public layer to catch them in real time.
 
-### 2.2 Retail coverage gap (leverages `.research/competitor-architecture.md`)
+In the eighteen months between October 2024 and April 2026, at least nine oracle-composition or hardcoded-oracle failures across Base and closely adjacent venues collectively destroyed or endangered **≥$50M in user and protocol funds**. The full forensic catalog is in [`.research/incident-forensics-moonwell.md`](../.research/incident-forensics-moonwell.md) with primary sources for each event; the headline cases are:
 
-> **[FILL]** — Summarize the competitor table: Chaos Labs enterprise-only (Aave $3M/yr engagements), Hypernative enterprise-only ($40M Series B but no retail), Forta migrated to paid FORT token subscription, RWA.xyz $500/seat/month with no alert layer, Chainlink PoR publishes data with no alert layer.
->
-> Conclusion: **zero prior art serves retail holders with free, RWA-tuned, real-time alerts.**
+- **Moonwell cbETH (15 Feb 2026, Base).** A governance proposal (MIP-X43) introduced an OEV wrapper that derived `cbETH/USD` from the raw `cbETH/ETH` ratio without multiplying by `ETH/USD`. The result: cbETH was reported at ~$1.12 instead of ~$2,200 — a **99.95% deviation**, or roughly 5,000× a 2% threshold. Liquidation bots seized 1,096.317 cbETH over a four-day window (delayed by Moonwell's ~5-day governance timelock), producing $1.78M protocol bad debt and **$2.68M net losses across ~181 borrowers**.
+- **Stream Finance xUSD (4 Nov 2025, multi-protocol).** A fund-manager misappropriation of $93M depegged xUSD to ~$0.26, but Morpho, Euler, Silo, Gearbox, and Lista DAO had hardcoded `xUSD/USD = $1.00` oracles "to prevent mass liquidations". Lenders held worthless collateral with no liquidation path — **up to $285M at risk**, with Elixir deUSD collapsing 98% via contagion.
+- **Aave wstETH CAPO (11 Mar 2026, Ethereum).** Chaos Labs' Correlated Asset Price Oracle's `snapshotRatio` and `snapshotTimestamp` desynchronized, mispricing the wstETH/stETH ratio by 2.85% — enough to forcibly liquidate 34 accounts for **~$27M**.
+
+The pattern across all nine incidents is identical: the deviation between the protocol-consumed price and any independent reference price exceeded 2% — often by multiple orders of magnitude — for periods ranging from minutes to days. **Every one of these incidents could have been detected in the same block via multi-oracle cross-check — but no existing public service performs this check.**
+
+### 2.2 Retail coverage gap
+
+If the cross-check is so simple, why has no incumbent built it for retail users? Because the existing competitive landscape is structurally enterprise-facing.
+
+A complete competitor analysis lives in [`.research/competitor-architecture.md`](../.research/competitor-architecture.md); the relevant condensation is that every existing player serves protocols, issuers, or institutions, never retail holders:
+
+- **Chaos Labs** runs governance-funded engagements with major DeFi protocols (Aave Horizon at ~$3M/year, scaling toward $8M); the institutional RWA product line is gated behind protocol-side contracts. No retail dashboard.
+- **Hypernative** ($40M Series B, June 2025) protects "$100B+ onchain assets" across 250+ enterprise customers; pricing is sales-led and enterprise-only.
+- **Forta Network** migrated from a free model to paid FORT-token subscription in early 2025 — the General plan is 250 FORT/month; alert quality varies per third-party bot, and Base coverage is not in the highlighted live deployments.
+- **RWA.xyz** is read-only data: free tier provides three exports per month with no API, the Pro tier is **$500/seat/month** without an alert layer, and only Enterprise unlocks the API.
+- **Chainlink Proof-of-Reserve** publishes attested reserves on-chain (USDO, ARKB, iBTC on Base) but emits no anomaly alerts and remains in self-attestation mode for a "small minority" of feeds. Consumers must build their own listeners.
+- **OpenZeppelin Defender** is sunsetting in July 2026, replaced by an open-source Monitor + Relayer pair that users either self-host or buy as a managed service.
+
+The result is a structural gap: **zero prior art serves retail holders with free, RWA-tuned, real-time alerts.** The closest adjacencies (Forta, OZ Monitor) are either paid-token-gated or self-host frameworks rather than hosted public services.
 
 ### 2.3 Infrastructure without public-goods economics
 
-> **[FILL]** — Argue that monitoring infrastructure must evolve like oracles did (from centralized services to decentralized token-coordinated networks). Reference the Chainlink → LINK pattern. Show that without a token, operator economics break at scale.
+This gap is not a coincidence — it follows from the economics of monitoring infrastructure at scale.
+
+Real-time multi-oracle cross-checking can be operated by a single team while the asset count is small and the team is grant-funded. Beyond Phase 2, however, the labor of running the network grows roughly linearly with asset coverage and operator redundancy: each new oracle integration, each new asset class, each false-positive dispute, and each on-chain governance change consumes operator hours that must be paid for. A team that cannot pay its operators degrades into an unreliable service or shutters; a team that pays them through subscription revenue alone is forced to charge for the public-good tier the moment Premium revenue underperforms — exactly the failure mode that turned Forta's free network into a paid FORT subscription.
+
+The historical solution to this problem is the pattern Chainlink (LINK), The Graph (GRT), and Filecoin (FIL) followed: introduce a token only after the network has demonstrated utility, and restrict the token's role to functions the network genuinely cannot perform without it — operator sybil resistance, slashing recovery, and governance at scale. Without a token of its own, an open monitoring network either remains a single-team service with capped reliability or becomes an enterprise product. RWA Sentinel chooses the third path. The four functional pillars motivating SENTINEL are detailed in §4.1; the regulatory and timing framing is in §8.
 
 ---
 
@@ -134,31 +151,95 @@ Exact supply, exact category percentages, emission curve shape, slashing severit
 
 ## 5. Governance
 
-> **[FILL]**
->
-> - Compound Bravo–style timelock governance in Phase 3
-> - Security Council multisig (5-of-7) with emergency-pause veto during bootstrap
-> - Governable parameters: deviation thresholds, heartbeat requirements, asset coverage additions, slashing severity, ecosystem fund disbursements
-> - Governance migration timeline: Phase 1 = team multisig, Phase 2 = team + advisor council, Phase 3 = token-weighted DAO
+Governance scope and authority migrate over the three phases in lockstep with decentralization, with each phase preserving the user-facing guarantees of the prior.
+
+### 5.1 Phase migration
+
+In **Phase 1**, all on-chain authority lives in a team multisig. The `AlertRegistry.admin` is rotated from the deployer EOA to a multisig before any Phase 2 deployment, using the contract's two-step `transferAdmin` → `acceptAdmin` flow to guard against typos.
+
+In **Phase 2**, governance opens to a team-plus-advisor council that approves operator registrations on `OperatorRegistry`, sets deviation thresholds, and ratifies asset coverage changes. The advisor seats are intentionally drawn from operators, RWA risk firms, and Base ecosystem stakeholders rather than from investors.
+
+In **Phase 3**, on-chain governance migrates to token-weighted voting on the SENTINEL utility token using a Compound Bravo–style implementation: proposals require a minimum vote, pass at a quorum, and execute through a timelock that allows token holders to exit (or coordinate a counter-action) before any contentious change takes effect. A **5-of-7 Security Council multisig** retains an emergency-pause veto during the Phase 3 bootstrap window — the council cannot enact changes, only pause execution of governance-passed parameter changes deemed an immediate threat — and is sunset by a future governance vote.
+
+### 5.2 Governable parameters
+
+The on-chain governance surface is intentionally narrow and restricted to operating parameters that observably affect alert quality:
+
+- **Deviation thresholds** per asset class (default ±2%; tightened to ±0.5% for stablecoins; configurable per-asset for high-volatility tokens).
+- **Heartbeat requirements** for Proof-of-Reserve and price-feed staleness alerts.
+- **Asset coverage** additions and removals.
+- **Slashing severity** percentages and the boundary between linear slashing (false / missed alerts) and graduated slashing (downtime).
+- **Ecosystem Fund disbursements** for audits, grants, and community programs.
+
+What governance does **not** control: the append-only nature of `AlertRegistry`, the constitutionally guaranteed free public alert tier, and the open-source MIT licensing of the operator client. These are protocol invariants, not parameters.
 
 ---
 
 ## 6. Security
 
-> **[FILL]**
->
-> - Phase 1: Public repo, self-audit, community review
-> - Phase 2: Third-party security audit (Trail of Bits / ChainSecurity / Halborn or equivalent)
-> - Phase 3: Immunefi bug bounty program + ongoing audits
-> - Economic audit (token design): Gauntlet, Delphi Digital, or equivalent before Phase 3 launch
-> - Oracle manipulation resistance: multi-source design inherently hardens against single-oracle attacks
-> - Alert-delivery DoS resistance: rate limits, signature verification for webhook authenticity
+### 6.1 Defensive posture per phase
+
+Phase 1 ships with a public MIT-licensed repository, an internal self-audit by team members reviewed against the threat model in §6.2, and open community review through the GitHub issue tracker. The contract surface is intentionally minimal — `AlertRegistry.sol` is 157 lines with custom access control (ADR 0006), a single mutating function (`logAlert`), and no upgradability — to make full review tractable for any reader.
+
+Phase 2 commissions a third-party security audit (Trail of Bits, ChainSecurity, or Halborn — selection finalized at the start of Phase 2) covering both `AlertRegistry` and the new `OperatorRegistry`, plus the off-chain aggregator that emits N-of-M consensus alerts. The audit precedes any pre-seed deployment.
+
+Phase 3 launches an Immunefi bug-bounty program with severity tiers proportional to the value at risk (operator bonds, ecosystem fund, subscription revenue), continuous audits scheduled around major upgrades, and an independent **economic audit** of the token design (Gauntlet, Delphi Digital, or equivalent) before any token launch event. Oracle manipulation resistance is a structural property of the design — the multi-source cross-check inherently hardens against single-oracle attack — and DoS resistance against alert delivery is enforced by per-subscriber rate limits and webhook signature verification.
+
+### 6.2 Threat model
+
+Sentinel is a detection and alerting layer, not a circuit-breaker. The threat model below enumerates each adversary class along with how the surface they attack changes between Phase 1 (single-operator MVP) and Phase 3 (permissionless network), and which mitigation maps to each.
+
+| Adversary | Capability | Phase 1 surface | Phase 3 surface | Primary mitigation |
+|---|---|---|---|---|
+| **Single oracle compromiser** | Push false price into one of {Chainlink, Pyth, RedStone} | Medium — single-feed deviation triggers alert; no automatic protection of downstream protocols | Low — multi-oracle quorum requires compromising ≥2 of 3 sources simultaneously | Multi-source cross-check at ±2% threshold (§3.1, Stage 2); independent operator quorum (§3.3) |
+| **Worker code malicious update** | Deploy poller / alert-writer / API code that bypasses cross-check or suppresses alerts | Medium — Cloudflare Worker secret rotates per deploy; staging-vs-production environment split | Low — operator client deploys gated by multi-operator agreement; on-chain `OperatorRegistry` admits only signed builds | Branch protection on `main`; staging→production promotion (ADR 0004); Phase 3 reproducible builds |
+| **Publisher key theft (Phase 1)** | Sign forged `AlertLogged` events into `AlertRegistry` | Medium — single EOA signer in Phase 1; key stored as Worker secret | N/A — replaced by N-of-M operator consensus | Append-only registry prevents alert deletion; admin rotated to multisig before Phase 2 |
+| **Webhook DoS (alert spam)** | Flood subscriber webhooks to exhaust subscriber resources | Medium | Low | Per-subscriber rate limits; webhook signature verification (HMAC over canonical payload); Phase 3 introduces back-pressure on `SubscriptionRouter` |
+| **Sybil operator (Phase 3)** | Register thousands of cheap operator instances, vote false / spam alerts | N/A — closed Phase 1 / 2 | High without mitigation | SENTINEL bond requirement (§4.1.1) priced so honest-minority is cheaper than majority attack; slashing for false / missed alerts |
+| **Adversarial slashing (Phase 3)** | Coordinate false-flag of an honest operator to capture their bond | N/A | Medium-high without mitigation | Slashed tokens flow to **Ecosystem Fund**, not other operators (§4.1.1), eliminating the attack's economic motive |
+| **Governance capture (Phase 3)** | Acquire enough SENTINEL to ratify a parameter change harmful to the network | N/A | Medium | Timelock provides token-holder exit window; Security Council 5-of-7 emergency-pause veto during bootstrap; locked Team / Investor allocation kept ≤30% combined (§4.2) |
+| **Off-chain attestation forgery** | Issuer or custodian publishes a false PoR attestation that Sentinel reproduces | High residual — Sentinel reports what oracles publish; an issuer attesting to fake reserves is a category we surface but cannot prevent | High residual | Cross-check between Chainlink PoR and on-chain total supply (`reserve-vs-supply delta`, §3.1 Stage 3); explicit out-of-scope statement to subscribers |
+
+### 6.3 Defense-in-depth mapping
+
+The threat-model rows correspond to specific code paths and governance levers. The two most consequential properties are concentrated in two ADRs:
+
+- **ADR 0006 — Custom access control.** Specifies the `isPublisher` mapping and 2-step `transferAdmin` flow in `AlertRegistry`, scoped to make signer rotation safe across Phase 1 → Phase 2 → Phase 3 without any contract migration.
+- **ADR 0007 — Canonical encoding.** Specifies the RFC 8785 JSON canonical form used for `evidenceHash`. The off-chain payload submitted to webhook subscribers is bit-identical to the payload the on-chain hash commits to, which means a third party can verify any alert end-to-end without trusting our backend storage.
+
+Out of scope for the Phase 1 spec: protocol-side behavior after an alert is consumed (Sentinel does not liquidate, pause, or trade); long-tail oracle availability for assets without a second public feed (graceful degradation per `insufficient_sources` skip in Stage 1); and any guarantee against an issuer publishing fraudulent PoR attestations (cross-check provides detection for the symptom — divergence between reserves and supply — not for the underlying lie).
+
+### 6.4 Disclosure policy
+
+Vulnerabilities discovered before Phase 3 should be reported to `security@oclixlabs.xyz`; the Phase 1 disclosure window is 30 days from acknowledgement to public write-up unless a coordinated extension is agreed in writing. Phase 3 transitions to the Immunefi-managed disclosure flow with bounty payouts in SENTINEL.
 
 ---
 
 ## 7. Roadmap
 
-> **[FILL]** — Reference `docs/ROADMAP.md`. 1 page timeline with Phase 1/2/3 milestones and success criteria.
+The path to a permissionless oracle-watchdog network proceeds through three phases, each unlocking the next without rolling back capabilities of the prior. Full source: [`docs/ROADMAP.md`](./ROADMAP.md).
+
+| Phase | Window | Decentralization | Funding | Token |
+|---|---|---|---|---|
+| **1** | 2026 Q2 | Centralized MVP — single team operates one poller | Base Batches 003 ($50K) | None |
+| **2** | 2026 Q4 – 2027 Q1 | Federated — 2–3 independent operators with N-of-M consensus | Pre-seed ($1–2M) | Designed, not issued |
+| **3** | 2027 Q2+ | Permissionless — anyone stakes SENTINEL to run an operator; DAO governance | Seed/Series A ($5–10M) + token | **SENTINEL live** |
+
+### 7.1 Phase 1 — Centralized MVP (2026 Q2)
+
+Phase 1 ships a working public-good watchdog with provable on-chain alert history. Deliverables include `AlertRegistry.sol` deployed to Base Mainnet, the Cloudflare Worker pipeline (poller, cross-check, alert-writer, public Hono API), Phase 1 coverage of BTC, ETH, USDC, cbETH, and USDO, plus webhook + Telegram alert channels and a Premium-tier placeholder. The team operates as a single entity with no external operators. Success criteria: continuous monitoring with >99% uptime, ≥10 detected deviations logged on-chain, a regression replay of the Moonwell cbETH incident detected within one block, ≥50 Premium-tier waitlist signups, and a documented public API consumable by external developers. **No token is issued in Phase 1.**
+
+### 7.2 Phase 2 — Federated Operators (2026 Q4 – 2027 Q1)
+
+Phase 2 decentralizes cross-check execution across 2–3 independent operators on different infrastructure (e.g., one Cloudflare, one Vercel/Fly.io, one self-hosted) coordinated by the new `OperatorRegistry.sol` contract. An off-chain aggregator emits a high-confidence alert to `AlertRegistry` only when N-of-M operators agree, while single-operator candidate alerts continue to publish for transparency. Coverage expands to 10–15 assets including wstETH, USDT, DAI, EURC, cbBTC, LBTC, and USDe; cross-chain attestation mirroring brings Backed Finance products (bIB01, bCSPX) to Base via Chainlink CCIP. Funding is a $1–2M pre-seed round with SAFT plus token warrants; investors targeted include crypto-native funds and Coinbase Ventures follow-on if Phase 1 metrics satisfy. The Premium tier launches generally available with a $5K MRR target, and a third-party security audit (Trail of Bits, ChainSecurity, or Halborn) covers both `AlertRegistry` and `OperatorRegistry`. **The token is designed and published in Whitepaper v1.0; the airdrop allocation registry begins recording subscribers and contributors, but no token is issued during Phase 2.**
+
+### 7.3 Phase 3 — Permissionless Network + SENTINEL Token (2027 Q2+)
+
+Phase 3 opens the operator network to anyone who stakes SENTINEL and migrates governance to a token-weighted DAO. The full on-chain stack — `StakingManager`, `SubscriptionRouter`, `Governance` (Compound Bravo timelock), and `EcosystemFund` — launches alongside the SENTINEL utility token on Base, with Chainlink CCIP extensions to Ethereum and Optimism. Coverage expands to 30+ tokenized assets including newly emerging Base RWA issuers; slashing for false alerts, missed alerts, and downtime is enforced on-chain. Success criteria: ≥10 permissionless operators in production, >$100K MRR including substantial token-paid subscriptions, ≥5 material parameter changes executed via on-chain governance vote, listing on at least one Tier-1 venue, and a live Immunefi bug-bounty program.
+
+### 7.4 Cross-phase constants
+
+Three properties hold across all phases regardless of decentralization stage. **Open-source**: the core code is MIT-licensed forever and the operator client remains open-source even after Phase 3 launches paid tiers; all alert data is publicly queryable. **Base-native**: primary deployment is Base across all phases, with Superchain (OP Stack) expansion in Phase 3 only. **Retail-first**: the free public alert tier is constitutionally guaranteed across all phases — Premium and token-paid tiers layer on top, never replace; alert latency stays under 60 seconds in every phase.
 
 ---
 
@@ -182,11 +263,16 @@ Specific risks and disclaimers — including that token value may fluctuate sign
 
 ## 9. Team
 
-> **[FILL]** — 0.5 page.
->
-> - 4 co-founders from Yonsei University BAY Blockchain Society
-> - Individual bios (see `docs/TEAM.md`)
-> - Advisory / research partners (Anthias Labs, BAY faculty mentor if applicable — TBD)
+RWA Sentinel is built by four undergraduate co-founders from **Yonsei University's BAY Blockchain Society**. The team has worked together on prior projects through BAY's cohort structure, not as a hackathon ad-hoc formation. Individual roles in Phase 1:
+
+- **권상현 (Kwon Sanghyun)** — Team Lead, Smart Contract Engineer. Owns `AlertRegistry` design and Foundry development, Base deployment, external communications, and final decision authority; Devfolio submission owner.
+- **모진영 (Mo Jinyoung)** — Core Engine, Backend, Infrastructure. Owns the Cloudflare Workers pipeline (poller, alert-writer, Hono API), the cross-check engine, D1 / KV / Queues integration, and wrangler CI/CD.
+- **이재근 (Lee Jaegeun)** — Marketing, Community, Frontend. Owns the landing page and live dashboard, architecture diagrams, social presence, BAY community integration, and Whitepaper §3, §4, §8, Appendix A authorship.
+- **김현우 (Kim Hyunwoo)** — English, Research, Video, Documentation. Native English speaker and Founder video main presenter. Owns the founder video script, Devfolio application English drafts, and Whitepaper §1, §2, §7, §9, §10 authorship.
+
+Individual 50–100 word bios are maintained in [`docs/TEAM.md`](./TEAM.md) and finalized before any Whitepaper v0.1 PDF release.
+
+**Advisors and research engagement.** Phase 1 is operated solely by the founding team; advisor engagement is planned post-Base Batches 003 acceptance. Engagement targets include **Anthias Labs** (Moonwell risk manager and first public detector of the Feb 2026 cbETH incident referenced in §2.1), **Steakhouse Financial** (DeFi risk research), BAY faculty mentors, and Base ecosystem partners. The advisor seats described in §5.1 for Phase 2 governance are intentionally drawn from operators and risk firms rather than from investors.
 
 ---
 
@@ -293,8 +379,10 @@ Defined for the cross-functional reader: a tokenized-RWA-curious investor who kn
 ## Review & approval workflow
 
 - **Drafting (primary)**: **이재근 + 김현우** (co-authors)
-  - **김현우**: Sections 1 (Abstract), 2 (Problem — cites `.research/`), 7 (Roadmap), 9 (Team), 10 (Risks)
-  - **이재근**: Sections 3 (Architecture narrative), 4 (Tokenomics narrative), 8 (Regulatory framing), Appendix A (Glossary)
-- **Technical input** (quick reviews, not drafting): 권상현 (Sections 5 Governance, 6 Security) + 모진영 (Section 3 technical accuracy, Section 4 value-capture mechanism)
-- **Final approval**: 권상현 before any public release
-- **Public release**: committed to repo + linked from `README.md` after Base Batches submission
+  - Original division of labor:
+    - **김현우**: §1 Abstract, §2 Problem (cites `.research/`), §7 Roadmap, §9 Team, §10 Risks
+    - **이재근**: §3 Architecture narrative, §4 Tokenomics narrative, §8 Regulatory framing, Appendix A Glossary
+  - **v0.1 actual**: §3 / §4 / §8 / Appendix A / §10 written by 이재근. §1 / §2 / §5 / §6 (with new threat-model subsections) / §7 / §9 drafted by 이재근 on D8 to unblock submission; **김현우 English polish + cross-section narrative review pending pre-PDF-export**.
+- **Technical input** (quick reviews, not drafting): **권상현** (§5 Governance, §6 Security — confirm `AlertRegistry` and threat-model claims), **모진영** (§3 technical accuracy, §4 value-capture mechanism).
+- **Final approval**: 권상현 before any public release.
+- **Public release**: committed to repo + linked from `README.md` after Base Batches 003 submission.
