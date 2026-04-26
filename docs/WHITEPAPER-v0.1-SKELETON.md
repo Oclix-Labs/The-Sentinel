@@ -139,6 +139,20 @@ The architecture above could in principle deploy on any EVM-compatible Layer 2. 
 
 This is not "Base because Coinbase Ventures might fund us"; it is the chain choice the architecture forces once the retail public-good premise is fixed.
 
+### 3.6 Composability — Sentinel as a risk-event trigger primitive
+
+Programmable alert hooks (§3.1 Stage 4) are not just a Premium feature for end users; they make Sentinel a primitive that other DeFi protocols compose on top of. The pattern parallels Chainlink Automation (scheduled trigger primitive), Gelato Network (off-chain relay primitive), Pyth Hermes (price-update primitive), and Chainlink CCIP (cross-chain message primitive) — each became infrastructure that other protocols built on. Sentinel occupies the **risk-event trigger primitive** category: an oracle anomaly, PoR drift, or cross-source deviation event becomes a callable signal that downstream contracts react to atomically through the `SentinelReceiver` interface.
+
+Five canonical Phase 2+ compositions, in order of integration cost:
+
+1. **Insurance protocols.** Depeg / oracle-failure coverage products (Cozy Finance and Y2K Finance patterns) register a `SentinelReceiver` that triggers automatic payout on a verified Sentinel alert. The insurance protocol no longer needs to operate its own oracle-watching infrastructure or build a dispute-resolution layer for "did the depeg actually happen?".
+2. **Lending protocol curators.** Morpho / Euler / Spark vault curators register hooks that call `pause()` on their market when Sentinel detects collateral oracle deviation. Phase-aligned with the Moonwell post-mortem: a curator-side auto-pause on cross-check failure prevents the multi-day liquidation cascade that the protocol's own governance timelock cannot.
+3. **RWA issuer self-monitoring.** Issuers (OpenEden for USDO, future cbBTC issuers, Backed Finance for tokenized ETPs) register hooks that halt their own minting when reserve-vs-supply delta exceeds a self-defined threshold. The issuer demonstrates supply-side discipline auditable by their regulators without trusting any single external monitor.
+4. **DEX aggregator routing.** 1inch, 0x, Matcha consume the public Sentinel API to down-weight or exclude assets with active alerts from default routing. User-side risk reduction with no UI change required.
+5. **Wallet provider native warnings.** Coinbase Wallet, MetaMask, Rabby render native warnings when a user attempts to transact in an asset Sentinel currently flags. Distribution multiplier with no explicit subscription required.
+
+Each composition is a B2B revenue tier in Phase 2+ Premium pricing: retail Premium at $20–50/month, B2B composition tier at $500–2,000/month per integrating protocol depending on alert volume and SLA, Enterprise white-label pricing for major wallet/DEX integrations. The composability thesis is what turns Sentinel from a retail-facing product (on its own a niche TAM) into the **default risk-event primitive of the Base ecosystem**, a TAM that scales with Base's RWA growth (§3.5) rather than with the Sentinel team's marketing reach. Each new composition increases the weight of every Sentinel alert (more downstream consumers), which in turn makes the network a stronger default for the next composition — a flywheel that operates regardless of token-price action.
+
 ---
 
 ## 4. Tokenomics framework **[DIRECTIONAL]**
@@ -370,6 +384,22 @@ Individual team members, including founders, shall not be personally liable for 
 
 ### 10.7 Programmable alert reliance
 Phase 2 introduces user-registered programmable alert hooks (`SentinelReceiver`, §3.1 Stage 4). When a user registers a receiver contract, that contract executes user-defined logic on-chain in response to a valid Sentinel alert. **Sentinel is responsible for the accuracy of the alert signal; the user is responsible for the action logic of their receiver contract.** A false-positive alert that triggers an irreversible on-chain action (e.g., asset migration to a wrong vault) cannot be undone by Sentinel. A buggy or over-aggressive receiver contract is the user's responsibility, not Sentinel's. Mitigations include: explicit per-asset opt-in registration, per-receiver gas limits, failure isolation across subscribers, and the ability to pause or unregister at any time. Programmable alert hooks are not investment advice and not a discretionary trading service — Sentinel publishes a deviation signal, the user's contract decides what to do. This signal-vs-action carve-out is documented in §8 (regulatory framing) and reflected in the Phase 2 audit scope (§6.1).
+
+### 10.8 Fork risk and competitive moat narrowness
+
+The Sentinel codebase is MIT-licensed, the on-chain registry is public, and the operator client is open-source by design (§7.4). A larger, well-capitalized entity — Coinbase itself, an existing risk firm such as Chaos Labs or Hypernative, or a fast-follower team — could in principle fork the codebase and run a competing service. We address this directly rather than rely on technical secrecy.
+
+Why we believe forks fail in this category, in order of strength:
+
+1. **Strategic mismatch for the most-feared fork actor.** Coinbase is an NYSE-listed wallet, exchange, and custody business. Retail-facing programmable on-chain action infrastructure is *adjacent* to Coinbase's core business, not core to it, and represents incremental SEC exposure that Coinbase's risk posture actively avoids. The entity with the strongest distribution-side capability has the weakest incentive to operate this product directly.
+2. **Brand and community trust as moat — the Cloudflare Workers / Vercel pattern.** Cloudflare Workers runtime is open-source; Cloudflare nonetheless dominates because of brand authority, community relationships, and developer mindshare. Vercel hosting dominates Next.js (a fully OSS framework) for the same reason. The Sentinel brand identity — "the public watchdog" — is not a forkable artifact; it accrues through every alert published, every incident verified, and every retail user successfully self-rescued.
+3. **Operator network legitimacy from Phase 3 onward.** The SENTINEL operator network has its own community, economic incentives via emission, and on-chain governance. A fork starts with zero operators, zero subscribers, zero incidents-detected reputation, and no token. Bootstrapping a sybil-resistant operator network is a multi-year exercise rather than a code copy.
+4. **Iteration velocity.** Four founder-engineers shipping continuously beat large-organization fork cadence (typically 3–5× slower) on infrastructure software. Phase 2 features ship faster than a fork can match without ground-up rebuild.
+5. **Curation moat.** The mapping of {token contract → issuer legal entity → attestation document URL → freshness window → asset-class threshold} is a *curation* asset built by ongoing research (`.research/` open-source dataset, asset additions per release). Code is fork-able; the dataset is not, without years of independent work.
+6. **Composition incumbency (§3.6).** Once an insurance protocol, lending curator, or wallet provider integrates a `SentinelReceiver` hook, switching to a fork requires re-auditing their own integration plus convincing their users to trust a new alert source. Integration switching costs accrue immediately and grow with each Phase 2+ composition.
+7. **The token-coordinated network is structurally not forkable on Sentinel's terms.** A fork without a token cannot bootstrap permissionless operator participation. A fork *with* its own token re-creates the regulatory exposure that the §4.0 founding principle (no team token, no investor token, no SAFT) deliberately avoids. Only an entity willing to forgo team token allocation can credibly maintain this product, and that constraint materially narrows the realistic fork-actor pool.
+
+The honest disclosure: the moat is **community, brand, operator network, and curation**, not technical secrecy. None of these are absolute. A determined, well-capitalized, long-horizon competitor with retail-public-good thesis alignment and patience to bootstrap an independent operator network could, over 3–5 years, compete. We expect such a competitor to be a Phase 2 partner candidate (e.g., Anthias Labs running a federated operator alongside us, see §3.3) rather than an external fork actor.
 
 ---
 
