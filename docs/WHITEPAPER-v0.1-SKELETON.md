@@ -176,15 +176,9 @@ The historical solution to this problem is the pattern Chainlink (LINK), The Gra
 
 The Sentinel runs as a four-stage pipeline. Stages 1–3 execute every minute on edge compute; stage 4 fans out off-chain alerts within 60 seconds and anchors the same alert on Base Mainnet within the next L2 block.
 
-```mermaid
-flowchart LR
-    CRON[Cron 1 min] --> ING[1. Ingestion<br/>Chainlink · Pyth · RedStone]
-    ING --> XCHK[2. Cross-check<br/>±2% pairwise deviation]
-    XCHK --> ATT[3. Attestation tracking<br/>Chainlink PoR · staleness · supply delta]
-    ATT --> ALT[4. Alert + API<br/>Webhook · Telegram · AlertRegistry]
-```
+![Four-stage pipeline overview](./diagrams/4stage-overview.png)
 
-_Source: `docs/diagrams/architecture-pipeline.mmd`._
+_Source: [`docs/diagrams/4stage-overview.mmd`](./diagrams/4stage-overview.mmd) (rendered via [kroki.io](https://kroki.io)). The detailed Cloudflare Edge view with all workers, storage bindings, and the on-chain anchor is in [`docs/diagrams/architecture-pipeline.png`](./diagrams/architecture-pipeline.png)._
 
 **Stage 1 — Ingestion.** A Cloudflare Worker (`apps/poller`) polls every available oracle source for each Phase 1 asset on a 1-minute cadence. Phase 1 oracle coverage is uneven across assets — we report it explicitly rather than averaging it into a single "multi-oracle" claim:
 
