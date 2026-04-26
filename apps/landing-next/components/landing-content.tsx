@@ -1,6 +1,7 @@
 import { FooterFinalCta } from '@/components/sections/FooterFinalCta';
 import { Hero } from '@/components/sections/Hero';
 import { HowItWorks } from '@/components/sections/HowItWorks';
+import { LivePreview } from '@/components/sections/LivePreview';
 import { Problem } from '@/components/sections/Problem';
 import { Roadmap } from '@/components/sections/Roadmap';
 import { Stats } from '@/components/sections/Stats';
@@ -18,7 +19,7 @@ export function LandingContent({ locale }: { locale: Locale }) {
         <Stats locale={locale} />
         <Problem locale={locale} />
         <HowItWorks locale={locale} />
-        {/* LivePreview is added in PR 2 (between HowItWorks and Roadmap). */}
+        <LivePreview locale={locale} />
         <Roadmap locale={locale} />
         <TrustSignals locale={locale} />
       </main>
