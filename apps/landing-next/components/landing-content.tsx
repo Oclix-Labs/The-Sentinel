@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { ArrowRight, AlertTriangle, ShieldCheck, Zap, History } from "lucide-react";
-import { SiteNav } from "@/components/site-nav";
-import { ContractsCallout } from "@/components/contracts-callout";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getDict, type Locale } from "@/lib/i18n";
-import { GITHUB_REPO, localePath } from "@/lib/utils";
+import Link from 'next/link';
+import { ArrowRight, AlertTriangle, ShieldCheck, Zap, History } from 'lucide-react';
+import { SiteNav } from '@/components/site-nav';
+import { ContractsCallout } from '@/components/contracts-callout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getDict, type Locale } from '@/lib/i18n';
+import { GITHUB_REPO, localePath } from '@/lib/utils';
 
 const STAGE_ICONS = [Zap, AlertTriangle, ShieldCheck, History];
 
@@ -33,7 +33,7 @@ export function LandingContent({ locale }: { locale: Locale }) {
             <h1 className="font-serif text-5xl md:text-7xl font-semibold leading-tight mb-6 prose-title">
               {t.hero.title_part1}
               <br />
-              <span className="text-primary italic">{t.hero.title_accent}</span>{" "}
+              <span className="text-primary italic">{t.hero.title_accent}</span>{' '}
               {t.hero.title_part2}
             </h1>
             <p className="max-w-2xl mx-auto text-lg text-slate-500 mb-10 leading-relaxed">
@@ -58,10 +58,10 @@ export function LandingContent({ locale }: { locale: Locale }) {
         <section className="py-12 border-y border-slate-100 bg-surface-alt">
           <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { v: "9", l: t.stats.failures },
-              { v: "≥$50M", l: t.stats.lost },
-              { v: "5", l: t.stats.assets },
-              { v: "0", l: t.stats.watchdogs },
+              { v: '9', l: t.stats.failures },
+              { v: '≥$50M', l: t.stats.lost },
+              { v: '5', l: t.stats.assets },
+              { v: '0', l: t.stats.watchdogs },
             ].map((s, i) => (
               <div key={i}>
                 <div className="font-serif text-4xl md:text-5xl font-semibold text-primary">
@@ -140,25 +140,16 @@ export function LandingContent({ locale }: { locale: Locale }) {
               5 assets · 3 oracles · 1-min cadence
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-8">
-              {[
-                "BTC / USD",
-                "ETH / USD",
-                "USDC / USD",
-                "cbETH / USD",
-                "USDO (PoR)",
-              ].map((a) => (
-                <div
-                  key={a}
-                  className="card px-4 py-6 font-mono text-sm font-semibold"
-                >
+              {['BTC / USD', 'ETH / USD', 'USDC / USD', 'cbETH / USD', 'USDO (PoR)'].map((a) => (
+                <div key={a} className="card px-4 py-6 font-mono text-sm font-semibold">
                   {a}
                 </div>
               ))}
             </div>
             <p className="text-sm text-slate-500 mt-6 font-mono">
-              {locale === "ko"
-                ? "Chainlink · Pyth · RedStone — 자세한 오라클 매트릭스는 .research/oracle-inventory-base.md 참조"
-                : "Chainlink · Pyth · RedStone — full overlap matrix in .research/oracle-inventory-base.md"}
+              {locale === 'ko'
+                ? 'Chainlink · Pyth · RedStone — 자세한 오라클 매트릭스는 .research/oracle-inventory-base.md 참조'
+                : 'Chainlink · Pyth · RedStone — full overlap matrix in .research/oracle-inventory-base.md'}
             </p>
           </div>
         </section>
@@ -179,7 +170,7 @@ export function LandingContent({ locale }: { locale: Locale }) {
                 <Card key={i}>
                   <CardHeader>
                     <Badge
-                      variant={i === 0 ? "primary" : i === 1 ? "amber" : "success"}
+                      variant={i === 0 ? 'primary' : i === 1 ? 'amber' : 'success'}
                       className="mb-3"
                     >
                       {p.tag}
@@ -206,16 +197,14 @@ export function LandingContent({ locale }: { locale: Locale }) {
         <section className="py-16 bg-primary/5">
           <div className="max-w-4xl mx-auto px-6 text-center">
             <h3 className="font-serif text-3xl font-semibold mb-3">
-              {locale === "ko"
-                ? "라이브 대시보드를 직접 확인하세요"
-                : "See the live dashboard"}
+              {locale === 'ko' ? '라이브 대시보드를 직접 확인하세요' : 'See the live dashboard'}
             </h3>
             <p className="text-slate-500 mb-6">
-              {locale === "ko"
-                ? "최신 가격과 알림을 실시간으로 확인할 수 있습니다."
-                : "Latest prices and alerts in real time."}
+              {locale === 'ko'
+                ? '최신 가격과 알림을 실시간으로 확인할 수 있습니다.'
+                : 'Latest prices and alerts in real time.'}
             </p>
-            <Link href={localePath(locale, "dashboard")}>
+            <Link href={localePath(locale, 'dashboard')}>
               <Button size="lg" variant="primary">
                 {t.nav.dashboard} <ArrowRight className="h-4 w-4" />
               </Button>
@@ -251,9 +240,7 @@ export function LandingContent({ locale }: { locale: Locale }) {
               </a>
             </div>
             <div>
-              <h4 className="font-bold text-sm uppercase tracking-wider mb-4">
-                {t.footer.infra}
-              </h4>
+              <h4 className="font-bold text-sm uppercase tracking-wider mb-4">{t.footer.infra}</h4>
               <ul className="space-y-2 text-sm text-slate-500">
                 <li>Poller Worker</li>
                 <li>AlertWriter Worker</li>
@@ -262,9 +249,7 @@ export function LandingContent({ locale }: { locale: Locale }) {
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-sm uppercase tracking-wider mb-4">
-                {t.footer.eco}
-              </h4>
+              <h4 className="font-bold text-sm uppercase tracking-wider mb-4">{t.footer.eco}</h4>
               <ul className="space-y-2 text-sm text-slate-500">
                 <li>BTC / USD</li>
                 <li>ETH / USD</li>

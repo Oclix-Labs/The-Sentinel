@@ -1,13 +1,13 @@
-import { ExternalLink, ShieldCheck } from "lucide-react";
+import { ExternalLink, ShieldCheck } from 'lucide-react';
 import {
   ALERT_REGISTRY_ADDRESS,
   BASESCAN_MAINNET,
   BASESCAN_SEPOLIA,
   shortenAddress,
-} from "@/lib/utils";
-import type { Dict } from "@/lib/i18n";
+} from '@/lib/utils';
+import type { Dict } from '@/lib/i18n';
 
-export function ContractsCallout({ t }: { t: Dict["contracts"] }) {
+export function ContractsCallout({ t }: { t: Dict['contracts'] }) {
   return (
     <div className="rounded-2xl bg-primary/5 border border-primary/20 p-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -29,9 +29,7 @@ export function ContractsCallout({ t }: { t: Dict["contracts"] }) {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 hover:border-primary hover:text-primary transition-colors"
           >
             <span className="text-slate-400">Mainnet</span>
-            <span className="font-semibold">
-              {shortenAddress(ALERT_REGISTRY_ADDRESS)}
-            </span>
+            <span className="font-semibold">{shortenAddress(ALERT_REGISTRY_ADDRESS)}</span>
             <ExternalLink className="h-3 w-3" aria-hidden="true" />
           </a>
           <a
@@ -41,9 +39,7 @@ export function ContractsCallout({ t }: { t: Dict["contracts"] }) {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 hover:border-primary hover:text-primary transition-colors"
           >
             <span className="text-slate-400">Sepolia</span>
-            <span className="font-semibold">
-              {shortenAddress(ALERT_REGISTRY_ADDRESS)}
-            </span>
+            <span className="font-semibold">{shortenAddress(ALERT_REGISTRY_ADDRESS)}</span>
             <ExternalLink className="h-3 w-3" aria-hidden="true" />
           </a>
         </div>

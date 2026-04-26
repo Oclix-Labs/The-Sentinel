@@ -1,30 +1,27 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { ArrowLeft, ExternalLink } from "lucide-react";
-import { SiteNav } from "@/components/site-nav";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { fetchAlerts, fetchPrices, type AlertRow, type PriceRow } from "@/lib/api";
-import { getDict, type Locale } from "@/lib/i18n";
-import { localePath } from "@/lib/utils";
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { SiteNav } from '@/components/site-nav';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { fetchAlerts, fetchPrices, type AlertRow, type PriceRow } from '@/lib/api';
+import { getDict, type Locale } from '@/lib/i18n';
+import { localePath } from '@/lib/utils';
 
 function formatTimestamp(ts: number, locale: Locale): string {
-  return new Date(ts * 1000).toLocaleString(
-    locale === "ko" ? "ko-KR" : "en-US",
-    {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }
-  );
+  return new Date(ts * 1000).toLocaleString(locale === 'ko' ? 'ko-KR' : 'en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
 }
 
 function formatBps(bps: number): string {
-  const sign = bps > 0 ? "+" : "";
+  const sign = bps > 0 ? '+' : '';
   return `${sign}${(bps / 100).toFixed(2)}%`;
 }
 
@@ -81,9 +78,7 @@ export function DashboardContent({ locale }: { locale: Locale }) {
             </div>
             {!loading && showingMock && (
               <Badge variant="amber">
-                {locale === "ko"
-                  ? "Mock 데이터 (API 미연결)"
-                  : "Showing mock data"}
+                {locale === 'ko' ? 'Mock 데이터 (API 미연결)' : 'Showing mock data'}
               </Badge>
             )}
           </div>
@@ -106,9 +101,7 @@ export function DashboardContent({ locale }: { locale: Locale }) {
                         <tr className="text-left text-[10px] font-mono uppercase tracking-wider text-slate-400 border-b border-slate-100">
                           <th className="py-2 pr-4">{t.dashboard.asset}</th>
                           <th className="py-2 pr-4">{t.dashboard.oracle}</th>
-                          <th className="py-2 pr-4 text-right">
-                            {t.dashboard.price}
-                          </th>
+                          <th className="py-2 pr-4 text-right">{t.dashboard.price}</th>
                           <th className="py-2 text-right">{t.dashboard.time}</th>
                         </tr>
                       </thead>
@@ -118,15 +111,9 @@ export function DashboardContent({ locale }: { locale: Locale }) {
                             key={`${p.asset}-${p.oracle}-${i}`}
                             className="border-b border-slate-50 last:border-0"
                           >
-                            <td className="py-3 pr-4 font-mono font-semibold">
-                              {p.asset}
-                            </td>
-                            <td className="py-3 pr-4 text-slate-500 capitalize">
-                              {p.oracle}
-                            </td>
-                            <td className="py-3 pr-4 text-right font-mono">
-                              ${p.priceE18}
-                            </td>
+                            <td className="py-3 pr-4 font-mono font-semibold">{p.asset}</td>
+                            <td className="py-3 pr-4 text-slate-500 capitalize">{p.oracle}</td>
+                            <td className="py-3 pr-4 text-right font-mono">${p.priceE18}</td>
                             <td className="py-3 text-right font-mono text-xs text-slate-400">
                               {formatTimestamp(p.ts, locale)}
                             </td>
@@ -152,10 +139,7 @@ export function DashboardContent({ locale }: { locale: Locale }) {
                 ) : (
                   <div className="space-y-3">
                     {alerts.map((a) => (
-                      <div
-                        key={a.id}
-                        className="border border-slate-100 rounded-lg p-4"
-                      >
+                      <div key={a.id} className="border border-slate-100 rounded-lg p-4">
                         <div className="flex items-start justify-between gap-3 mb-2">
                           <div className="font-mono font-semibold">{a.asset}</div>
                           <Badge variant="amber" className="shrink-0">
@@ -185,9 +169,9 @@ export function DashboardContent({ locale }: { locale: Locale }) {
           </div>
 
           <div className="mt-8 text-xs text-slate-400 font-mono">
-            {locale === "ko"
-              ? "API 연결: NEXT_PUBLIC_SENTINEL_API_URL 환경변수 설정 시 실제 데이터 표시. 미설정 시 mock."
-              : "API source: set NEXT_PUBLIC_SENTINEL_API_URL to use live data. Otherwise mock."}
+            {locale === 'ko'
+              ? 'API 연결: NEXT_PUBLIC_SENTINEL_API_URL 환경변수 설정 시 실제 데이터 표시. 미설정 시 mock.'
+              : 'API source: set NEXT_PUBLIC_SENTINEL_API_URL to use live data. Otherwise mock.'}
           </div>
         </div>
       </main>

@@ -1,11 +1,11 @@
-import Link from "next/link";
-import { Shield } from "lucide-react";
-import { LocaleSwitcher } from "@/components/locale-switcher";
-import { Button } from "@/components/ui/button";
-import { localePath } from "@/lib/utils";
-import type { Dict, Locale } from "@/lib/i18n";
+import Link from 'next/link';
+import { Shield } from 'lucide-react';
+import { LocaleSwitcher } from '@/components/locale-switcher';
+import { Button } from '@/components/ui/button';
+import { localePath } from '@/lib/utils';
+import type { Dict, Locale } from '@/lib/i18n';
 
-export function SiteNav({ t, locale }: { t: Dict["nav"]; locale: Locale }) {
+export function SiteNav({ t, locale }: { t: Dict['nav']; locale: Locale }) {
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
@@ -31,7 +31,7 @@ export function SiteNav({ t, locale }: { t: Dict["nav"]; locale: Locale }) {
             {t.roadmap}
           </a>
           <Link
-            href={localePath(locale, "dashboard")}
+            href={localePath(locale, 'dashboard')}
             className="hover:text-slate-900 transition-colors"
           >
             {t.dashboard}

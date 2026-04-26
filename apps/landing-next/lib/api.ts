@@ -1,7 +1,7 @@
 // Public API client — wraps apps/api Hono Worker.
 // In dev, falls back to mock data when API_BASE_URL is unset or fetch fails.
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_SENTINEL_API_URL ?? "";
+const API_BASE_URL = process.env.NEXT_PUBLIC_SENTINEL_API_URL ?? '';
 
 export type PriceRow = {
   asset: string;
@@ -21,21 +21,21 @@ export type AlertRow = {
 };
 
 const MOCK_PRICES: PriceRow[] = [
-  { asset: "BTC/USD", oracle: "chainlink", priceE18: "67234.12", ts: nowMinus(12) },
-  { asset: "BTC/USD", oracle: "pyth", priceE18: "67241.88", ts: nowMinus(8) },
-  { asset: "ETH/USD", oracle: "chainlink", priceE18: "3284.56", ts: nowMinus(14) },
-  { asset: "ETH/USD", oracle: "pyth", priceE18: "3285.02", ts: nowMinus(6) },
-  { asset: "USDC/USD", oracle: "chainlink", priceE18: "1.0001", ts: nowMinus(20) },
+  { asset: 'BTC/USD', oracle: 'chainlink', priceE18: '67234.12', ts: nowMinus(12) },
+  { asset: 'BTC/USD', oracle: 'pyth', priceE18: '67241.88', ts: nowMinus(8) },
+  { asset: 'ETH/USD', oracle: 'chainlink', priceE18: '3284.56', ts: nowMinus(14) },
+  { asset: 'ETH/USD', oracle: 'pyth', priceE18: '3285.02', ts: nowMinus(6) },
+  { asset: 'USDC/USD', oracle: 'chainlink', priceE18: '1.0001', ts: nowMinus(20) },
 ];
 
 const MOCK_ALERTS: AlertRow[] = [
   {
     id: 0,
-    asset: "cbETH/USD",
-    oraclePair: "chainlink_vs_pyth",
+    asset: 'cbETH/USD',
+    oraclePair: 'chainlink_vs_pyth',
     deviationBps: 9995,
     blockTs: nowMinus(60 * 60 * 6),
-    txHash: "0x6887b042a839ec4d1a2b1e936b4bd5c304ee9e2b0f4b9d17cb711d4e04338c09",
+    txHash: '0x6887b042a839ec4d1a2b1e936b4bd5c304ee9e2b0f4b9d17cb711d4e04338c09',
     alertType: 0,
   },
 ];

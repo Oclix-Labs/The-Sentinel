@@ -1,20 +1,20 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "RWA Sentinel — Public Watchdog for Tokenized RWAs on Base",
+  title: 'RWA Sentinel — Public Watchdog for Tokenized RWAs on Base',
   description:
-    "Public-good watchdog for tokenized RWAs on Base. Multi-oracle cross-check (Chainlink + Pyth + RedStone) with an append-only on-chain alert log. MIT-licensed.",
+    'Public-good watchdog for tokenized RWAs on Base. Multi-oracle cross-check (Chainlink + Pyth + RedStone) with an append-only on-chain alert log. MIT-licensed.',
   openGraph: {
-    title: "RWA Sentinel — Public Watchdog for Tokenized RWAs on Base",
+    title: 'RWA Sentinel — Public Watchdog for Tokenized RWAs on Base',
     description:
-      "Public-good watchdog for tokenized RWAs on Base. Open-source (MIT), retail-facing, Base-exclusive.",
-    type: "website",
+      'Public-good watchdog for tokenized RWAs on Base. Open-source (MIT), retail-facing, Base-exclusive.',
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "RWA Sentinel — Public Watchdog for Tokenized RWAs on Base",
-    description: "Public-good watchdog for tokenized RWAs on Base.",
+    card: 'summary_large_image',
+    title: 'RWA Sentinel — Public Watchdog for Tokenized RWAs on Base',
+    description: 'Public-good watchdog for tokenized RWAs on Base.',
   },
 };
 
