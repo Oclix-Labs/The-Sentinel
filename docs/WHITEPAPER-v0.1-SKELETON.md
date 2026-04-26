@@ -10,7 +10,7 @@
 
 ## 1. Abstract
 
-RWA Sentinel is a progressively-decentralized public-goods watchdog for tokenized real-world assets on Base. Over the past eighteen months, at least nine oracle-composition or hardcoded-oracle failures across Base-adjacent DeFi caused **≥$50M in cumulative losses** — roughly one incident every two months — and no existing public service performs the multi-oracle cross-check that would have caught them in the same block. In Phase 1, a centralized MVP monitors five priority assets (BTC, ETH, USDC, cbETH, USDO) with Chainlink × Pyth × RedStone cross-checks every minute and writes detected deviations to an append-only contract on Base Mainnet under MIT license. In Phase 2, cross-check execution federates across 2–3 independent operators with N-of-M consensus. In Phase 3, a permissionless operator network backed by the SENTINEL utility token opens participation to anyone and governs network parameters through token-weighted voting. This whitepaper presents the problem, the architecture, the directional token design, the regulatory framing, and the open risks.
+RWA Sentinel is a progressively-decentralized public-goods watchdog for tokenized real-world assets and price-bearing crypto assets on Base. Over the past eighteen months, at least nine oracle-composition or hardcoded-oracle failures across Base-adjacent DeFi caused **≥$50M in cumulative losses** — roughly one incident every two months — and no existing public service performs the multi-oracle cross-check that would have caught them in the same block. In Phase 1, a centralized MVP monitors five priority assets (BTC, ETH, USDC, cbETH, USDO) using two complementary detection mechanisms: **multi-oracle price cross-check** for assets with two or more public Base oracle feeds (BTC, ETH, USDC, cbETH), and **Chainlink Proof-of-Reserve attestation tracking** for tokenized real-world assets where multi-oracle coverage does not yet exist (USDO at Phase 1, expanding to cbBTC, iBTC, and Backed Finance products in Phase 2). Detected deviations and attestation anomalies are written to an append-only contract on Base Mainnet under MIT license. In Phase 2, cross-check execution federates across 2–3 independent operators with N-of-M consensus. In Phase 3, a permissionless operator network backed by the SENTINEL utility token opens participation to anyone and governs network parameters through token-weighted voting. This whitepaper presents the problem, the architecture, the directional token design, the regulatory framing, and the open risks — including the honest detection-vs-action limit, the asset-class scope of cross-check vs attestation tracking, and the operator economics of Phase 2.
 
 ---
 
@@ -27,6 +27,8 @@ In the eighteen months between October 2024 and April 2026, at least nine oracle
 - **Aave wstETH CAPO (11 Mar 2026, Ethereum).** Chaos Labs' Correlated Asset Price Oracle's `snapshotRatio` and `snapshotTimestamp` desynchronized, mispricing the wstETH/stETH ratio by 2.85% — enough to forcibly liquidate 34 accounts for **~$27M**.
 
 The pattern across all nine incidents is identical: the deviation between the protocol-consumed price and any independent reference price exceeded 2% — often by multiple orders of magnitude — for periods ranging from minutes to days. **Every one of these incidents could have been detected in the same block via multi-oracle cross-check — but no existing public service performs this check.**
+
+**Detection enables self-rescue, not protocol-level prevention.** Sentinel is a detection and alerting layer rather than a circuit-breaker (§6.2). Even instantaneous detection cannot stop a liquidation cascade once the affected protocol's own governance timelock outpaces detection — Moonwell's ~5-day timelock prevented the cbETH oracle config from being rolled back even after Anthias Labs identified the root cause within ~24 hours. Sentinel's value to a Moonwell borrower in that window is the few minutes they would have needed to withdraw, repay, or transfer collateral before liquidation bots arrived; it is not a protocol-side rescue. The Phase 2 webhook + Phase 3 token-paid SLA tier are designed for exactly this self-rescue use case (§3.1 Stage 4).
 
 ### 2.2 Retail coverage gap
 
@@ -69,9 +71,31 @@ flowchart LR
 
 _Source: `docs/diagrams/architecture-pipeline.mmd`._
 
-**Stage 1 — Ingestion.** A Cloudflare Worker (`apps/poller`) polls three independent oracle sources every minute for each Phase 1 asset: Chainlink via on-chain `latestRoundData()` reads (viem), Pyth via the sponsored push feeds and the Hermes pull endpoint (`@pythnetwork/pyth-evm-js`), and RedStone via REST. All values are normalized to 18 decimals before comparison. If fewer than two oracles respond for an asset, the stage logs `insufficient_sources` and skips that asset rather than emit a low-confidence alert.
+**Stage 1 — Ingestion.** A Cloudflare Worker (`apps/poller`) polls every available oracle source for each Phase 1 asset on a 1-minute cadence. Phase 1 oracle coverage is uneven across assets — we report it explicitly rather than averaging it into a single "multi-oracle" claim:
 
-**Stage 2 — Cross-check.** For each asset, the poller computes pairwise basis-point deviations across every available oracle pair. A configurable per-asset threshold (default ±2%; tightened to ±0.5% for stablecoins like USDC) determines whether the maximum deviation triggers an alert. The check is purely off-chain to keep latency under five seconds and cost under $55/month at scale — versus an estimated $8,700/month if every cross-check were executed on-chain (1 tx/min × 5 assets × ~21k gas at typical Base fees).
+| Asset | Chainlink | Pyth | RedStone | Mechanism |
+|---|---|---|---|---|
+| BTC / USD | ✅ | ✅ | ✅ | triple-source price cross-check |
+| ETH / USD | ✅ | ✅ | ✅ | triple-source price cross-check |
+| USDC / USD | ✅ | ✅ | ✅ | triple-source price cross-check |
+| cbETH / USD | ✅ | ✅ | ❌ | **dual-source** price cross-check (RedStone has no Base cbETH feed at Phase 1) |
+| USDO | PoR feed | n/a | n/a | single-source attestation tracking (Stage 3) |
+
+Chainlink is read via on-chain `latestRoundData()` (viem); Pyth via sponsored push feeds and the Hermes pull endpoint (`@pythnetwork/pyth-evm-js`); RedStone via REST. All price values are normalized to 18 decimals before comparison. If fewer than two oracles respond for an asset that requires cross-check, the stage logs `insufficient_sources` and skips that asset rather than emit a low-confidence alert.
+
+The dual-source coverage of cbETH is a known limitation: a simultaneous misconfiguration affecting both Chainlink and Pyth would produce a false negative in Phase 1. The Moonwell February 2026 incident would still have been caught (the misconfig affected only one source and produced a 99.95% deviation against the other), but the Phase 2 federation across 2–3 independent operators on different infrastructure providers is the structural answer to this single-feed-pair risk; in the meantime the cbETH threshold remains intentionally permissive (§3.1 Stage 2) to avoid false positives that would erode trust in the alert stream.
+
+**Stage 2 — Cross-check.** For each asset, the poller computes pairwise basis-point deviations across every available oracle pair. A configurable per-asset threshold determines whether the maximum deviation triggers an alert. Default thresholds are calibrated by asset class to match the volatility regime of the underlying:
+
+| Asset class | Default threshold | Rationale |
+|---|---|---|
+| Hard stablecoin (USDC, USDT, DAI, EURC) | ±0.5% | Designed to track $1; even a ±1% deviation is materially abnormal — see USDC March 2023, xUSD November 2025 |
+| Yield-bearing stablecoin (USDe, sDAI) | ±1.0% | Allows for accrued yield drift; tighter than crypto, looser than hard stable |
+| Liquid staking token (cbETH, wstETH, rsETH) | ±2.0% | Prices a multi-component (underlying + yield) ratio; small drift is normal — Moonwell Feb 2026 cbETH was 99.95%, ~5,000× this threshold |
+| Crypto (BTC, ETH) | ±2.0% | Default; market volatility makes tighter thresholds noisy |
+| Tokenized RWA with NAV oracle (USDO, OUSG, bIB01) | heartbeat-based + ±1.0% | Slow-moving NAV; staleness usually precedes deviation, see Stage 3 |
+
+Per-asset overrides are recorded in the poller config and changed only via governance vote in Phase 3. The check is purely off-chain to keep latency under five seconds and cost under $55/month at scale — versus an estimated $8,700/month if every cross-check were executed on-chain (1 tx/min × 5 assets × ~21k gas at typical Base fees).
 
 **Stage 3 — Attestation tracking.** For tokenized RWAs whose price is not market-discovered (e.g., USDO at Phase 1; cbBTC, iBTC, dlcBTC, GLDY, TETH from Phase 2), the poller subscribes to the issuer's Chainlink Proof-of-Reserve (PoR) feed on Base. The check flags two failure modes: **staleness** (no `AnswerUpdated` event within the heartbeat window) and **reserve-vs-supply delta** (PoR-reported reserves diverge from on-chain token total supply by more than a per-asset threshold). For Backed Finance products (bIB01, bCSPX) whose PoR feeds live on Polygon, Phase 2 introduces a Chainlink CCIP mirror to Base.
 
@@ -90,6 +114,8 @@ Phase 1 ships a single-operator implementation of stages 1–4 with the on-chain
 ### 3.3 Phase 2 — Federated Operators
 
 Phase 2 federates stages 1–3 across 2–3 independent operators on different infrastructure (e.g., one Cloudflare, one Vercel/Fly.io, one self-hosted). A new on-chain contract, `OperatorRegistry.sol`, manages operator identity and a small ETH or stablecoin collateral bond (token does not yet exist). An off-chain aggregator — itself open-source and operable by any party — receives signed alerts from each operator and emits a high-confidence alert to `AlertRegistry` only when N-of-M operators agree. Single-operator alerts continue to publish under a "candidate" `alertType` for transparency. Coverage expands from 5 to 10–15 assets, including wstETH, USDT, DAI, EURC, cbBTC, LBTC, and USDe. The Premium tier (custom thresholds, historical export, real-time WebSocket) goes generally available with a $5K MRR target by end of phase. A third-party security audit (Trail of Bits, ChainSecurity, or Halborn) covers `AlertRegistry` and `OperatorRegistry` before pre-seed deployment. Token economics are designed and published in Whitepaper v1.0; the airdrop allocation registry begins recording subscribers and contributors, but no token is issued during Phase 2.
+
+**Phase 2 operator compensation.** Without an issued token, Phase 2 operator economics rely on three explicit streams: (a) a USDC service contract from Oclix Labs Inc paid out of Phase 2 pre-seed capital (≈$2–5K/month per operator instance, comparable to a part-time SRE retainer; precise rates set per operator at registration time), (b) a written commitment to allocate a portion of the Phase 3 Operator Incentives pool to verified Phase 2 operators with the same 4-year vest / 1-year cliff applied to founder operators in §4.0 (recorded in the airdrop allocation registry, minted at Phase 3 launch like any other community allocation — consistent with the §4.0 commitment that no token is *issued* during Phase 2), and (c) the right to participate in the Phase 3 permissionless network without re-registration. The realistic Phase 2 operator count is **2 (founder team + one external partner) by default, expanding to 3 only when a self-funded operator candidate emerges** — the whitepaper does not assume every Phase 2 candidate will materialize. Candidate partners under early discussion include Anthias Labs (Moonwell risk manager, first public detector of the cbETH incident referenced in §2.1) and Steakhouse Financial; engagement is contingent on Phase 1 milestone completion.
 
 ### 3.4 Phase 3 — Permissionless Network
 
@@ -242,7 +268,17 @@ The path to a permissionless oracle-watchdog network proceeds through three phas
 
 ### 7.1 Phase 1 — Centralized MVP (2026 Q2)
 
-Phase 1 ships a working public-good watchdog with provable on-chain alert history. Deliverables include `AlertRegistry.sol` deployed to Base Mainnet, the Cloudflare Worker pipeline (poller, cross-check, alert-writer, public Hono API), Phase 1 coverage of BTC, ETH, USDC, cbETH, and USDO, plus webhook + Telegram alert channels and a Premium-tier placeholder. The team operates as a single entity with no external operators. Success criteria: continuous monitoring with >99% uptime, ≥10 detected deviations logged on-chain, a regression replay of the Moonwell cbETH incident detected within one block, ≥50 Premium-tier waitlist signups, and a documented public API consumable by external developers. **No token is issued in Phase 1.**
+Phase 1 ships a working public-good watchdog with provable on-chain alert history. Deliverables include `AlertRegistry.sol` deployed to Base Mainnet, the Cloudflare Worker pipeline (poller, cross-check, alert-writer, public Hono API), Phase 1 coverage of BTC, ETH, USDC, cbETH, and USDO, plus webhook + Telegram alert channels and a Premium-tier alpha. The team operates as a single entity with no external operators. Success criteria, expressed as Phase 1 → Phase 2 transition gates rather than vanity metrics:
+
+- Continuous monitoring with >99% uptime
+- ≥10 detected deviations logged on-chain
+- Regression replay of the Moonwell cbETH incident detected within one block
+- ≥1,000 free-tier subscribers (webhook + Telegram combined)
+- ≥30 daily active webhook deliveries successfully consumed downstream (engagement, not registration)
+- **Premium tier alpha live with ≥5 paying customers and ≥$100 monthly recurring revenue** (founder networks acceptable as proof-of-concept; the bar is *paid USDC against an actual SLA*, not waitlist signups)
+- Documented public API consumable by external developers
+
+**No token is issued in Phase 1.** These transition gates exist because Phase 2 fundraising on equity-only thesis (§4.0 / §7.2) requires evidence of paid demand, not just product completeness.
 
 ### 7.2 Phase 2 — Federated Operators (2026 Q4 – 2027 Q1)
 
