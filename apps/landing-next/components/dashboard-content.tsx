@@ -77,7 +77,7 @@ export function DashboardContent({ locale }: { locale: Locale }) {
               <p className="text-slate-500 mt-2">{t.dashboard.subtitle}</p>
             </div>
             {!loading && showingMock && (
-              <Badge variant="amber">
+              <Badge variant="warning">
                 {locale === 'ko' ? 'Mock 데이터 (API 미연결)' : 'Showing mock data'}
               </Badge>
             )}
@@ -142,7 +142,7 @@ export function DashboardContent({ locale }: { locale: Locale }) {
                       <div key={a.id} className="border border-slate-100 rounded-lg p-4">
                         <div className="flex items-start justify-between gap-3 mb-2">
                           <div className="font-mono font-semibold">{a.asset}</div>
-                          <Badge variant="amber" className="shrink-0">
+                          <Badge variant="warning" className="shrink-0">
                             {formatBps(a.deviationBps)}
                           </Badge>
                         </div>

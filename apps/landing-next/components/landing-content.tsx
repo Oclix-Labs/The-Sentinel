@@ -23,7 +23,7 @@ export function LandingContent({ locale }: { locale: Locale }) {
           <div className="absolute inset-0 dot-grid opacity-40" />
           <div className="absolute inset-0 gradient-mesh" />
           <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-            <Badge variant="primary" className="mb-8">
+            <Badge variant="live" className="mb-8">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
@@ -170,7 +170,7 @@ export function LandingContent({ locale }: { locale: Locale }) {
                 <Card key={p.tag}>
                   <CardHeader>
                     <Badge
-                      variant={i === 0 ? 'primary' : i === 1 ? 'amber' : 'success'}
+                      variant={i === 0 ? 'live' : i === 1 ? 'warning' : 'success'}
                       className="mb-3"
                     >
                       {p.tag}
