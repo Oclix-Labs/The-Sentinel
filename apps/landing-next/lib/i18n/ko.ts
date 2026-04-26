@@ -1,0 +1,136 @@
+import type { Dict } from './index';
+
+export const ko: Dict = {
+  nav: {
+    dashboard: '대시보드',
+    coverage: '커버리지',
+    roadmap: '로드맵',
+    resources: '리소스',
+    whitepaper: '백서',
+    docs: '문서',
+    research: '리서치',
+    audit: '감사',
+    cta: '텔레그램 알림 받기',
+  },
+  hero: {
+    badge: 'LIVE · Base 메인넷',
+    title: '오라클 사고 9건. 18개월. 손실 $50M.',
+    subtitle:
+      'Sentinel은 전부 잡았습니다. 다음 사고 전 무료 텔레그램 알림을 받으세요.',
+    ctaPrimary: '텔레그램 알림 받기',
+    ctaSecondary: '라이브 대시보드 보기',
+  },
+  stats: {
+    failuresValue: '9',
+    failuresLabel: '오라클 사고 · 18개월',
+    lostValue: '$50M+',
+    lostLabel: '해당 9건의 손실',
+    alertsLabel: 'Base 메인넷 Sentinel 알림',
+    licenseValue: 'MIT',
+    licenseLabel: '영구 오픈소스',
+  },
+  problem: {
+    badge: '왜 만들었나',
+    title: '오라클 사고 9건. 그러나 일반 사용자를 위한 감시견은 0.',
+    body: '지난 18개월간 Base 인접 DeFi에서 발생한 오라클 구성 결함 또는 하드코딩 사고는 최소 9건, 손실 합계는 ≥$50M에 달합니다. 가장 최근 Moonwell cbETH 시장은 단일 하드코딩 오라클로 인해 $2.68M을 잃었고, 그 사고는 181명의 차용자가 청산된 후에야 인지됐습니다. 이 모든 사고는 같은 블록에서 멀티-오라클 cross-check 한 번이면 catch 가능했습니다. 하지만 누구도 그것을 보고 있지 않았습니다. 지금까지는.',
+  },
+  howItWorks: {
+    badge: '작동 방식',
+    titlePart1: '오라클 셋. ',
+    titleAccent: '한 블록.',
+    body: 'Sentinel은 Chainlink, Pyth, RedStone을 매분 polling합니다. 어느 쌍이라도 자산별 임계값을 넘어 deviation을 보이면, Base 위 영구 on-chain 로그에 alert가 기록되고 동시에 당신의 텔레그램으로 수 초 안에 알림이 갑니다.',
+    nodes: {
+      chainlink: 'Chainlink',
+      pyth: 'Pyth',
+      redstone: 'RedStone',
+      sentinel: 'Sentinel',
+      registry: 'AlertRegistry · Base 메인넷',
+    },
+  },
+  livePreview: {
+    badge: 'LIVE',
+    title: '실시간 오라클 데이터.',
+    subtitle: '최신 가격과 알림. 5초마다 갱신.',
+    pricesTitle: '최신 가격',
+    alertsTitle: '최근 알림',
+    dashboardLink: '전체 대시보드 보기',
+    noData: '데이터 없음 — 네트워크 정상.',
+  },
+  roadmap: {
+    badge: '다음 단계',
+    titlePart1: 'Base 위 ',
+    titleAccent1: 'Live',
+    titlePart2: '. 다음은 federated. 2027년부터 permissionless.',
+    cards: [
+      {
+        tag: 'LIVE NOW · Q2 2026',
+        bullets: [
+          '5 자산 cross-check',
+          '메인넷 AlertRegistry 검증 완료',
+          '무료 텔레그램 알림',
+        ],
+      },
+      {
+        tag: 'Q4 2026 → Q1 2027',
+        bullets: [
+          '2–3 federated 오퍼레이터',
+          '10–15 자산',
+          'Premium SLA tier',
+        ],
+      },
+      {
+        tag: 'Q2 2027+',
+        bullets: [
+          'Permissionless DAO',
+          'SENTINEL utility 토큰',
+          'Phase 1 구독자/기여자 대상 커뮤니티 airdrop snapshot',
+        ],
+        disclaimer:
+          '설계는 완료, 발행은 미정 — 토큰은 Phase 3 launch와 utility-token 분류 및 다수 법역(US/KR/SG/KY) legal opinion 조건부로만 발행됩니다.',
+      },
+    ],
+  },
+  trust: {
+    title: 'Base 메인넷 검증 완료',
+    networkLabel: 'AlertRegistry',
+    licenseLine: 'MIT · 영구 오픈소스',
+    auditLine: '2027 Q1 감사 예정',
+    githubCta: 'GitHub에서 보기',
+  },
+  footer: {
+    finalCtaCopy: '다음 사고 전 텔레그램 알림을 받으세요.',
+    finalCtaButton: '텔레그램 알림 받기',
+    brandTagline: 'Base 위 토큰화된 RWA를 위한 공공 감시견.',
+    columnProduct: '제품',
+    columnResources: '리소스',
+    columnNetwork: '네트워크',
+    productLinks: {
+      telegram: '텔레그램 알림 받기',
+      dashboard: '라이브 대시보드',
+      premium: 'Premium 대기명단',
+    },
+    networkLinks: {
+      mainnet: 'Basescan AlertRegistry',
+      status: '상태',
+      twitter: 'Twitter',
+      farcaster: 'Farcaster',
+      discord: 'Discord',
+    },
+    rights: '© 2026 Oclix Labs · MIT License',
+  },
+  dashboard: {
+    title: '라이브 대시보드',
+    subtitle: '최신 가격 5개 + 알림 5개. API 미가용 시 mock 데이터.',
+    pricesTitle: '최신 가격 (오라클별)',
+    alertsTitle: '최근 알림',
+    noData: '데이터 없음 — 네트워크 정상.',
+    asset: '자산',
+    oracle: '오라클',
+    price: '가격',
+    deviation: '편차',
+    time: '시간',
+    tx: 'Tx',
+    refresh: '새로고침',
+    mockBadge: 'Mock 데이터 (API 미연결)',
+  },
+};
