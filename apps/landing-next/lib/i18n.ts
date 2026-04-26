@@ -72,7 +72,7 @@ export const dict: Record<Locale, Dict> = {
       title_part1: "The Public Watchdog for",
       title_accent: "Tokenized RWAs",
       title_part2: "on Base",
-      desc: "RWA Sentinel cross-checks Chainlink, Pyth, and RedStone for 5 core Base assets every minute, and writes detected deviations to an append-only on-chain log. Free and open-source, retail-facing, Base-exclusive.",
+      desc: "RWA Sentinel cross-checks Chainlink, Pyth, and RedStone for 5 core Base assets every minute, and writes detected deviations to an append-only on-chain log. Free and open-source, retail-facing, and Base-exclusive.",
       cta_primary: "Explore Architecture",
       cta_secondary: "View on GitHub",
     },
@@ -100,7 +100,7 @@ export const dict: Record<Locale, Dict> = {
       stages: [
         { id: "01", title: "Poller Worker", desc: "Cron 1 min · 5 assets × 3 oracles · viem + Pyth + RedStone" },
         { id: "02", title: "Cross-Check", desc: "Pairwise ±2% deviation · per-asset tunable" },
-        { id: "03", title: "AlertWriter", desc: "Queue consumer · D1 + on-chain + webhook + Telegram" },
+        { id: "03", title: "AlertWriter Worker", desc: "Queue consumer · D1 + on-chain + webhook + Telegram" },
         { id: "04", title: "AlertRegistry", desc: "Append-only Solidity log · Base Mainnet · verified" },
       ],
     },
@@ -214,7 +214,7 @@ export const dict: Record<Locale, Dict> = {
       stages: [
         { id: "01", title: "Poller Worker", desc: "Cron 1분 · 5자산 × 3오라클 · viem + Pyth + RedStone" },
         { id: "02", title: "Cross-Check", desc: "Pairwise ±2% 편차 · 자산별 조정 가능" },
-        { id: "03", title: "AlertWriter", desc: "큐 컨슈머 · D1 + 온체인 + 웹훅 + Telegram" },
+        { id: "03", title: "AlertWriter Worker", desc: "큐 컨슈머 · D1 + 온체인 + 웹훅 + Telegram" },
         { id: "04", title: "AlertRegistry", desc: "추가 전용 Solidity 로그 · Base Mainnet · verified" },
       ],
     },
