@@ -46,12 +46,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${sourceSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <head>
-        {/* Pretendard via CDN for Korean hero (Source Serif 4 is Latin-only) */}
+        {/* Pretendard via CDN for Korean hero (Source Serif 4 is Latin-only).
+         * --font-pretendard CSS variable is set in globals.css :root to avoid
+         * SSR/CSR hydration mismatch on inline <style> children. */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
         />
-        <style>{`:root { --font-pretendard: 'Pretendard Variable', 'Pretendard'; }`}</style>
       </head>
       <body className="antialiased">{children}</body>
     </html>
