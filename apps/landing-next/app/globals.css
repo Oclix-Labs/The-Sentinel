@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Pretendard CDN-loaded family name for Korean hero (Source Serif 4 is Latin-only).
+ * Defined here (not in layout.tsx <style>) to avoid Next.js SSR/CSR quote-escape
+ * hydration mismatch on inline <style> children. */
+:root {
+  --font-pretendard: "Pretendard Variable", "Pretendard";
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
