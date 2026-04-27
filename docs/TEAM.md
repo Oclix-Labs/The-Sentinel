@@ -36,11 +36,11 @@
 
 - **Role**: Marketing, Community, Frontend, Landing page, Whitepaper co-author
 - **Responsibilities**: Landing page (Next.js + Cloudflare Pages, EN/KR), architecture diagrams, Korean retail community + global Twitter/Farcaster presence, Whitepaper authoring (initially §3 / §4 / §8 / Appendix A; expanded to §1 / §2 / §5 / §6 / §7 / §9 / §11 on D8)
-- **Department**: _[TODO: 본인 채우기]_
-- **Year**: _[TODO: 본인 채우기]_
-- **Email**: _[TODO: 본인 채우기]_
-- **LinkedIn**: _[TODO: 본인 채우기]_
-- **GitHub**: _[TODO: 본인 채우기]_
+- **Department**: Computer Science
+- **Year**: 3rd year
+- **Email**: ljk90409550@gmail.com
+- **LinkedIn**: [재근 이](https://www.linkedin.com/in/%EC%9E%AC%EA%B7%BC-%EC%9D%B4-3bb176406/)
+- **GitHub**: [leejk206](https://github.com/leejk206)
 
 > Jaegeun leads the product narrative, retail-facing surfaces, and whitepaper authoring for RWA Sentinel. He shipped the project landing page (Next.js 14 + Tailwind + Cloudflare Pages, with EN/KR i18n at `oclixlabs.xyz`), the Mermaid architecture diagrams, and co-authored the v0.1 lite whitepaper (45 pages) — covering the Phase 1/2/3 architecture, the directional tokenomics framework with the §4.0 founding principle (zero team and zero investor genesis allocation), the multi-jurisdiction regulatory framing, the §3.6 composability primitive thesis, the §10.8 fork-resistance moat analysis, and the §11 vision. He runs Korean retail community distribution and bilingual product positioning. At Yonsei BAY Blockchain Society, his focus is the intersection of crypto product strategy, public-good narrative design, and the Korean retail RWA market.
 
