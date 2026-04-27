@@ -43,7 +43,7 @@ export const ko: Dict = {
       pyth: 'Pyth',
       redstone: 'RedStone',
       sentinel: 'Sentinel',
-      registry: 'AlertRegistry · Base 메인넷',
+      registry: 'Base 메인넷',
     },
   },
   livePreview: {
