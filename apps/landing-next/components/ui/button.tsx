@@ -3,13 +3,13 @@ import { type VariantProps, cva } from 'class-variance-authority';
 import * as React from 'react';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-white hover:bg-primary-600',
-        outline: 'border border-slate-200 bg-white hover:border-primary hover:text-primary',
-        ghost: 'hover:bg-slate-100',
+        primary: 'bg-primary text-on-primary hover:bg-primary-hover',
+        outline: 'border border-slate-200 bg-white text-ink hover:border-border-strong',
+        ghost: 'text-ink hover:bg-slate-100',
       },
       size: {
         sm: 'h-9 px-4',
