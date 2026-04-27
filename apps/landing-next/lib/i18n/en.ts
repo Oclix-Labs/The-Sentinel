@@ -43,7 +43,7 @@ export const en: Dict = {
       pyth: 'Pyth',
       redstone: 'RedStone',
       sentinel: 'Sentinel',
-      registry: 'AlertRegistry · Base Mainnet',
+      registry: 'Base Mainnet',
     },
   },
   livePreview: {
