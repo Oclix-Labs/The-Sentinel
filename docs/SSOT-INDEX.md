@@ -32,6 +32,8 @@ Rules: **immutable**. To update, create `<topic>-v2.md` and link `supersedes` in
 | [`docs/TEAM.md`](./TEAM.md) | Team bios (English, for whitepaper & application) | 김현우 |
 | [`docs/DECISIONS/`](./DECISIONS/) | Architectural Decision Records (ADRs) — immutable once accepted | decision author |
 | [`docs/DEVELOPMENT.md`](./DEVELOPMENT.md) | Local setup, wrangler, secrets, deploys | 모진영 |
+| [`docs/DESIGN.md`](./DESIGN.md) | Visual identity token system (colors, typography, spacing, components) — SSOT for landing + future product pages. Format: google-labs-code/design.md spec. | 모진영 |
+| [`docs/specs/`](./specs/) | Implementation specs for substantive feature work (landing redesign, etc.). One file per spec, dated. | spec author |
 
 ---
 
@@ -92,4 +94,4 @@ No copy-pasting research content into Spec docs. Link-only. Rationale in [`docs/
 
 ---
 
-_Last updated: 2026-04-19. Update this file whenever a new SSOT is added._
+_Last updated: 2026-04-27 — added `docs/DESIGN.md` and `docs/specs/`. Update this file whenever a new SSOT is added._
