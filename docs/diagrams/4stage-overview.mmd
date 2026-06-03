@@ -1,0 +1,14 @@
+%% RWA Sentinel — 4-stage pipeline overview (Whitepaper §3.1)
+%% Simplified high-level view; see architecture-pipeline.mmd for the full Cloudflare Edge detail.
+
+flowchart LR
+    CRON["Cron 1 min"] --> ING["1. Ingestion<br/>Chainlink · Pyth · RedStone"]
+    ING --> XCHK["2. Cross-check<br/>±2% pairwise deviation"]
+    XCHK --> ATT["3. Attestation tracking<br/>Chainlink PoR · staleness · supply delta"]
+    ATT --> ALT["4. Alert + API<br/>Webhook · Telegram · AlertRegistry"]
+
+    classDef stage fill:#E8EFFF,stroke:#0052FF,stroke-width:2px,color:#0F172A
+    classDef trigger fill:#F8FAFC,stroke:#94A3B8,stroke-width:1px,color:#0F172A
+
+    class ING,XCHK,ATT,ALT stage
+    class CRON trigger
