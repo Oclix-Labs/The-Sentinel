@@ -1,127 +1,8 @@
-<div align="center">
-
-<br><br>
-
-# RWA Sentinel
-
-## Lite Whitepaper v0.1
-
-### The Public Watchdog for Tokenized RWAs on Base
-
-<br><br>
-
-**Oclix Labs**
-Yonsei BAY Blockchain Society
-Seoul, Republic of Korea
-
-<br>
-
-**2026-04-27**
-
-<br>
-
----
-
-<br>
-
-### Authors
-
-| Member | Role |
-|---|---|
-| 권상현 (Kwon Sanghyun) | Team Lead · Smart Contract Engineer |
-| 모진영 (Mo Jinyoung) | Core Engine · Backend · Infrastructure |
-| 이재근 (Lee Jaegeun) | Marketing · Community · Frontend · Whitepaper |
-| 김현우 (Kim Hyunwoo) | English · Research · Video · Documentation |
-
-<br>
-
-### Live deployment
-
-**Mainnet contract** — `AlertRegistry.sol` at [`0x79b5d74A301079c86D13eb71e2787852F403F876`](https://basescan.org/address/0x79b5d74A301079c86D13eb71e2787852F403F876) (Basescan-verified)
-
-**Landing page** — [oclixlabs.xyz](https://oclixlabs.xyz)
-
-**Repository** — [github.com/Oclix-Labs/The-Sentinel](https://github.com/Oclix-Labs/The-Sentinel)
-
-**Submission** — Base Batches 003 · Student Track
-
-<br>
-
-### License
-
-This whitepaper is released under the **MIT License**. The Sentinel codebase, smart contracts, and operator client are MIT-licensed forever across all phases (per §7.4).
-
-<br>
-
-</div>
-
----
-
-> 🚧 **Working draft v0.1.** Sections 1–11 and Appendices A–B are filled. Sections marked `[DIRECTIONAL]` (notably §4 Tokenomics) are intentionally not final — exact percentages, supply, and emission curve are deferred to Phase 2 community input and an independent economic audit. Individual team bios in §9 link to [`docs/TEAM.md`](./TEAM.md) and are finalized before PDF release.
->
-> **Length**: ~40–45 pages PDF including the four-stage architecture diagram, threat-model and allocation tables, the Appendix A glossary, and the §11 Vision. Written for a crypto-native investor audience who knows DeFi, oracles, and basic tokenomics patterns. Scope is comparable to Chainlink v1 (~38 p) and RedStone (~35 p) whitepapers; this remains the "Lite" v0.1 versus the full Phase 2 Whitepaper v1.0 that will add formal protocol specs, full Howey-test analysis, and an economic-audit annex.
->
-> **Last updated**: 2026-04-27.
-
-<div style="page-break-after: always;"></div>
-
-## Table of Contents
-
-1. [Abstract](#1-abstract)
-2. [Problem](#2-problem)
-   - 2.1 [Pattern of oracle failures](#21-pattern-of-oracle-failures)
-   - 2.2 [Retail coverage gap](#22-retail-coverage-gap)
-   - 2.3 [Infrastructure without public-goods economics](#23-infrastructure-without-public-goods-economics)
-3. [Architecture](#3-architecture)
-   - 3.1 [Four-stage pipeline](#31-four-stage-pipeline)
-   - 3.2 [Phase 1 — Centralized MVP](#32-phase-1--centralized-mvp)
-   - 3.3 [Phase 2 — Federated Operators](#33-phase-2--federated-operators)
-   - 3.4 [Phase 3 — Permissionless Network](#34-phase-3--permissionless-network)
-   - 3.5 [Why Base, specifically](#35-why-base-specifically)
-   - 3.6 [Composability — Sentinel as a risk-event trigger primitive](#36-composability--sentinel-as-a-risk-event-trigger-primitive)
-4. [Tokenomics framework](#4-tokenomics-framework-directional)
-   - 4.0 [Founding principle — no team or investor genesis allocation](#40-founding-principle--no-team-or-investor-genesis-allocation)
-   - 4.1 [Utility — four functional pillars](#41-utility--four-functional-pillars)
-   - 4.2 [Allocation framework](#42-allocation-framework)
-   - 4.3 [Supply and emission](#43-supply-and-emission)
-   - 4.4 [Value capture](#44-value-capture)
-   - 4.5 [Launch mechanism](#45-launch-mechanism)
-   - 4.6 [Parameters explicitly not set in v0.1](#46-parameters-explicitly-not-set-in-v01)
-5. [Governance](#5-governance)
-   - 5.1 [Phase migration](#51-phase-migration)
-   - 5.2 [Governable parameters](#52-governable-parameters)
-6. [Security](#6-security)
-   - 6.1 [Defensive posture per phase](#61-defensive-posture-per-phase)
-   - 6.2 [Threat model](#62-threat-model)
-   - 6.3 [Defense-in-depth mapping](#63-defense-in-depth-mapping)
-   - 6.4 [Disclosure policy](#64-disclosure-policy)
-7. [Roadmap](#7-roadmap)
-   - 7.1 [Phase 1 — Centralized MVP (2026 Q2)](#71-phase-1--centralized-mvp-2026-q2)
-   - 7.2 [Phase 2 — Federated Operators (2026 Q4 – 2027 Q1)](#72-phase-2--federated-operators-2026-q4--2027-q1)
-   - 7.3 [Phase 3 — Permissionless Network + SENTINEL Token (2027 Q2+)](#73-phase-3--permissionless-network--sentinel-token-2027-q2)
-   - 7.4 [Cross-phase constants](#74-cross-phase-constants)
-8. [Regulatory considerations](#8-regulatory-considerations)
-9. [Team](#9-team)
-10. [Risks & Disclaimers](#10-risks--disclaimers)
-    - 10.1 [Regulatory uncertainty](#101-regulatory-uncertainty)
-    - 10.2 [Technical risk](#102-technical-risk)
-    - 10.3 [Execution risk](#103-execution-risk)
-    - 10.4 [Token value risk](#104-token-value-risk)
-    - 10.5 [No investment advice](#105-no-investment-advice)
-    - 10.6 [Team liability limitations](#106-team-liability-limitations)
-    - 10.7 [Programmable alert reliance](#107-programmable-alert-reliance)
-    - 10.8 [Fork risk and competitive moat narrowness](#108-fork-risk-and-competitive-moat-narrowness)
-11. [Vision](#11-vision)
-- Appendix A: [Glossary](#appendix-a-glossary)
-- Appendix B: [Deferred parameters](#appendix-b-deferred-parameters)
-- [References](#references)
-- [Review & approval workflow](#review--approval-workflow)
-
-<div style="page-break-after: always;"></div>
+<!-- SSOT for https://oclixlabs.xyz/whitepaper/ — public title/authors rendered by the site. -->
 
 ## 1. Abstract
 
-RWA Sentinel is a progressively-decentralized public-goods watchdog for tokenized real-world assets and price-bearing crypto assets on Base. Over the past eighteen months, at least nine oracle-composition or hardcoded-oracle failures across Base-adjacent DeFi caused **≥$50M in cumulative losses** — roughly one incident every two months — and no existing public service performs the multi-oracle cross-check that would have caught them in the same block. In Phase 1, a centralized MVP monitors five priority assets (BTC, ETH, USDC, cbETH, USDO) using two complementary detection mechanisms: **multi-oracle price cross-check** for assets with two or more public Base oracle feeds (BTC, ETH, USDC, cbETH), and **Chainlink Proof-of-Reserve attestation tracking** for tokenized real-world assets where multi-oracle coverage does not yet exist (USDO at Phase 1, expanding to cbBTC, iBTC, and Backed Finance products in Phase 2). Detected deviations and attestation anomalies are written to an append-only contract on Base Mainnet under MIT license. In Phase 2, cross-check execution federates across 2–3 independent operators with N-of-M consensus. In Phase 3, a permissionless operator network backed by the SENTINEL utility token opens participation to anyone and governs network parameters through token-weighted voting. This whitepaper presents the problem, the architecture, the directional token design, the regulatory framing, and the open risks — including the honest detection-vs-action limit, the asset-class scope of cross-check vs attestation tracking, and the operator economics of Phase 2. **Three structural forces converge through 2026** — Base RWA TVL approaching ~18× year-over-year growth, OpenZeppelin Defender's July 2026 retirement leaving the retail-facing programmable monitoring slot structurally empty, and AI-accelerated contract development (responsible for the very Moonwell cbETH incident this whitepaper references) outpacing manual code review at scale — that make this build window uniquely time-sensitive. Sentinel is the runtime safety net the AI-coding era requires: not a substitute for code review, but the only public mechanism that catches what review missed once code is live.
+RWA Sentinel is a progressively-decentralized public-goods watchdog for tokenized real-world assets and price-bearing crypto assets on Base. Over the past eighteen months, at least nine oracle-composition or hardcoded-oracle failures across Base-adjacent DeFi caused **≥$50M in cumulative losses** — roughly one incident every two months — yet **no free, RWA-tuned, hosted service** gives retail holders real-time cross-oracle alerts (§2.2). **Composition-class** failures such as the Moonwell cbETH misconfiguration are detectable within **seconds** when independent feeds disagree; **hardcoded-oracle depegs** require secondary-market comparison (Phase 2 roadmap, §2.1). In Phase 1, a centralized MVP monitors five priority assets (BTC, ETH, USDC, cbETH, USDO) using two complementary detection mechanisms: **multi-oracle price cross-check** for assets with two or more public Base oracle feeds (BTC, ETH, USDC, cbETH), and **Chainlink Proof-of-Reserve attestation tracking** for tokenized real-world assets where multi-oracle coverage does not yet exist (USDO at Phase 1, expanding to cbBTC, iBTC, and Backed Finance products in Phase 2). Detected deviations and attestation anomalies are written to an append-only contract on Base Mainnet under MIT license. In Phase 2, cross-check execution federates across 2–3 independent operators with N-of-M consensus. In Phase 3, a permissionless operator network backed by the SENTINEL utility token opens participation to anyone and governs network parameters through token-weighted voting. This whitepaper presents the problem, the architecture, the directional token design, the regulatory framing, and the open risks — including the honest detection-vs-action limit, the asset-class scope of cross-check vs attestation tracking, and the operator economics of Phase 2. **Three structural forces converge through 2026** — Base RWA TVL approaching ~18× year-over-year growth, OpenZeppelin Defender's July 2026 retirement leaving the retail-facing programmable monitoring slot structurally empty, and AI-accelerated contract development (responsible for the very Moonwell cbETH incident this whitepaper references) outpacing manual code review at scale — that make this build window uniquely time-sensitive. Sentinel is the runtime safety net the AI-coding era requires: not a substitute for code review, but a **free, hosted** detection layer that can surface many composition-class errors once code is live (§2.1, §3).
 
 ---
 
@@ -129,7 +10,7 @@ RWA Sentinel is a progressively-decentralized public-goods watchdog for tokenize
 
 ### 2.1 Pattern of oracle failures
 
-The Phase 1 coverage choices and the urgency of this whitepaper are anchored in a specific empirical claim: oracle-composition failures have moved from rare to recurring across Base-adjacent DeFi, and the existing infrastructure has no public layer to catch them in real time.
+The Phase 1 coverage choices and the urgency of this whitepaper are anchored in a specific empirical claim: oracle-composition failures have moved from rare to recurring across Base-adjacent DeFi, and retail holders still lack a **free, RWA-tuned, hosted** layer to catch them in real time (§2.2).
 
 In the eighteen months between October 2024 and April 2026, at least nine oracle-composition or hardcoded-oracle failures across Base and closely adjacent venues collectively destroyed or endangered **≥$50M in user and protocol funds**. The full forensic catalog is in [`.research/incident-forensics-moonwell.md`](../.research/incident-forensics-moonwell.md) with primary sources for each event; the headline cases are:
 
@@ -137,7 +18,13 @@ In the eighteen months between October 2024 and April 2026, at least nine oracle
 - **Stream Finance xUSD (4 Nov 2025, multi-protocol).** A fund-manager misappropriation of $93M depegged xUSD to ~$0.26, but Morpho, Euler, Silo, Gearbox, and Lista DAO had hardcoded `xUSD/USD = $1.00` oracles "to prevent mass liquidations". Lenders held worthless collateral with no liquidation path — **up to $285M at risk**, with Elixir deUSD collapsing 98% via contagion.
 - **Aave wstETH CAPO (11 Mar 2026, Ethereum).** Chaos Labs' Correlated Asset Price Oracle's `snapshotRatio` and `snapshotTimestamp` desynchronized, mispricing the wstETH/stETH ratio by 2.85% — enough to forcibly liquidate 34 accounts for **~$27M**.
 
-The pattern across all nine incidents is identical: the deviation between the protocol-consumed price and any independent reference price exceeded 2% — often by multiple orders of magnitude — for periods ranging from minutes to days. **Every one of these incidents could have been detected in the same block via multi-oracle cross-check — but no existing public service performs this check.**
+The nine incidents are not one mechanism, but they share a symptom: **protocol-consumed prices diverged materially from an independent reference** for periods from minutes to days. Full taxonomy in [`.research/incident-forensics-moonwell.md`](../.research/incident-forensics-moonwell.md); detection fit by class:
+
+- **Oracle composition / misconfiguration** (Moonwell cbETH, Moonwell rsETH, Morpho PAXG, Aave wstETH CAPO, Morpho cbETH/Pyth desync): **multi-oracle price cross-check** against Chainlink, Pyth, or RedStone would have flagged the deviation within **seconds to one minute** once the bad price was consumed — the canonical Phase 1 use case (Moonwell cbETH was a **99.95%** gap, thousands of times a ±2% threshold).
+- **Hardcoded or frozen oracle vs market reality** (Usual USD0++, Stream xUSD, Resolv USR): lending venues pinned **$1.00** while secondary markets depegged; a second on-chain feed reading the same peg does not help. Detection requires **secondary-market or DEX-TWAP comparison** to the consumed oracle — on the Phase 2 roadmap; Phase 1 **PoR and reserve-vs-supply tracking** (§3.1 Stage 3) cover attestation-class symptoms where applicable.
+- **AMM / LP oracle manipulation** (Morpho cUSDO/USDC Aerodrome LP): requires liquidity-pool or manipulation-aware checks beyond pairwise feed comparison — out of Phase 1 scope.
+
+**No free, RWA-tuned, hosted service** currently performs these checks for retail holders in real time (§2.2). Sentinel's Phase 1 stack targets the **composition class** first; hardcoded-oracle and LP-manipulation classes follow the Phase 2 detection roadmap above.
 
 **Why now — three structural forces converge through 2026.** This pattern is not stabilizing. (a) **Base RWA TVL growth.** L2-resident tokenized RWA value reached ~$1.1B in L2Beat's December 2025 monthly update — ~18× growth in 24 months — with Base capturing roughly 33% of L2 TVL share. New oracle composition surfaces (cbBTC, USDO PoR, ARKB, iBTC, GLDY, Backed Finance products via CCIP) emerge faster than any single risk team can review. (b) **Defender retirement.** OpenZeppelin Defender — the closest existing programmable-monitoring product retail builders have used — sunsets July 2026; the open-source replacement Monitor + Relayer is self-hosted and generic, neither RWA-tuned nor retail-facing. The hosted retail-facing programmable-monitoring slot is structurally empty. (c) **AI-accelerated contract development.** The Moonwell cbETH bug itself was AI-coauthored. The Protos forensic write-up notes "over 1,000 commits in a single week" upstream of the merge, characteristic of AI-assisted development now standard across DeFi. Subtle composition errors reach mainnet faster than the audit pipeline scales — Halborn audited Moonwell's contracts and unit tests existed; the unit-conversion bug still merged. **Detection-layer infrastructure that was 'nice to have' in 2024 becomes load-bearing in 2026** — and the AI-coding era will not slow down to wait for human review to catch up.
 
@@ -167,8 +54,6 @@ Real-time multi-oracle cross-checking can be operated by a single team while the
 The historical solution to this problem is the pattern Chainlink (LINK), The Graph (GRT), and Filecoin (FIL) followed: introduce a token only after the network has demonstrated utility, and restrict the token's role to functions the network genuinely cannot perform without it — operator sybil resistance, slashing recovery, and governance at scale. Without a token of its own, an open monitoring network either remains a single-team service with capped reliability or becomes an enterprise product. RWA Sentinel chooses the third path. The four functional pillars motivating SENTINEL are detailed in §4.1; the regulatory and timing framing is in §8.
 
 ---
-
-<div style="page-break-before: always;"></div>
 
 ## 3. Architecture
 
@@ -232,9 +117,13 @@ Phase 1 ships a single-operator implementation of stages 1–4 with the on-chain
 
 Phase 2 federates stages 1–3 across 2–3 independent operators on different infrastructure (e.g., one Cloudflare, one Vercel/Fly.io, one self-hosted). A new on-chain contract, `OperatorRegistry.sol`, manages operator identity and a small ETH or stablecoin collateral bond (token does not yet exist). An off-chain aggregator — itself open-source and operable by any party — receives signed alerts from each operator and emits a high-confidence alert to `AlertRegistry` only when N-of-M operators agree. Single-operator alerts continue to publish under a "candidate" `alertType` for transparency. Coverage expands from 5 to 10–15 assets, including wstETH, USDT, DAI, EURC, cbBTC, LBTC, and USDe. The Premium tier (custom thresholds, historical export, real-time WebSocket) goes generally available with a $5K MRR target by end of phase. A third-party security audit (Trail of Bits, ChainSecurity, or Halborn) covers `AlertRegistry` and `OperatorRegistry` before pre-seed deployment. Token economics are designed and published in Whitepaper v1.0; the airdrop allocation registry begins recording subscribers and contributors, but no token is issued during Phase 2.
 
-**Phase 2 operator compensation.** Without an issued token, Phase 2 operator economics rely on three explicit streams: (a) a USDC service contract from Oclix Labs Inc paid out of Phase 2 pre-seed capital (≈$2–5K/month per operator instance, comparable to a part-time SRE retainer; precise rates set per operator at registration time), (b) a written commitment to allocate a portion of the Phase 3 Operator Incentives pool to verified Phase 2 operators with the same 4-year vest / 1-year cliff applied to founder operators in §4.0 (recorded in the airdrop allocation registry, minted at Phase 3 launch like any other community allocation — consistent with the §4.0 commitment that no token is *issued* during Phase 2), and (c) the right to participate in the Phase 3 permissionless network without re-registration. The realistic Phase 2 operator count is **2 (founder team + one external partner) by default, expanding to 3 only when a self-funded operator candidate emerges** — the whitepaper does not assume every Phase 2 candidate will materialize. Candidate partners under early discussion include Anthias Labs (Moonwell risk manager, first public detector of the cbETH incident referenced in §2.1) and Steakhouse Financial; engagement is contingent on Phase 1 milestone completion.
+**Phase 2 operator compensation.** Without an issued token, Phase 2 operator economics rely on three explicit streams: (a) a USDC service contract from Oclix Labs Inc paid out of Phase 2 pre-seed capital (≈$2–5K/month per operator instance, comparable to a part-time SRE retainer; precise rates set per operator at registration time), (b) a written commitment to allocate a portion of the Phase 3 Operator Incentives pool to verified Phase 2 operators with the same 4-year vest / 1-year cliff applied to early operators under §4.0 (recorded in the airdrop allocation registry, minted at Phase 3 launch like any other community allocation — consistent with the §4.0 commitment that no token is *issued* during Phase 2), and (c) the right to participate in the Phase 3 permissionless network without re-registration. The realistic Phase 2 operator count is **2–3 independent operators** on different infrastructure; federation does not assume every candidate will materialize on day one.
 
 ### 3.4 Phase 3 — Permissionless Network
+
+![Figure 2. Progressive decentralization — Phase 1 centralized MVP, Phase 2 federated operators (N-of-M), Phase 3 permissionless SENTINEL network.](/diagrams/3-phase-decentralization.svg)
+
+_Figure source: docs/diagrams/3-phase-decentralization.mmd._
 
 Phase 3 migrates the full network on-chain. `StakingManager.sol` accepts SENTINEL bonds from any address that wishes to run an operator. `SubscriptionRouter.sol` routes both pay-per-period and stake-to-subscribe payments to operators, the ecosystem fund, and (where legal) a buy-back-and-burn function. `Governance.sol` (Compound Bravo–style with a Security Council 5-of-7 multisig veto during bootstrap) governs deviation thresholds, asset coverage, slashing parameters, and ecosystem fund disbursements. `EcosystemFund.sol` is the DAO-controlled treasury. The SENTINEL utility token launches on Base with Chainlink CCIP extensions to Ethereum and Optimism. Coverage expands to 30+ tokenized RWAs including newly emerging Base issuers. Slashing for false alerts (contradicted by ≥N independent operators), missed alerts (failed to detect a deviation that ≥N other operators did), and downtime is enforced on-chain. **Programmable alert hooks introduced in Phase 2 evolve in Phase 3 to support both USDC Premium subscription (paid to Oclix Labs Inc as the SaaS provider) and SENTINEL stake-to-subscribe (routed through `SubscriptionRouter`) through the same `SentinelReceiver` interface — subscribers choose the payment path, the on-chain action surface is identical.** Oclix Labs Inc continues as the SaaS provider and Premium service operator throughout Phase 3, alongside the permissionless decentralized network; the two cap tables (Oclix Labs Inc equity and SENTINEL token) remain legally and operationally separate as established in §4.0. The free public alert tier is constitutionally guaranteed across all phases — Premium and token-paid tiers layer on top, never replace.
 
@@ -242,7 +131,7 @@ Phase 3 migrates the full network on-chain. `StakingManager.sol` accepts SENTINE
 
 The architecture above could in principle deploy on any EVM-compatible Layer 2. Base is the only chain where four constraints align simultaneously, and Sentinel's design is not portable away from this alignment without material loss of value:
 
-1. **Native retail distribution.** Coinbase Wallet, Farcaster, and Basenames give Base — uniquely among production L2s — a built-in retail surface that does not require user education. Sentinel's target audience is the retail RWA holder who lost $11K in the Moonwell incident, not an institutional risk team. That audience is reachable on Base through wallet-native notifications, Farcaster channels, and Basename resolution; on Optimism, Arbitrum, or Polygon the same audience would require multi-platform marketing spend that a public-good budget cannot support.
+1. **Native retail distribution.** Coinbase Wallet, Farcaster, and Basenames give Base — uniquely among production L2s — a built-in retail surface that does not require user education. Sentinel's target audience is the retail borrower or RWA holder on Base — including the ~181 accounts affected in the Moonwell cbETH incident (~$2.68M net losses, §2.1) — not an institutional risk team. That audience is reachable on Base through wallet-native notifications, Farcaster channels, and Basename resolution; on Optimism, Arbitrum, or Polygon the same audience would require multi-platform marketing spend that a public-good budget cannot support.
 
 2. **RWA issuer concentration.** USDO (OpenEden), cbBTC (Coinbase), ARKB / iBTC (institutional ETPs), GLDY (Streamex tokenized gold), and Backed Finance products (bIB01, bCSPX) via CCIP all live on or are bridging to Base. The supply side is structurally on Base in 2026 — Chainlink Proof-of-Reserve feeds for these assets are deployed on Base, not other L2s. Monitoring infrastructure must follow the issuers.
 
@@ -268,9 +157,7 @@ Each composition is a B2B revenue tier in Phase 2+ Premium pricing: retail Premi
 
 ---
 
-<div style="page-break-before: always;"></div>
-
-## 4. Tokenomics framework **[DIRECTIONAL]**
+## 4. Tokenomics framework (directional)
 
 > SENTINEL is the utility token of the Phase 3 permissionless operator network. The framework below is **directional**: exact percentages, total supply, and emission curve are deferred to Phase 2 community input and an independent economic audit. The structural commitments — described in §4.0 — are firm. Full long-form spec: [`docs/TOKENOMICS-OUTLINE.md`](./TOKENOMICS-OUTLINE.md).
 
@@ -329,7 +216,7 @@ Genesis distribution is a **fair launch** with no pre-sale of any kind:
 
 What does **not** happen at genesis: no SAFT, no SAFE-with-token-warrant, no pre-launch private sale, no OTC allocation to advisors, no token-for-service swap. Phase 2 funding flows entirely through Oclix Labs Inc on a USD-denominated equity instrument (SAFE or priced preferred round); investors receive equity in the SaaS company, **not** the protocol token. The two cap tables — Oclix Labs Inc equity and SENTINEL token — are legally and operationally separate and remain so post-Phase 3.
 
-This structure trades fundraising convenience for a clean public-good narrative and a materially stronger regulatory posture (§8). Investors who require token upside as a condition of participation self-select out of the deal; investors comfortable with the SaaS-on-public-goods thesis (a16z general fund, Coinbase Ventures, Variant, Foundation Capital, Sequoia, NEA — funds that have done equity-only deals for protocol-adjacent SaaS companies like Vercel, Cloudflare, Apollo, and Optimism Labs) remain available.
+This structure trades fundraising convenience for a clean public-good narrative and a materially stronger regulatory posture (§8). Investors who require token upside as a condition of participation self-select out; investors comfortable with equity in a SaaS layer on top of a public-good protocol remain the intended Phase 2 counterparties.
 
 ### 4.6 Parameters explicitly not set in v0.1
 
@@ -343,9 +230,9 @@ Governance scope and authority migrate over the three phases in lockstep with de
 
 ### 5.1 Phase migration
 
-In **Phase 1**, all on-chain authority lives in a team multisig. The `AlertRegistry.admin` is rotated from the deployer EOA to a multisig before any Phase 2 deployment, using the contract's two-step `transferAdmin` → `acceptAdmin` flow to guard against typos.
+In **Phase 1**, all on-chain authority lives in a protocol multisig. The `AlertRegistry.admin` is rotated from the deployer EOA to a multisig before any Phase 2 deployment, using the contract's two-step `transferAdmin` → `acceptAdmin` flow to guard against typos.
 
-In **Phase 2**, governance opens to a team-plus-advisor council that approves operator registrations on `OperatorRegistry`, sets deviation thresholds, and ratifies asset coverage changes. The advisor seats are intentionally drawn from operators, RWA risk firms, and Base ecosystem stakeholders rather than from investors.
+In **Phase 2**, governance opens to a multisig council with external advisors that approves operator registrations on `OperatorRegistry`, sets deviation thresholds, and ratifies asset coverage changes. Advisor seats are drawn from operators, RWA risk firms, and Base ecosystem stakeholders rather than from investors.
 
 In **Phase 3**, on-chain governance migrates to token-weighted voting on the SENTINEL utility token using a Compound Bravo–style implementation: proposals require a minimum vote, pass at a quorum, and execute through a timelock that allows token holders to exit (or coordinate a counter-action) before any contentious change takes effect. A **5-of-7 Security Council multisig** retains an emergency-pause veto during the Phase 3 bootstrap window — the council cannot enact changes, only pause execution of governance-passed parameter changes deemed an immediate threat — and is sunset by a future governance vote.
 
@@ -362,8 +249,6 @@ The on-chain governance surface is intentionally narrow and restricted to operat
 What governance does **not** control: the append-only nature of `AlertRegistry`, the constitutionally guaranteed free public alert tier, and the open-source MIT licensing of the operator client. These are protocol invariants, not parameters.
 
 ---
-
-<div style="page-break-before: always;"></div>
 
 ## 6. Security
 
@@ -389,7 +274,7 @@ Sentinel is a detection and alerting layer, not a circuit-breaker. The threat mo
 | **Adversarial slashing (Phase 3)** | Coordinate false-flag of an honest operator to capture their bond | N/A | Medium-high without mitigation | Slashed tokens flow to **Ecosystem Fund**, not other operators (§4.1.1), eliminating the attack's economic motive |
 | **Governance capture (Phase 3)** | Acquire enough SENTINEL to ratify a parameter change harmful to the network | N/A | Medium | Zero team and zero investor genesis allocation (§4.0) removes the most concentrated pre-launch vector; founder operator emission capped at 5% with 4-year vest; timelock provides token-holder exit window; Security Council 5-of-7 emergency-pause veto during bootstrap |
 | **Off-chain attestation forgery** | Issuer or custodian publishes a false PoR attestation that Sentinel reproduces | High residual — Sentinel reports what oracles publish; an issuer attesting to fake reserves is a category we surface but cannot prevent | High residual | Cross-check between Chainlink PoR and on-chain total supply (`reserve-vs-supply delta`, §3.1 Stage 3); explicit out-of-scope statement to subscribers |
-| **Programmable alert receiver misuse** (Phase 2+) | A user-deployed `SentinelReceiver` contract executes harmful or buggy logic when triggered by a valid Sentinel alert (e.g., over-aggressive auto-withdraw, broken auto-hedge, infinite loop) | N/A — no programmable hooks in Phase 1 | Medium — explicit user opt-in, but user-side logic errors and false-positive triggers can produce irreversible on-chain actions | Receiver contract is user-deployed (Sentinel only delivers signal, not action — see carve-out in §10.7); per-receiver gas limit; failure isolation via try/catch; explicit asset-filter opt-in per registration; user can pause or unregister at any time; Phase 2 audit covers the dispatcher contract |
+| **Programmable alert receiver misuse** (Phase 2+) | A user-deployed `SentinelReceiver` contract executes harmful or buggy logic when triggered by a valid Sentinel alert (e.g., over-aggressive auto-withdraw, broken auto-hedge, infinite loop) | N/A — no programmable hooks in Phase 1 | Medium — explicit user opt-in, but user-side logic errors and false-positive triggers can produce irreversible on-chain actions | Receiver contract is user-deployed (Sentinel only delivers signal, not action — see carve-out in §9.7); per-receiver gas limit; failure isolation via try/catch; explicit asset-filter opt-in per registration; user can pause or unregister at any time; Phase 2 audit covers the dispatcher contract |
 
 ### 6.3 Defense-in-depth mapping
 
@@ -406,35 +291,33 @@ Vulnerabilities discovered before Phase 3 should be reported to `security@oclixl
 
 ---
 
-<div style="page-break-before: always;"></div>
-
 ## 7. Roadmap
 
 The path to a permissionless oracle-watchdog network proceeds through three phases, each unlocking the next without rolling back capabilities of the prior. Full source: [`docs/ROADMAP.md`](./ROADMAP.md).
 
 | Phase | Window | Decentralization | Funding | Token |
 |---|---|---|---|---|
-| **1** | 2026 Q2 | Centralized MVP — single team operates one poller | Base Batches 003 ($50K) | None |
+| **1** | 2026 Q2 | Centralized MVP — single operator runs one poller | Ecosystem grant (Phase 1) | None |
 | **2** | 2026 Q4 – 2027 Q1 | Federated — 2–3 independent operators with N-of-M consensus | Pre-seed ($1–2M) | Designed, not issued |
 | **3** | 2027 Q2+ | Permissionless — anyone stakes SENTINEL to run an operator; DAO governance | Seed/Series A ($5–10M) + token | **SENTINEL live** |
 
 ### 7.1 Phase 1 — Centralized MVP (2026 Q2)
 
-Phase 1 ships a working public-good watchdog with provable on-chain alert history. Deliverables include `AlertRegistry.sol` deployed to Base Mainnet, the Cloudflare Worker pipeline (poller, cross-check, alert-writer, public Hono API), Phase 1 coverage of BTC, ETH, USDC, cbETH, and USDO, plus webhook + Telegram alert channels and a Premium-tier alpha. The team operates as a single entity with no external operators. Success criteria, expressed as Phase 1 → Phase 2 transition gates rather than vanity metrics:
+Phase 1 ships a working public-good watchdog with provable on-chain alert history. Deliverables include `AlertRegistry.sol` deployed to Base Mainnet, the Cloudflare Worker pipeline (poller, cross-check, alert-writer, public Hono API), Phase 1 coverage of BTC, ETH, USDC, cbETH, and USDO, plus webhook + Telegram alert channels and a Premium-tier alpha. Operations are centralized: one operator entity, no external operators. Success criteria, expressed as Phase 1 → Phase 2 transition gates rather than vanity metrics:
 
 - Continuous monitoring with >99% uptime
 - ≥10 detected deviations logged on-chain
 - Regression replay of the Moonwell cbETH incident detected within one block
 - ≥1,000 free-tier subscribers (webhook + Telegram combined)
 - ≥30 daily active webhook deliveries successfully consumed downstream (engagement, not registration)
-- **Premium tier alpha live with ≥5 paying customers and ≥$100 monthly recurring revenue** (founder networks acceptable as proof-of-concept; the bar is *paid USDC against an actual SLA*, not waitlist signups)
+- **Premium tier alpha live with ≥5 paying customers and ≥$100 monthly recurring revenue** (paid USDC against a published SLA)
 - Documented public API consumable by external developers
 
 **No token is issued in Phase 1.** These transition gates exist because Phase 2 fundraising on equity-only thesis (§4.0 / §7.2) requires evidence of paid demand, not just product completeness.
 
 ### 7.2 Phase 2 — Federated Operators (2026 Q4 – 2027 Q1)
 
-Phase 2 decentralizes cross-check execution across 2–3 independent operators on different infrastructure (e.g., one Cloudflare, one Vercel/Fly.io, one self-hosted) coordinated by the new `OperatorRegistry.sol` contract. An off-chain aggregator emits a high-confidence alert to `AlertRegistry` only when N-of-M operators agree, while single-operator candidate alerts continue to publish for transparency. Coverage expands to 10–15 assets including wstETH, USDT, DAI, EURC, cbBTC, LBTC, and USDe; cross-chain attestation mirroring brings Backed Finance products (bIB01, bCSPX) to Base via Chainlink CCIP. Funding is a $1–2M pre-seed round in **USD-denominated equity** (SAFE or priced preferred) into Oclix Labs Inc — **no SAFT, no token warrants** per the §4.0 founding principle. Target investors are funds that have done equity-only deals for protocol-adjacent SaaS companies (Coinbase Ventures, a16z general fund, Variant, Foundation Capital). The Premium tier launches generally available with a $5K MRR target — **the Phase 2 flagship Premium feature is programmable alert hooks** (`SentinelReceiver`-based push delivery for atomic detection-to-action workflows, see §3.1 Stage 4) alongside custom thresholds, historical export, and real-time WebSocket. A third-party security audit (Trail of Bits, ChainSecurity, or Halborn) covers `AlertRegistry`, `OperatorRegistry`, and the new programmable-alert dispatcher contract before pre-seed deployment. **The token is designed and published in Whitepaper v1.0; the airdrop allocation registry begins recording subscribers and contributors, but no token is issued during Phase 2.**
+Phase 2 decentralizes cross-check execution across 2–3 independent operators on different infrastructure (e.g., one Cloudflare, one Vercel/Fly.io, one self-hosted) coordinated by the new `OperatorRegistry.sol` contract. An off-chain aggregator emits a high-confidence alert to `AlertRegistry` only when N-of-M operators agree, while single-operator candidate alerts continue to publish for transparency. Coverage expands to 10–15 assets including wstETH, USDT, DAI, EURC, cbBTC, LBTC, and USDe; cross-chain attestation mirroring brings Backed Finance products (bIB01, bCSPX) to Base via Chainlink CCIP. Funding is a $1–2M pre-seed round in **USD-denominated equity** (SAFE or priced preferred) into Oclix Labs Inc — **no SAFT, no token warrants** per the §4.0 founding principle. Target investors are funds comfortable with equity-only, protocol-adjacent SaaS businesses. The Premium tier launches generally available with a $5K MRR target — **the Phase 2 flagship Premium feature is programmable alert hooks** (`SentinelReceiver`-based push delivery for atomic detection-to-action workflows, see §3.1 Stage 4) alongside custom thresholds, historical export, and real-time WebSocket. A third-party security audit (Trail of Bits, ChainSecurity, or Halborn) covers `AlertRegistry`, `OperatorRegistry`, and the new programmable-alert dispatcher contract before pre-seed deployment. **The token is designed and published in Whitepaper v1.0; the airdrop allocation registry begins recording subscribers and contributors, but no token is issued during Phase 2.**
 
 ### 7.3 Phase 3 — Permissionless Network + SENTINEL Token (2027 Q2+)
 
@@ -456,87 +339,60 @@ SENTINEL is designed as a **utility token** with a consumption mechanism (subscr
 
 **No token sale to any party.** Per §4.0, Sentinel does not use a SAFT, SAFE-with-token-warrant, OTC allocation, or any other instrument that conveys SENTINEL token rights to investors, advisors, or service providers in exchange for capital or work. Phase 2 capital is raised solely as USD-denominated equity in Oclix Labs Inc, the SaaS company. Nothing in this whitepaper constitutes an offer to sell or a solicitation to buy any security to or from any person in the United States or any other jurisdiction in which such offer or solicitation would be unlawful. The community airdrop in Phase 3 is not a sale: recipients pay no consideration and the eligibility snapshot is published before any claim window.
 
-**The community airdrop design is pending Korean legal review.** Several Phase 1 contributors (including the Oclix Labs founding team) are Korean residents. Airdrop eligibility for Korean residents is being reviewed against the Virtual Asset User Protection Act and related Financial Services Commission guidance before any allocation registry is finalized.
+**The community airdrop design is pending Korean legal review.** A portion of Phase 1 contributors are Korean residents. Airdrop eligibility for Korean residents is being reviewed against the Virtual Asset User Protection Act and related Financial Services Commission guidance before any allocation registry is finalized.
 
 **Howey-test factor analysis** — investment of money, common enterprise, expectation of profit, derived from the efforts of others — is deferred to the pre-launch legal document. The token's utility (operator bonding, subscription payment, governance) is operational from genesis, which materially weakens factor 4 (efforts of others) compared with infrastructure tokens that launched without functional utility.
 
 This factor 4 weakening is reinforced *structurally* by the §4.0 founding principle: no Oclix Labs founder, employee, or Phase 2 investor receives any SENTINEL token at genesis. The set of parties simultaneously contributing pre-launch effort to network construction *and* expecting profit from token-price appreciation is **empty by design**. The only token holders at launch are operators (compensated for ongoing service work, not for pre-launch promises and subject to slashing for misbehavior), Phase 1–2 subscribers and contributors (recipients of an airdrop with no purchase consideration), and the Ecosystem Fund (a DAO-controlled treasury that itself does not benefit any individual). Token-side and corporate-side economic interests are kept structurally separate: Oclix Labs Inc raises USD-denominated equity and earns USD-denominated SaaS revenue; SENTINEL coordinates the public-good operator network. This separation is the same pattern used by Vercel relative to the Next.js token-equivalent (which simply does not exist as a token because Vercel did not need one) and by Optimism Labs relative to OP token allocation that reaches Labs employees only through long-vested operating compensation.
 
-Specific risks and disclaimers — including that token value may fluctuate significantly, that nothing here is investment advice, and that the project may be required to make material design changes in response to legal opinion — appear in §10 below.
+Specific risks and disclaimers — including that token value may fluctuate significantly, that nothing here is investment advice, and that the project may be required to make material design changes in response to legal opinion — appear in §9 below.
 
 ---
 
-## 9. Team
+## 9. Risks & Disclaimers
 
-RWA Sentinel is built by four undergraduate co-founders from **Yonsei University's BAY Blockchain Society**. The team has worked together on prior projects through BAY's cohort structure, not as a hackathon ad-hoc formation. Individual roles in Phase 1:
-
-- **권상현 (Kwon Sanghyun)** — Team Lead, Smart Contract Engineer. Owns `AlertRegistry` design and Foundry development, Base deployment, external communications, and final decision authority; Devfolio submission owner.
-- **모진영 (Mo Jinyoung)** — Core Engine, Backend, Infrastructure. Owns the Cloudflare Workers pipeline (poller, alert-writer, Hono API), the cross-check engine, D1 / KV / Queues integration, and wrangler CI/CD.
-- **이재근 (Lee Jaegeun)** — Marketing, Community, Frontend. Owns the landing page and live dashboard, architecture diagrams, social presence, BAY community integration, and Whitepaper §3, §4, §8, Appendix A authorship.
-- **김현우 (Kim Hyunwoo)** — English, Research, Video, Documentation. Native English speaker and Founder video main presenter. Owns the founder video script, Devfolio application English drafts, and Whitepaper §1, §2, §7, §9, §10 authorship.
-
-Individual 50–100 word bios are maintained in [`docs/TEAM.md`](./TEAM.md) and finalized before any Whitepaper v0.1 PDF release.
-
-**Advisors and research engagement.** Phase 1 is operated solely by the founding team; advisor engagement is planned post-Base Batches 003 acceptance. Engagement targets include **Anthias Labs** (Moonwell risk manager and first public detector of the Feb 2026 cbETH incident referenced in §2.1), **Steakhouse Financial** (DeFi risk research), BAY faculty mentors, and Base ecosystem partners. The advisor seats described in §5.1 for Phase 2 governance are intentionally drawn from operators and risk firms rather than from investors.
-
----
-
-## 10. Risks & Disclaimers
-
-### 10.1 Regulatory uncertainty
+### 9.1 Regulatory uncertainty
 The legal status of digital assets varies by jurisdiction and continues to evolve. SENTINEL is designed as a utility token for network participation, staking, and governance. Nothing in this document constitutes an offer to sell or a solicitation to buy any security. Token-related activities described in Phase 3 are contingent on favorable legal review in relevant jurisdictions.
 
-### 10.2 Technical risk
+### 9.2 Technical risk
 Smart contracts are subject to bugs, economic attacks, and oracle failures. The project will commission third-party audits prior to Phase 2 and Phase 3 contract deployments. Users should understand that no security guarantees are absolute.
 
-### 10.3 Execution risk
+### 9.3 Execution risk
 The roadmap spans multiple years. Market, team, and regulatory conditions may force material changes. Phase 3 features (permissionless operator network, token launch) are aspirational and require successful completion of Phase 1 and Phase 2 milestones.
 
-### 10.4 Token value risk
+### 9.4 Token value risk
 Where issued, SENTINEL token value may fluctuate significantly. Purchasers should have a long-term horizon and understand that no price stability is implied. Historical performance of similar protocol tokens does not predict future outcomes.
 
-### 10.5 No investment advice
+### 9.5 No investment advice
 This document is informational. Prospective participants should consult qualified legal, tax, and financial advisors.
 
-### 10.6 Team liability limitations
-Individual team members, including founders, shall not be personally liable for network operations once decentralized control transitions to the DAO.
+### 9.6 Operator liability limitations
+Individual operators and protocol maintainers shall not be personally liable for network operations once decentralized control transitions to the DAO.
 
-### 10.7 Programmable alert reliance
+### 9.7 Programmable alert reliance
 Phase 2 introduces user-registered programmable alert hooks (`SentinelReceiver`, §3.1 Stage 4). When a user registers a receiver contract, that contract executes user-defined logic on-chain in response to a valid Sentinel alert. **Sentinel is responsible for the accuracy of the alert signal; the user is responsible for the action logic of their receiver contract.** A false-positive alert that triggers an irreversible on-chain action (e.g., asset migration to a wrong vault) cannot be undone by Sentinel. A buggy or over-aggressive receiver contract is the user's responsibility, not Sentinel's. Mitigations include: explicit per-asset opt-in registration, per-receiver gas limits, failure isolation across subscribers, and the ability to pause or unregister at any time. Programmable alert hooks are not investment advice and not a discretionary trading service — Sentinel publishes a deviation signal, the user's contract decides what to do. This signal-vs-action carve-out is documented in §8 (regulatory framing) and reflected in the Phase 2 audit scope (§6.1).
 
-### 10.8 Fork risk and competitive moat narrowness
+### 9.8 Fork risk and competitive moat narrowness
 
-The Sentinel codebase is MIT-licensed, the on-chain registry is public, and the operator client is open-source by design (§7.4). A larger, well-capitalized entity — Coinbase itself, an existing risk firm such as Chaos Labs or Hypernative, or a fast-follower team — could in principle fork the codebase and run a competing service. We address this directly rather than rely on technical secrecy.
+Sentinel is MIT-licensed end-to-end (§7.4): contracts, operator client, and registry are public. A well-capitalized exchange, enterprise risk vendor, or fast follower could fork the code and run a competing alert service.
 
-Why we believe forks fail in this category, in order of strength:
+We do not rely on secrecy. The durable advantages are **reputation** (alerts published and incidents verified on-chain), **operator and subscriber network effects** after Phase 3 (a fork starts with zero stake, history, and governance legitimacy), **asset curation** (contract → issuer → attestation mapping from ongoing `.research/`), and **integration lock-in** once downstream protocols wire `SentinelReceiver` hooks (§3.6). Large incumbents often face weak product fit or regulatory friction for retail programmable monitoring; bootstrapping a sybil-resistant operator set remains a multi-year exercise even with capital.
 
-1. **Strategic mismatch for the most-feared fork actor.** Coinbase is an NYSE-listed wallet, exchange, and custody business. Retail-facing programmable on-chain action infrastructure is *adjacent* to Coinbase's core business, not core to it, and represents incremental SEC exposure that Coinbase's risk posture actively avoids. The entity with the strongest distribution-side capability has the weakest incentive to operate this product directly.
-2. **Brand and community trust as moat — the Cloudflare Workers / Vercel pattern.** Cloudflare Workers runtime is open-source; Cloudflare nonetheless dominates because of brand authority, community relationships, and developer mindshare. Vercel hosting dominates Next.js (a fully OSS framework) for the same reason. The Sentinel brand identity — "the public watchdog" — is not a forkable artifact; it accrues through every alert published, every incident verified, and every retail user successfully self-rescued.
-3. **Operator network legitimacy from Phase 3 onward.** The SENTINEL operator network has its own community, economic incentives via emission, and on-chain governance. A fork starts with zero operators, zero subscribers, zero incidents-detected reputation, and no token. Bootstrapping a sybil-resistant operator network is a multi-year exercise rather than a code copy.
-4. **Iteration velocity.** Four founder-engineers shipping continuously beat large-organization fork cadence (typically 3–5× slower) on infrastructure software. Phase 2 features ship faster than a fork can match without ground-up rebuild.
-5. **Curation moat.** The mapping of {token contract → issuer legal entity → attestation document URL → freshness window → asset-class threshold} is a *curation* asset built by ongoing research (`.research/` open-source dataset, asset additions per release). Code is fork-able; the dataset is not, without years of independent work.
-6. **Composition incumbency (§3.6).** Once an insurance protocol, lending curator, or wallet provider integrates a `SentinelReceiver` hook, switching to a fork requires re-auditing their own integration plus convincing their users to trust a new alert source. Integration switching costs accrue immediately and grow with each Phase 2+ composition.
-7. **The token-coordinated network is structurally not forkable on Sentinel's terms.** A fork without a token cannot bootstrap permissionless operator participation. A fork *with* its own token re-creates the regulatory exposure that the §4.0 founding principle (no team token, no investor token, no SAFT) deliberately avoids. Only an entity willing to forgo team token allocation can credibly maintain this product, and that constraint materially narrows the realistic fork-actor pool.
-
-The honest disclosure: the moat is **community, brand, operator network, and curation**, not technical secrecy. None of these are absolute. A determined, well-capitalized, long-horizon competitor with retail-public-good thesis alignment and patience to bootstrap an independent operator network could, over 3–5 years, compete. We expect such a competitor to be a Phase 2 partner candidate (e.g., Anthias Labs running a federated operator alongside us, see §3.3) rather than an external fork actor.
+**Disclosure:** None of this is absolute. A patient, well-funded competitor aligned with a public-good thesis could compete over a 3–5 year horizon. The moat is social and operational, not technical.
 
 ---
 
-<div style="page-break-before: always;"></div>
+## 10. Vision
 
-## 11. Vision
+By 2030, every tokenized real-world asset on Base — every dollar of tokenized U.S. Treasury, every gram of tokenized gold, every share of cbBTC, every wrapped Treasury ETP — has its oracle layer continuously cross-checked by a permissionless public-good network operated by anyone willing to stake SENTINEL. The default user experience for a retail Base RWA holder is no longer *"check Twitter when something feels wrong"*; it is **a wallet or bot notification within sixty seconds when an oracle anomaly is detected**, and — for subscribers who opt in to Phase 2+ programmable hooks (§3.1 Stage 4, §9.7) — **user-deployed `SentinelReceiver` contracts that may execute pre-authorized rescue logic in the same block as the alert**, subject to gas limits and the user's own contract correctness.
 
-By 2030, every tokenized real-world asset on Base — every dollar of tokenized U.S. Treasury, every gram of tokenized gold, every share of cbBTC, every wrapped Treasury ETP — has its oracle layer continuously cross-checked by a permissionless public-good network operated by anyone willing to stake SENTINEL. The default user experience for a retail Base RWA holder is no longer *"check Twitter when something feels wrong"*; it is **if your asset's oracle goes wrong, your wallet alerts you within sixty seconds, and your auto-rescue contract repositions your collateral within the same block — without any action on your part.**
+The infrastructure exists in code today; this whitepaper has described it. The economic incentives align operators around a single token (§4). The detection layer is permissionless and auditable on-chain (§3.4). Programmable alert hooks separate **signal delivery** (Sentinel) from **action execution** (the subscriber's contract) without trusting any centralized operator. Trust no longer scales only through enterprise gatekeepers like Chaos Labs or Hypernative whose contracts cost seven figures per protocol; it scales through a token-coordinated public network whose costs are bounded by operator emission and whose floor is constitutionally guaranteed to remain free.
 
-The infrastructure exists in code today; this whitepaper has described it. The economic incentives align operators around a single token (§4). The detection layer is permissionless and auditable on-chain (§3.4). Programmable alert hooks transform detection into action without trusting any centralized operator (§3.1 Stage 4). Trust no longer scales through enterprise gatekeepers like Chaos Labs or Hypernative whose contracts cost seven figures per protocol; it scales through a token-coordinated public network whose costs are bounded by operator emission and whose floor is constitutionally guaranteed to remain free.
+The nine oracle incidents of the past eighteen months represent ≥$50M in retail and protocol losses. **Composition-class** failures (§2.1) would have been materially mitigated by Phase 1 multi-oracle cross-check; **hardcoded-oracle depegs** and **LP-manipulation** classes follow the Phase 2 detection roadmap in the same section. The next 18 months — accelerating Base RWA TVL, AI-coauthored contracts reaching mainnet faster than audits scale, the OpenZeppelin Defender retirement vacuum — will produce more incidents at a higher rate, and a higher fraction of Base users will be retail holders who never had access to enterprise risk tooling. Sentinel exists to make the architectural choice that closes that gap the new default for every retail RWA holder, starting on Base and expanding through the Superchain in Phase 3.
 
-The 9 oracle incidents of the past 18 months represent ≥$50M in retail and protocol losses that would have been substantially mitigated by the architecture in this whitepaper. The next 18 months — accelerating Base RWA TVL, AI-coauthored contracts reaching mainnet faster than audits scale, the OpenZeppelin Defender retirement vacuum — will produce more incidents at a higher rate, and a higher fraction of Base users will be retail holders who never had access to enterprise risk tooling. Sentinel exists to make the architectural choice that closes that gap the new default for every retail RWA holder, starting on Base and expanding through the Superchain in Phase 3.
-
-This is not a token launch white paper dressed as infrastructure. It is an infrastructure white paper that uses a token only where coordination genuinely demands it, and never to enrich the team that built it.
+This is not a token launch white paper dressed as infrastructure. It is an infrastructure white paper that uses a token only where coordination genuinely demands it, and never to enrich insiders at genesis.
 
 ---
-
-<div style="page-break-before: always;"></div>
 
 ## Appendix A: Glossary
 
@@ -587,42 +443,10 @@ Defined for the cross-functional reader: a tokenized-RWA-curious investor who kn
 - **Howey test** — The four-factor US Supreme Court test (investment of money, common enterprise, expectation of profit, derived from the efforts of others) used to determine whether an instrument is an investment contract / security under US federal law.
 - **Airdrop** — Distribution of tokens to a defined set of addresses (typically prior contributors or users) without payment, as a community-bootstrap mechanism.
 
-### Stack & infrastructure
-
-- **Base** — The Ethereum Layer 2 (L2) rollup operated by Coinbase, built on the Optimism Stack (OP Stack). Primary deployment target for Sentinel.
-- **L2 (Layer 2)** — A blockchain that inherits security from a base layer (typically Ethereum) while executing transactions off the base layer at lower cost and higher throughput.
-- **Cloudflare Workers** — A serverless edge compute platform. Sentinel's poller, alert-writer, and API run as Workers.
-- **D1, KV, Queues** — Cloudflare's managed SQLite (D1), key-value store (KV), and message queue (Queues) primitives, all consumed from Workers via runtime bindings.
-- **Hono** — A lightweight HTTP framework optimized for edge runtimes, used for Sentinel's public API.
-- **viem** — A TypeScript client library for EVM chains. Sentinel uses `viem` for both reads (Chainlink `latestRoundData`) and writes (`AlertRegistry.logAlert`).
-- **Foundry** — A Solidity development toolkit (`forge` for build/test, `cast` for RPC). Sentinel's contract test suite runs in Foundry.
-- **CCIP (Cross-Chain Interoperability Protocol)** — Chainlink's framework for cross-chain message and token passing. Phase 2 uses CCIP to mirror Polygon-resident PoR feeds (Backed Finance bIB01/bCSPX) onto Base.
-- **Immunefi** — The largest crypto bug-bounty platform. Phase 3 launches a Sentinel program there.
-
-## Appendix B: Deferred parameters
-
-> Section 4 (Tokenomics) and Section 8 (Regulatory) include explicit lists of parameters intentionally not set in v0.1. These appendices consolidate those for Phase 2 governance reference.
-
----
-
 ## References
 
 - `docs/ROADMAP.md`
 - `docs/TOKENOMICS-OUTLINE.md`
-- `docs/APPLICATION-BM-DRAFTS.md`
 - `.research/incident-forensics-moonwell.md`
 - `.research/competitor-architecture.md`
 - `.research/oracle-inventory-base.md`
-
----
-
-## Review & approval workflow
-
-- **Drafting (primary)**: **이재근 + 김현우** (co-authors)
-  - Original division of labor:
-    - **김현우**: §1 Abstract, §2 Problem (cites `.research/`), §7 Roadmap, §9 Team, §10 Risks
-    - **이재근**: §3 Architecture narrative, §4 Tokenomics narrative, §8 Regulatory framing, Appendix A Glossary
-  - **v0.1 actual**: §3 / §4 (initial directional version) / §8 / Appendix A / §10 written by 이재근. §1 / §2 / §5 / §6 (with new threat-model subsections) / §7 / §9 drafted by 이재근 on D8 to unblock submission. **§4.0 Founding principle (no team / no investor genesis allocation)** added on D8 with downstream alignment in §4.2 (allocation table → 3 rows), §4.5 (fair launch, no SAFT), §6.2 (governance capture mitigation), §7.2 (Phase 2 funding via Oclix Labs Inc equity), and §8 (Howey factor 4 reinforcement). **김현우 English polish + cross-section narrative review pending pre-PDF-export**.
-- **Technical input** (quick reviews, not drafting): **권상현** (§5 Governance, §6 Security — confirm `AlertRegistry` and threat-model claims), **모진영** (§3 technical accuracy, §4 value-capture mechanism).
-- **Final approval**: 권상현 before any public release.
-- **Public release**: committed to repo + linked from `README.md` after Base Batches 003 submission.

@@ -26,7 +26,14 @@ export const DISCORD_URL = 'https://discord.gg/sentinel';
 
 // Whitepaper / Docs / Research / Audit anchors.
 // Docs/Research/Audit point to GitHub paths until separate sites exist.
-export const WHITEPAPER_URL = `${GITHUB_REPO}/blob/main/docs/WHITEPAPER-v0.1-SKELETON.md`;
+//
+// WHITEPAPER_URL is the on-site, traditionally-typeset reading view at
+// /whitepaper (rendered from docs/WHITEPAPER-v0.1-SKELETON.md at build time).
+// WHITEPAPER_SOURCE_URL is the raw Markdown source on GitHub for citation.
+export const WHITEPAPER_URL = '/whitepaper/';
+export const WHITEPAPER_SOURCE_URL = `${GITHUB_REPO}/blob/main/docs/WHITEPAPER-v0.1-SKELETON.md`;
+/** Tagged-release static PDF path. File not committed until post–English-polish export; until then use Print on WHITEPAPER_URL. */
+export const WHITEPAPER_PDF_URL = '/whitepaper.pdf';
 export const DOCS_URL = `${GITHUB_REPO}/tree/main/docs`;
 export const RESEARCH_URL = `${GITHUB_REPO}/tree/main/.research`;
 export const AUDIT_URL = `${GITHUB_REPO}/tree/main/docs#audit`; // Phase 2 placeholder anchor
