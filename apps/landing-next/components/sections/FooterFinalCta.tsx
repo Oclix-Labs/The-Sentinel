@@ -98,12 +98,7 @@ export function FooterFinalCta({ locale }: { locale: Locale }) {
               </h4>
               <ul className="space-y-2 text-sm text-ink-secondary">
                 <li>
-                  <a
-                    href={WHITEPAPER_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-ink"
-                  >
+                  <a href={WHITEPAPER_URL} className="hover:text-ink">
                     {nav.whitepaper}
                   </a>
                 </li>

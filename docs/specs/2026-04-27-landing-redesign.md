@@ -166,7 +166,7 @@ Order is fixed (matches `landing-content.tsx` import order). All copy is final u
 **English**:
 - badge: `WHY`
 - title: `Nine oracle failures. Zero retail watchdogs.`
-- body: `Over the past 18 months, at least nine oracle-composition or hardcoded-oracle failures have caused ≥$50M in losses across Base-adjacent DeFi. Moonwell's cbETH market lost $2.68M to a single hardcoded oracle — caught only after 181 borrowers were liquidated. Every failure would have been visible to a multi-oracle cross-check in the same block. None had one watching. Until now.`
+- body: `Over the past 18 months, at least nine oracle-composition or hardcoded-oracle failures have caused ≥$50M in losses across Base-adjacent DeFi. Moonwell's cbETH market lost $2.68M — caught only after ~181 borrowers were liquidated. Composition-class oracle errors are detectable in seconds when independent feeds disagree; no free, RWA-tuned, hosted service was watching. Until now.`
 
 **Korean**:
 - badge: `왜 만들었나`

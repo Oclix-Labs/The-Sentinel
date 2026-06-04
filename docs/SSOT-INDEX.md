@@ -24,7 +24,7 @@ Rules: **immutable**. To update, create `<topic>-v2.md` and link `supersedes` in
 |---|---|---|
 | [`docs/ROADMAP.md`](./ROADMAP.md) | Three-phase progressive decentralization timeline | 권상현 |
 | [`docs/TOKENOMICS-OUTLINE.md`](./TOKENOMICS-OUTLINE.md) | SENTINEL utility framework (directional, percentages TBD) | 이재근 + 김현우 |
-| [`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) | Lite Whitepaper v0.1 (8-10p target) | 이재근 + 김현우 |
+| [`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) | Lite Whitepaper v0.1 — full doc (~40–45p PDF); **8–10p executive summary** = §1–§3 + §7; on-site `/whitepaper/` | 이재근 + 김현우 |
 | [`docs/APPLICATION-BM-DRAFTS.md`](./APPLICATION-BM-DRAFTS.md) | Devfolio Base Batches 003 submission drafts | 김현우 |
 | [`docs/MEMBER-TASKS.md`](./MEMBER-TASKS.md) | D0–D8 per-member plan for Base Batches sprint | 팀 전원 |
 | [`docs/ARCHITECTURE.md`](./ARCHITECTURE.md) | System architecture (Phase 1) detail | 모진영 |
@@ -75,6 +75,16 @@ Rules: **immutable**. To update, create `<topic>-v2.md` and link `supersedes` in
 
 ---
 
+## Funding & token SSOT precedence (2026-04-27+)
+
+When documents disagree on Phase 2 fundraising or genesis token allocation:
+
+1. **[`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) §4.0** — authoritative (no team/investor genesis SENTINEL; Oclix Labs Inc equity-only pre-seed; no SAFT / no token warrants).
+2. **[`docs/ROADMAP.md`](./ROADMAP.md)** · **[`docs/TOKENOMICS-OUTLINE.md`](./TOKENOMICS-OUTLINE.md)** · **[`docs/APPLICATION-BM-DRAFTS.md`](./APPLICATION-BM-DRAFTS.md)** — must align with §4.0.
+3. **[`docs/DECISIONS/0003-progressive-decentralization.md`](./DECISIONS/0003-progressive-decentralization.md)** — accepted ADR (immutable); its “equity + token warrants” consequence line reflects the **2026-04-19** draft and is **superseded for fundraising** by §4.0 above. Phase roadmap and three-phase structure remain valid.
+
+---
+
 ## Citation protocol
 
 SPEC / APPLICATION / ADR that make a factual claim MUST link the `.research/` source by file path + section. Example:
@@ -94,4 +104,4 @@ No copy-pasting research content into Spec docs. Link-only. Rationale in [`docs/
 
 ---
 
-_Last updated: 2026-04-27 — added `docs/DESIGN.md` and `docs/specs/`. Update this file whenever a new SSOT is added._
+_Last updated: 2026-06-04 — whitepaper formats (HTML/PDF/summary), §4.0 funding precedence. Update this file whenever a new SSOT is added._

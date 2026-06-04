@@ -76,15 +76,13 @@ export function SiteNav({ t, locale }: { t: Dict['nav']; locale: Locale }) {
                   role="menu"
                   className="rounded-md border border-slate-200 bg-white shadow-sm py-2"
                 >
-                  <a
+                  <Link
                     href={WHITEPAPER_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="block px-4 py-2 text-sm hover:bg-surface-alt"
                     role="menuitem"
                   >
                     {t.whitepaper}
-                  </a>
+                  </Link>
                   <a
                     href={DOCS_URL}
                     target="_blank"

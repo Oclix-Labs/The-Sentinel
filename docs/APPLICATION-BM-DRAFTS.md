@@ -8,7 +8,7 @@
 
 Three insights shape RWA Sentinel:
 
-**1. Pattern, not incident.** Over the past 18 months, at least nine oracle-composition or hardcoded-oracle failures across Base-adjacent DeFi have caused **≥$50M in losses** — a cadence of roughly one incident every two months, culminating in the Moonwell cbETH incident of February 2026 ($2.68M impacting ~181 borrowers). This is a systemic failure mode, not a one-off. Every single one of those incidents would have been caught by a multi-oracle ±2% cross-check in the same block it occurred.
+**1. Pattern, not incident.** Over the past 18 months, at least nine oracle-composition or hardcoded-oracle failures across Base-adjacent DeFi have caused **≥$50M in losses** — a cadence of roughly one incident every two months, culminating in the Moonwell cbETH incident of February 2026 ($2.68M impacting ~181 borrowers). This is a systemic failure mode, not a one-off. **Composition-class** failures (e.g., Moonwell cbETH) are detectable within **seconds** via multi-oracle cross-check; **hardcoded-oracle depegs** need secondary-market comparison (Phase 2); see [`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) §2.1.
 
 **2. Coverage gap that enterprise tools cannot structurally close.** Every existing monitor serves protocols or institutions. Chaos Labs sells seven-figure risk engagements to Aave and Aave Horizon. Hypernative is enterprise-only (~250+ customers, pricing undisclosed). Forta migrated from free to paid FORT-token subscription. RWA.xyz charges $500/seat/month for Pro and has **no alert layer**. Chainlink Proof-of-Reserve publishes data but does not trigger alerts. **Zero prior art serves retail holders with free, RWA-tuned, real-time alerts.** Enterprise competitors cannot structurally match "free + public-good + MIT" without destroying their enterprise ACVs.
 
@@ -22,9 +22,9 @@ Three insights shape RWA Sentinel:
 
 **Phase 1 — 2026 Q2** (current): Apply to Base Batches ($50K investment via Base Ecosystem Fund). Use the capital to ship the centralized MVP (5 priority assets, 1 on-chain AlertRegistry on Base) and validate retail + small-issuer demand. Coinbase Ventures is a natural follow-on conversation.
 
-**Phase 2 — 2026 Q4 – 2027 Q1**: Pre-seed equity round targeting **$1–2M** from crypto-native funds (Variant Fund, Paradigm, 1kx, Archetype, Dragonfly). Deploy capital to federate 2–3 independent operators (bootstrap the decentralization story) and launch Premium / Enterprise tiers.
+**Phase 2 — 2026 Q4 – 2027 Q1**: Pre-seed **USD-denominated equity into Oclix Labs Inc only** ($1–2M target; SAFE or priced preferred) from crypto-native funds comfortable with equity-only protocol-adjacent SaaS (Variant, Paradigm, 1kx, Archetype, Dragonfly). **No SAFT, no token warrants, no protocol-token rights to investors** — per [`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) §4.0. Deploy capital to federate 2–3 independent operators and launch Premium / Enterprise tiers.
 
-**Phase 3 — 2027 Q2+**: Seed/Series A round ($5–10M target) alongside **SENTINEL token launch** (permissionless operator network). Token issuance is under ongoing legal review — current intent is a SAFT structure for early investors with token warrants alongside equity, plus community airdrop to Phase 1–2 subscribers.
+**Phase 3 — 2027 Q2+**: Seed/Series A equity into Oclix Labs Inc ($5–10M target) **alongside** fair-launch **SENTINEL** utility token (permissionless operator network). Phase 2 investors receive **SaaS equity only**, not genesis SENTINEL; community airdrop to Phase 1–2 subscribers at token launch. Token design is directional in the Lite Whitepaper; legal review ongoing across US, KR, SG, Cayman.
 
 **SENTINEL utility token (Phase 3) — designed for four functions:**
 1. **Operator staking with slashing** for false or missed alerts — economic security layer
@@ -32,7 +32,7 @@ Three insights shape RWA Sentinel:
 3. **Governance voting** on threshold parameters, asset coverage additions, and slashing rules
 4. **Ecosystem fund** controlled by token holders (grants, audits, emergency response)
 
-Phase 1 and Phase 2 operate **without any token** — minimizing regulatory exposure until infrastructure maturity and legal clarity warrant launch. Full tokenomics framework is documented in the project's Lite Whitepaper (`docs/WHITEPAPER.md`), with final parameters (supply, emission, allocation percentages) pending community input, independent audit, and jurisdiction-specific legal review.
+Phase 1 and Phase 2 operate **without any token** — minimizing regulatory exposure until infrastructure maturity and legal clarity warrant launch. Full tokenomics framework is documented in [`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) (on-site: `/whitepaper/`), with final parameters pending community input, independent audit, and jurisdiction-specific legal review.
 
 ---
 
