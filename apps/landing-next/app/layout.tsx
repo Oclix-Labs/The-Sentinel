@@ -4,7 +4,8 @@ import './globals.css';
 
 const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
-  weight: ['600'],
+  weight: ['400', '600', '700'],
+  style: ['normal', 'italic'],
   display: 'swap',
   variable: '--font-source-serif',
 });

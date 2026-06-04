@@ -22,7 +22,7 @@
 
 ## Why this exists
 
-Over the past 18 months, at least **nine oracle-composition or hardcoded-oracle failures** across Base-adjacent DeFi caused **≥$50M in cumulative losses** — most recently the Moonwell cbETH incident of February 2026 ($2.68M, 181 borrowers). Every one of these would have been detected in the same block by a multi-oracle cross-check at a 2% threshold. None of the existing tools provide that for retail.
+Over the past 18 months, at least **nine oracle-composition or hardcoded-oracle failures** across Base-adjacent DeFi caused **≥$50M in cumulative losses** — most recently the Moonwell cbETH incident of February 2026 ($2.68M, ~181 borrowers). **Composition-class** errors are detectable in seconds when independent feeds disagree; **hardcoded-oracle depegs** need secondary-market checks (Phase 2). No **free, RWA-tuned, hosted** service provides that for retail today. See [`docs/WHITEPAPER-v0.1-SKELETON.md`](docs/WHITEPAPER-v0.1-SKELETON.md) §2.1.
 
 | Existing tool | Coverage gap |
 |---|---|
@@ -134,7 +134,7 @@ Full per-phase deliverables, success criteria, and funding plan: [`docs/ROADMAP.
 
 ## Threat model
 
-Eight adversary classes mapped against Phase 1 vs Phase 3 surface and primary mitigation, plus a fork-resistance moat analysis (seven reasons why MIT licensing does not invite Coinbase / Chaos Labs / fast-follower forks). See [Whitepaper §6.2](./docs/WHITEPAPER-v0.1-SKELETON.md#62-threat-model) and [§10.8](./docs/WHITEPAPER-v0.1-SKELETON.md#108-fork-risk-and-competitive-moat-narrowness).
+Eight adversary classes mapped against Phase 1 vs Phase 3 surface and primary mitigation, plus a fork-resistance moat analysis (seven reasons why MIT licensing does not invite Coinbase / Chaos Labs / fast-follower forks). See [Whitepaper §6.2](./docs/WHITEPAPER-v0.1-SKELETON.md#62-threat-model) and [§9.8](./docs/WHITEPAPER-v0.1-SKELETON.md#98-fork-risk-and-competitive-moat-narrowness).
 
 ---
 

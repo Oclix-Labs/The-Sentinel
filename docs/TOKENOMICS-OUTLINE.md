@@ -1,6 +1,8 @@
 # SENTINEL Tokenomics — Framework Outline (v0.1 Directional)
 
 > **Status**: Directional framework for Phase 3 (2027 Q2+). Specific percentages, supply total, and emission schedule are intentionally deferred to pre-launch community input and audit. This document is not a final token design — it is the guardrail within which Phase 2 operators and Phase 3 community will set parameters.
+>
+> **SSOT for genesis allocation & Phase 2 fundraising (2026-04-27+)**: [`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) **§4.0** — no team or investor SENTINEL at genesis; Phase 2 capital is **USD equity into Oclix Labs Inc only** (no SAFT, no token warrants). Where this outline previously listed Team/Investor categories or SAFT launch options, treat those as **superseded**.
 
 ---
 
@@ -61,20 +63,23 @@ Disburses to: security audits, grants to asset-coverage contributors, bug bounti
 
 ## 3. Allocation framework (percentages TBD)
 
-> Final percentages require Phase 2 community input and independent economic audit. The categories below are locked; the ratios are directional.
+> Final percentages require Phase 2 community input and independent economic audit. **Structural commitments in §4.0 of the Lite Whitepaper are firm**; ratios below are directional only.
 
-| Category | Direction | Vesting | Purpose |
+**No Team category. No Investor category. No founder pre-mine.**
+
+| Category | Direction | Vesting / mechanics | Purpose |
 |---|---|---|---|
-| **Team & Advisors** | modest | 4 years, 1-year cliff | Long-term commitment; standard crypto-native schedule |
-| **Community / Early Subscribers** | substantial | None (claim-on-launch) or 6-month linear | Reward Phase 1-2 subscribers, GitHub contributors, research contributors; bootstrap decentralization narrative |
-| **Operator Incentives** | largest | 10-year linear emission | Sustain operator network economics; emission curve set by governance |
-| **Ecosystem Fund** | meaningful | DAO controlled | Ongoing audits, grants, emergency response |
-| **Investors** | proportional to capital raised | 4 years, 1-year cliff | Pre-seed (Phase 2) + Seed/Series A (Phase 3) participants; SAFT + warrants |
+| **Operator Incentives** | largest (≈60–80%) | 10-year linear emission. Founder operator share **capped at 5%** of this category with **additional** 4-year vest / 1-year cliff. | Sustain operator network across Phase 3+ |
+| **Community / Early Subscribers** | substantial (≈15–25%) | None or 6-month linear cliff. Airdrop to Phase 1–2 subscribers, contributors, operator candidates. | Bootstrap retail network effect |
+| **Ecosystem Fund** | meaningful (≈5–15%) | DAO-controlled; also funded by slashed stakes + subscription-revenue share. | Audits, grants, legal reserves, integrations |
 
-**Anti-patterns we avoid:**
-- Team + Investors combined >30% (bad decentralization optics)
-- Immediate unlock for any stakeholder (signals rug-pull)
-- VC allocation >Community (signals extractive launch)
+Phase 2 **pre-seed** and Phase 3 **Seed/Series A** flow into **Oclix Labs Inc equity** (SAFE or priced preferred). Investors receive **SaaS-company equity**, not genesis SENTINEL. Founders may earn operator emission only by operating under the same rules as external operators, subject to the 5% founder cap.
+
+**Anti-patterns we avoid (§4.0):**
+- Team or founder genesis allocation (Howey factor 4 + captured-launch optics)
+- Investor token allocation in any form, including SAFT or warrants
+- Immediate unlock for any stakeholder
+- Pre-launch token sale to retail or accredited investors
 
 ---
 
@@ -107,8 +112,9 @@ SENTINEL is designed as a **utility token** with the following explicit properti
 - Token does not entitle holders to profit from issuer's managerial efforts (Howey-test factor 4)
 - Consumption mechanism (subscription, slashing) exists from launch
 - Governance rights are real, not cosmetic
-- Sale structure (SAFT to accredited investors only + community airdrop) avoids retail public offering in US jurisdiction
-- Continuous legal opinion review across US, Korea, Singapore, Cayman
+- **No token sale to any party**; Phase 2 capital is equity-only into Oclix Labs Inc (§4.0)
+- **Community airdrop** at Phase 3 genesis (no purchase consideration; eligibility snapshot published before claims)
+- Continuous legal opinion review across US, Korea, Singapore, Cayman (airdrop for Korean residents under separate review per whitepaper §8)
 
 Phase 1 & 2 operate **without any token** to avoid "token first, utility later" regulatory traps.
 
@@ -116,14 +122,14 @@ Phase 1 & 2 operate **without any token** to avoid "token first, utility later" 
 
 ## 7. Launch mechanism (directional)
 
-Options under consideration, selected by Phase 2 governance / investor input:
+**Fair launch** at Phase 3 — no pre-sale of any kind (full detail in whitepaper §4.5):
 
-- **SAFT + warrants** to Phase 2 & 3 investors
-- **Community airdrop** to Phase 1-2 subscribers based on activity / tenure / GitHub contributions
-- **Liquidity Bootstrapping Pool (LBP)** for price discovery (Balancer or Fjord-style)
-- **Fair launch**: no pre-sale, all via LBP + airdrop (high integrity, harder to fund further development)
+1. **Operator Incentives pool** — emitted on 10-year linear schedule from `StakingManager`; founder operators under 5% cap + extra lock-up.
+2. **Community airdrop** — Phase 1–2 subscribers, GitHub/research contributors, operator candidates (weighted by verifiable activity).
+3. **Ecosystem Fund** — initial allocation to DAO treasury.
+4. **Liquidity Bootstrapping Pool (LBP)** — small portion of Community pool reserved for price discovery; **founders, Oclix Labs Inc, and Phase 2 investors do not participate** as buyers or sellers.
 
-Almost certainly a hybrid of SAFT + community airdrop + LBP.
+**Does not happen at genesis:** SAFT, SAFE-with-token-warrant, OTC allocation, token-for-service swap, or investor genesis mint.
 
 ---
 
@@ -156,5 +162,5 @@ Documented here for Phase 2 governance to address:
 ## 10. References
 
 - `docs/ROADMAP.md` — when each phase activates
-- `docs/WHITEPAPER.md` — full treatment including security, governance, and risks
+- [`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) — full treatment including security, governance, risks, and §4.0 founding principle
 - Prior art: Chainlink LINK, The Graph GRT, Filecoin FIL, Helium HNT, Pocket Network POKT — reviewed for anti-patterns and design lessons

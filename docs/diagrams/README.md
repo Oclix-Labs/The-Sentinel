@@ -24,7 +24,7 @@ Source-of-truth Mermaid diagrams. Renderable directly on GitHub, in Excalidraw (
 **SVG/PNG export** —
 ```bash
 npx -p @mermaid-js/mermaid-cli mmdc -i architecture-pipeline.mmd -o architecture-pipeline.svg
-npx -p @mermaid-js/mermaid-cli mmdc -i 3-phase-decentralization.mmd -o 3-phase-decentralization.png -w 1600
+npx -p @mermaid-js/mermaid-cli mmdc -i 3-phase-decentralization.mmd -o ../../apps/landing-next/public/diagrams/3-phase-decentralization.svg -w 1200 -H 420 --backgroundColor white
 ```
 
 ## Color palette (matches landing page)

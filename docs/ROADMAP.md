@@ -42,7 +42,9 @@
 - 5 assets monitored continuously, >99% uptime
 - AlertRegistry live on Base Mainnet with ≥10 detected deviations logged
 - Replay demo: given Moonwell cbETH historical data, Sentinel detects deviation within one block
-- ≥50 Premium-tier waitlist signups
+- ≥1,000 free-tier subscribers (webhook + Telegram combined)
+- ≥30 daily active webhook deliveries successfully consumed downstream
+- **Premium tier alpha**: ≥5 paying customers and ≥$100 MRR (paid USDC against an actual SLA — not waitlist signups; aligns with [`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) §7.1)
 - Public API documented, SDK usable by external developers
 
 ---
@@ -65,10 +67,10 @@
 3. Community operator via grant program (Base ecosystem partner)
 
 ### Funding
-- Pre-seed equity round: $1–2M target
-- Investors: Crypto-native VCs (Variant, Paradigm, 1kx, Archetype, Dragonfly)
+- Pre-seed equity round: $1–2M target — **USD-denominated equity into Oclix Labs Inc only** (SAFE or priced preferred)
+- **No SAFT, no token warrants, no protocol-token rights to investors** — per [`docs/WHITEPAPER-v0.1-SKELETON.md`](./WHITEPAPER-v0.1-SKELETON.md) §4.0; investors receive SaaS-company equity, not SENTINEL
+- Investors: Crypto-native VCs comfortable with equity-only protocol-adjacent SaaS (Variant, Paradigm, 1kx, Archetype, Dragonfly)
 - Coinbase Ventures follow-on (if Phase 1 metrics satisfy)
-- SAFT with token warrants (token issuance conditional on Phase 3 launch)
 
 ### Token
 - **Designed, not issued.** Full tokenomics specification in whitepaper v1.0.

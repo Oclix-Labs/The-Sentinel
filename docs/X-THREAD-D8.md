@@ -20,7 +20,7 @@
 ```
 On Feb 2026, a single oracle misconfiguration cost Moonwell users $2.68M across 181 borrower accounts.
 
-A multi-oracle cross-check would have caught it in the same block.
+A multi-oracle cross-check would have flagged it within seconds (99.95% vs market).
 
 We built the public-good service that does exactly that. 🛡️
 ```

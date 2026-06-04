@@ -1,29 +1,32 @@
 %% RWA Sentinel — Progressive Decentralization (Phase 1 → 2 → 3)
-%% Excalidraw: Mermaid → Diagram (Cmd+Shift+M, paste this code)
+%% Paper layout: left-to-right columns (regenerate SVG with mmdc -w 1200)
 
-flowchart TB
+flowchart LR
     subgraph P1["Phase 1 · 2026 Q2 — Centralized MVP"]
-        direction LR
+        direction TB
         P1OP["Single operator<br/>(Oclix Labs)"]
-        P1AS["5 assets<br/>BTC · ETH · USDC<br/>cbETH · USDO"]
+        P1AS["5 assets<br/>BTC · ETH · USDC · cbETH · USDO"]
         P1TK["No token"]
         P1FU["$50K Base Batches"]
+        P1OP --> P1AS --> P1TK --> P1FU
     end
 
-    subgraph P2["Phase 2 · 2026 Q4 – 2027 Q1 — Federated Operators"]
-        direction LR
-        P2OP["2–3 independent operators<br/>N-of-M consensus"]
-        P2AS["10–15 assets<br/>+ wstETH USDT DAI EURC<br/>cbBTC LBTC USDe"]
-        P2TK["Token<br/><b>designed</b>, not issued<br/>+ airdrop registry"]
-        P2FU["Pre-seed<br/>$1–2M"]
+    subgraph P2["Phase 2 · 2026 Q4 – 2027 Q1 — Federated"]
+        direction TB
+        P2OP["2–3 operators<br/>N-of-M consensus"]
+        P2AS["10–15 assets<br/>wstETH · USDT · cbBTC …"]
+        P2TK["Token designed<br/>not issued"]
+        P2FU["Pre-seed $1–2M<br/>equity only"]
+        P2OP --> P2AS --> P2TK --> P2FU
     end
 
-    subgraph P3["Phase 3 · 2027 Q2+ — Permissionless + SENTINEL"]
-        direction LR
-        P3OP["Anyone stakes SENTINEL<br/>→ runs operator<br/>(10+ permissionless)"]
-        P3AS["30+ tokenized RWAs<br/>+ Superchain expansion"]
-        P3TK["<b>SENTINEL live</b><br/>staking · subscription<br/>governance · ecosystem fund"]
-        P3FU["Seed/Series<br/>$5–10M + token"]
+    subgraph P3["Phase 3 · 2027 Q2+ — Permissionless"]
+        direction TB
+        P3OP["Stake SENTINEL<br/>10+ operators"]
+        P3AS["30+ RWAs<br/>Superchain"]
+        P3TK["SENTINEL live<br/>stake · gov · fund"]
+        P3FU["Seed $5–10M<br/>+ fair launch"]
+        P3OP --> P3AS --> P3TK --> P3FU
     end
 
     P1 ==> P2 ==> P3
